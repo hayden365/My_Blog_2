@@ -25,9 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${inter.variable} ${nanum.variable} antialiased`}
-      >
+      <body className={`${inter.variable} ${nanum.variable} antialiased`}>
         {children}
       </body>
     </html>
