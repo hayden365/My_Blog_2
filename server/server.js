@@ -1,8 +1,8 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import postRoutes from './routes/posts.js';
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
+import postRoutes from "./routes/posts.js";
 
 // 🔧 .env 파일 읽기
 dotenv.config();
@@ -14,14 +14,14 @@ app.use(cors());
 app.use(express.json());
 
 // ✅ 라우터 등록
-app.use('/api/posts', postRoutes);
+app.use("/posts", postRoutes);
 
 // 🔧 환경변수에서 MongoDB URI 불러오기
 const mongoURI = process.env.MONGO_URI;
 const port = process.env.PORT || 5000;
 
 if (!mongoURI) {
-  console.error('❌ MONGO_URI가 .env에서 설정되지 않았습니다.');
+  console.error("❌ MONGO_URI가 .env에서 설정되지 않았습니다.");
   process.exit(1);
 }
 
@@ -29,11 +29,11 @@ if (!mongoURI) {
 mongoose
   .connect(mongoURI)
   .then(() => {
-    console.log('✅ MongoDB connected');
+    console.log("✅ MongoDB connected");
     app.listen(port, () => {
       console.log(`✅ Server running on http://localhost:${port}`);
     });
   })
   .catch((err) => {
-    console.error('❌ DB connection error:', err.message);
+    console.error("❌ DB connection error:", err.message);
   });

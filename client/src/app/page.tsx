@@ -1,11 +1,13 @@
 import React from "react";
-import PostList from "./ui/postList";
+import PostList from "./components/postList";
+import { getAllPosts } from "./hooks/getPosts";
 
 function Home() {
+  const posts = getAllPosts();
   return (
     <div>
       <h1>Home</h1>
-      <PostList />
+      <PostList posts={posts} />
     </div>
   );
 }
