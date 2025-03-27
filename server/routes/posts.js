@@ -73,4 +73,14 @@ router.delete("/:slug", async (req, res) => {
   }
 });
 
+// Delete a post by Id
+router.delete("/id/:id", async (req, res) => {
+  try {
+    const removedPost = await Post.deleteOne({ _id: req.params.id });
+    res.json(removedPost);
+  } catch (err) {
+    res.json({ message: err });
+  }
+});
+
 export default router;
