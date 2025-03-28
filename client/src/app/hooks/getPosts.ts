@@ -1,7 +1,7 @@
 export interface Post {
   title: string;
   content: string;
-  creatdAt: string;
+  createdAt: string;
   slug: string;
 }
 
