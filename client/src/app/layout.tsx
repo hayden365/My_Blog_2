@@ -28,7 +28,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} ${nanum.variable} antialiased`}>
         <Header />
-        {children}
+        <div className="flex justify-center pt-[50px] w-full">{children}</div>
       </body>
     </html>
   );

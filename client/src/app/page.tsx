@@ -5,11 +5,7 @@ import { usePosts } from "./hooks/getPosts";
 
 function Home() {
   const { posts, isError, isLoading } = usePosts();
-  return (
-    <div className="flex justify-center pt-[50px]">
-      <PostList posts={posts} isLoading={isLoading} isError={isError} />
-    </div>
-  );
+  return <PostList posts={posts} isLoading={isLoading} isError={isError} />;
 }
 
 export default Home;
