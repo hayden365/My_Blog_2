@@ -1,3 +1,6 @@
+"use client";
+import useSWR from "swr";
+
 export interface Post {
   title: string;
   content: string;
@@ -5,8 +8,18 @@ export interface Post {
   slug: string;
 }
 
-export const getAllPosts: () => Promise<Post[]> = async () => {
-  const response = await fetch("http://localhost:5001/posts");
-  const posts = await response.json();
-  return posts;
-};
+const fetcher = (...args: Parameters<typeof fetch>) =>
+  fetch(...args).then((res) => res.json());
+
+export function usePosts() {
+  const { data, error, isLoading } = useSWR<Post[]>(
+    "http://localhost:5001/posts",
+    fetcher
+  );
+
+  return {
+    posts: data,
+    isLoading,
+    isError: error,
+  };
+}

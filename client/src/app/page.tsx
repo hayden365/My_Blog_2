@@ -1,12 +1,13 @@
+"use client";
 import React from "react";
 import PostList from "./components/postList";
-import { getAllPosts } from "./hooks/getPosts";
+import { usePosts } from "./hooks/getPosts";
 
 function Home() {
-  const posts = getAllPosts();
+  const { posts, isError, isLoading } = usePosts();
   return (
     <div className="flex justify-center pt-[50px]">
-      <PostList posts={posts} />
+      <PostList posts={posts} isLoading={isLoading} isError={isError} />
     </div>
   );
 }
