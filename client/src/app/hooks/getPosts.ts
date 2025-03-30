@@ -6,6 +6,7 @@ export interface Post {
   content: string;
   createdAt: string;
   slug: string;
+  tags: string[];
 }
 
 const fetcher = (...args: Parameters<typeof fetch>) =>

@@ -2,6 +2,7 @@
 import { use } from "react";
 import { formatDate } from "../utils/date";
 import { usePost } from "../hooks/getPosts";
+import Link from "next/link";
 
 export default function PostPage({
   params,
@@ -33,7 +34,16 @@ export default function PostPage({
         <h1 className="text-[42px] font-bold mb-8">{post.title}</h1>
         <time className="text-gray-500">{formatDate(post.createdAt)}</time>
       </header>
-      <div className="mt-10 prose prose-lg max-w-none">{post.content}</div>
+      <div className="my-10 prose prose-lg max-w-none">{post.content}</div>
+      <ul className="flex gap-2">
+        {post.tags?.map((tag) => (
+          <Link href={`/tags/${tag}`} key={tag}>
+            <li className="text-neutral-800 bg-zinc-100 px-4 py-2 rounded-3xl">
+              {tag}
+            </li>
+          </Link>
+        ))}
+      </ul>
     </article>
   );
 }
