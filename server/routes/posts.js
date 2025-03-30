@@ -10,6 +10,7 @@ router.post("/", async (req, res) => {
     title: req.body.title,
     content: req.body.content,
     slug: req.body.slug ? req.body.slug : slugify(req.body.title),
+    tags: req.body.tags || [],
   });
 
   try {
@@ -44,13 +45,14 @@ router.get("/:slug", async (req, res) => {
 router.put("/:slug", async (req, res) => {
   try {
     const updatedPost = await Post.findOneAndUpdate(
-      { slug: req.params.slug }, // 조건
+      { slug: req.params.slug },
       {
         title: req.body.title,
         content: req.body.content,
         slug: req.body.slug ? req.body.slug : slugify(req.body.title),
+        tags: req.body.tags || [],
       },
-      { new: true } // 수정 후 문서를 반환
+      { new: true }
     );
 
     if (!updatedPost) {
