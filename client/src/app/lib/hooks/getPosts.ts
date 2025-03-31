@@ -1,22 +1,15 @@
-"use client";
 import useSWR from "swr";
-
-export interface Post {
-  title: string;
-  content: string;
-  createdAt: string;
-  slug: string;
-  tags: string[];
-}
+import { Post } from "../../types/post";
 
 const fetcher = (...args: Parameters<typeof fetch>) =>
   fetch(...args).then((res) => res.json());
 
 // 모든 포스트를 가져오는 훅
-export function usePosts() {
+export function usePosts(fallbackData: Post[]) {
   const { data, error, isLoading } = useSWR<Post[]>(
     `${process.env.NEXT_PUBLIC_URL}/posts`,
-    fetcher
+    fetcher,
+    { fallbackData }
   );
 
   return {
@@ -27,10 +20,11 @@ export function usePosts() {
 }
 
 // 특정 포스트를 가져오는 훅
-export function usePost(slug: string) {
+export function usePost(slug: string, fallbackData: Post) {
   const { data, error, isLoading } = useSWR<Post>(
     `${process.env.NEXT_PUBLIC_URL}/posts/${slug}`,
-    fetcher
+    fetcher,
+    { fallbackData }
   );
 
   return {

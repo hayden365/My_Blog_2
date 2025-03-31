@@ -1,11 +1,13 @@
-"use client";
 import React from "react";
 import PostList from "./components/postList";
-import { usePosts } from "./hooks/getPosts";
+import { getPosts } from "./lib/api/posts";
 
-function Home() {
-  const { posts, isError, isLoading } = usePosts();
-  return <PostList posts={posts} isLoading={isLoading} isError={isError} />;
+export default async function Home() {
+  const initialPosts = await getPosts();
+
+  return (
+    <div className="flex justify-center pt-[50px]">
+      <PostList initialPosts={initialPosts} />
+    </div>
+  );
 }
-
-export default Home;
