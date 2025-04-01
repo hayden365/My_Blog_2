@@ -1,6 +1,6 @@
 const API_URL = process.env.NEXT_PUBLIC_URL;
 
-export async function getPosts() {
+export async function fetchPostList() {
   const res = await fetch(`${API_URL}/posts`, {
     cache: "no-store",
   });
@@ -8,7 +8,7 @@ export async function getPosts() {
   return res.json();
 }
 
-export async function getPost(slug: string) {
+export async function fetchPost(slug: string) {
   const res = await fetch(`${API_URL}/posts/${slug}`, {
     cache: "no-store",
   });

@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Nanum_Gothic } from "next/font/google";
 import "./globals.css";
 import Header from "./components/header";
+import { Suspense } from "react";
+import BlogListSkeleton from "./components/common/blogListSkeleton";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -16,19 +18,21 @@ const nanum = Nanum_Gothic({
 
 export const metadata: Metadata = {
   title: "Blog",
-  description: "This is a blog",
+  description: "My blog",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
-    <html lang="en">
+    <html lang="ko">
       <body className={`${inter.variable} ${nanum.variable} antialiased`}>
         <Header />
-        <div className="flex justify-center pt-[50px] w-full">{children}</div>
+        <main className="flex justify-center pt-[50px] w-full">
+          <Suspense fallback={<BlogListSkeleton />}>{children}</Suspense>
+        </main>
       </body>
     </html>
   );

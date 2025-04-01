@@ -1,12 +1,11 @@
 import PostContent from "../components/postContent";
-import { getPost } from "../lib/api/posts";
-
+import { fetchPost } from "../lib/api/fetch";
 export default async function PostPage({
   params,
 }: {
   params: { slug: string };
 }) {
-  const initialPost = await getPost(params.slug);
+  const post = await fetchPost(params.slug);
 
-  return <PostContent initialPost={initialPost} />;
+  return <PostContent data={post} />;
 }

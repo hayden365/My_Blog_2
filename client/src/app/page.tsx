@@ -1,9 +1,9 @@
 import React from "react";
 import PostList from "./components/postList";
-import { getPosts } from "./lib/api/posts";
+import { fetchPostList } from "./lib/api/fetch";
 
 export default async function Home() {
-  const initialPosts = await getPosts();
+  const postList = await fetchPostList();
 
-  return <PostList initialPosts={initialPosts} />;
+  return <PostList data={postList} />;
 }

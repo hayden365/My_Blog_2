@@ -1,26 +1,12 @@
-"use client";
 import Link from "next/link";
 import React from "react";
-import { usePosts } from "../lib/hooks/getPosts";
 import { formatDate } from "../lib/utils/date";
-import Error from "./common/error";
-import Loading from "./common/loading";
 import { Post } from "../types/post";
 
-const PostList = ({ initialPosts }: { initialPosts: Post[] }) => {
-  const { posts, isError, isLoading } = usePosts(initialPosts);
-
-  if (isError) {
-    return <Error message="포스트를 불러오는데 실패했습니다." />;
-  }
-
-  if (isLoading) {
-    return <Loading />;
-  }
-
+const PostList = ({ data }: { data: Post[] }) => {
   return (
     <ul className="flex flex-col gap-6 w-full max-w-[680px] mx-6">
-      {posts?.map((post, index) => (
+      {data.map((post, index) => (
         <li key={index} className="flex border-b border-gray-100 py-4">
           <Link href={`/${post.slug}`} className="flex-1 pr-4 group">
             <div>
