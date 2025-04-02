@@ -1,6 +1,7 @@
 import { formatDate } from "../lib/utils/date";
 import Link from "next/link";
 import { Post } from "../types/post";
+import Markdown from "react-markdown";
 
 const PostContent = ({ data }: { data: Post }) => {
   return (
@@ -9,7 +10,10 @@ const PostContent = ({ data }: { data: Post }) => {
         <h1 className="text-[42px] font-bold mb-8">{data.title}</h1>
         <time className="text-gray-500">{formatDate(data.createdAt)}</time>
       </header>
-      <div className="my-10 prose prose-lg max-w-none">{data.content}</div>
+      <div className="my-10 prose prose-lg max-w-none">
+        <Markdown>{data.content}</Markdown>
+      </div>
+      {/* tags */}
       <ul className="flex gap-2">
         {data.tags?.map((tag) => (
           <Link href={`/tags/${tag}`} key={tag}>
