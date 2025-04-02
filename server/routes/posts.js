@@ -8,6 +8,7 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   const post = new Post({
     title: req.body.title,
+    subtitle: req.body.subtitle,
     content: req.body.content,
     slug: req.body.slug ? req.body.slug : slugify(req.body.title),
     tags: req.body.tags || [],
@@ -48,6 +49,7 @@ router.put("/:slug", async (req, res) => {
       { slug: req.params.slug },
       {
         title: req.body.title,
+        subtitle: req.body.subtitle,
         content: req.body.content,
         slug: req.body.slug ? req.body.slug : slugify(req.body.title),
         tags: req.body.tags || [],
