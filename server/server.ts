@@ -2,7 +2,7 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
 import dotenv from "dotenv";
-import postRoutes from "./routes/posts.js";
+import postRoutes from "./routes/posts";
 
 // 🔧 .env 파일 읽기
 dotenv.config();
