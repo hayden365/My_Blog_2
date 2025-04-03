@@ -1,6 +1,6 @@
 import { formatDate } from "../lib/utils/date";
 import Link from "next/link";
-import { Post } from "../types/post";
+import { Post } from "../lib/types/post";
 import Markdown from "react-markdown";
 
 const PostContent = ({ data }: { data: Post }) => {

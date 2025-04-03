@@ -1,11 +1,23 @@
 import PostContent from "../components/postContent";
-import { fetchPost } from "../lib/api/fetch";
+import { fetchPost, fetchPostList } from "../lib/api/fetch";
+import { Post } from "../lib/types/post";
+
+export async function generateStaticParams() {
+  const posts = await fetchPostList();
+
+  return posts.map((post: Post) => ({
+    slug: post.slug,
+  }));
+}
+
 export default async function PostPage({
   params,
 }: {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }) {
-  const post = await fetchPost(params.slug);
+  const { slug } = await params;
+
+  const post = await fetchPost(slug);
 
   return <PostContent data={post} />;
 }

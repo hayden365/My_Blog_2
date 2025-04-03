@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { Post } from "../../types/post";
+import { Post } from "../types/post";
 
 const fetcher = (...args: Parameters<typeof fetch>) =>
   fetch(...args).then((res) => res.json());

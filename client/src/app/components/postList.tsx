@@ -1,7 +1,7 @@
 import Link from "next/link";
 import React from "react";
 import { formatDate } from "../lib/utils/date";
-import { Post } from "../types/post";
+import { Post } from "../lib/types/post";
 
 const PostList = ({ data }: { data: Post[] }) => {
   return (
