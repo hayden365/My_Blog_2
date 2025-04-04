@@ -2,12 +2,6 @@ import { Router, RequestHandler } from "express";
 import passport from "passport";
 import jwt from "jsonwebtoken";
 
-interface User {
-  _id: string;
-  email: string;
-  name: string;
-}
-
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || "your_fallback_secret";
 
@@ -27,10 +21,10 @@ router.get(
       return;
     }
 
-    const user = req.user as User;
+    const user = req.user as { _id: string; email: string; name: string };
     const token = jwt.sign(
       {
-        userId: user._id,
+        _id: user._id,
         email: user.email,
         name: user.name,
       },

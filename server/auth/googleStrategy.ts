@@ -24,7 +24,7 @@ passport.use(
     ) => {
       try {
         // 구글에서 받은 고유 ID로 기존 사용자 있는지 확인
-        const existingUser = await User.findOne({ googleId: profile.id });
+        const existingUser = await User.findOne({ userId: profile.id });
         if (existingUser) {
           return done(null, existingUser); // 이미 있는 사용자
         }
@@ -35,9 +35,10 @@ passport.use(
 
         // 없다면 새 사용자 등록
         const newUser = await User.create({
-          googleId: profile.id,
+          userId: profile.id,
           email: profile.emails[0].value,
           name: profile.displayName,
+          profileImage: profile.photos?.[0]?.value || "",
         });
 
         return done(null, newUser); // 새로 만든 사용자
