@@ -3,12 +3,15 @@ import Post from "../models/Post";
 import slugify from "../hooks/slugify";
 import { verifyToken } from "../middlewares/verifyToken";
 
+interface CustomUser {
+  id: string;
+}
+
 const router: Router = express.Router();
 
 // Create a post
 router.post("/", verifyToken, async (req: Request, res: Response) => {
   try {
-    const currentUserId = req.currentUserId;
     const { title, subtitle, content, slug, tags } = req.body;
     const post = new Post({
       title,
@@ -16,7 +19,7 @@ router.post("/", verifyToken, async (req: Request, res: Response) => {
       content,
       slug,
       tags,
-      authorId: currentUserId,
+      authorId: (req.user as CustomUser)?.id,
     });
     const savedPost = await post.save();
     res.json(savedPost);

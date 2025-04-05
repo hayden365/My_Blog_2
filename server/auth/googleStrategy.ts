@@ -23,25 +23,41 @@ passport.use(
       done: (error: any, user?: any) => void
     ) => {
       try {
-        // 구글에서 받은 고유 ID로 기존 사용자 있는지 확인
-        const existingUser = await User.findOne({ userId: profile.id });
-        if (existingUser) {
-          return done(null, existingUser); // 이미 있는 사용자
+        const email = profile.emails?.[0]?.value;
+
+        if (!email) {
+          return done(new Error("No email found in profile"));
         }
 
-        if (!profile.emails?.[0]?.value) {
-          return done(new Error("No email found in profile"));
+        const existingUser = await User.findOne({ email });
+
+        if (existingUser) {
+          // 프로필 이미지가 없으면 업데이트
+          if (!existingUser.profileImage) {
+            existingUser.profileImage = profile.photos?.[0]?.value || "";
+            await existingUser.save();
+          }
+          return done(null, existingUser);
         }
 
         // 없다면 새 사용자 등록
         const newUser = await User.create({
           userId: profile.id,
-          email: profile.emails[0].value,
-          name: profile.displayName,
+          email,
+          name: {
+            givenName:
+              profile.name?.givenName ||
+              profile.displayName?.split(" ")[0] ||
+              "User",
+            familyName:
+              profile.name?.familyName ||
+              profile.displayName?.split(" ")[1] ||
+              "User",
+          },
           profileImage: profile.photos?.[0]?.value || "",
         });
 
-        return done(null, newUser); // 새로 만든 사용자
+        return done(null, newUser);
       } catch (err) {
         return done(err);
       }

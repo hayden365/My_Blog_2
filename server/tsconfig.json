@@ -12,5 +12,6 @@
     "skipLibCheck": true
   },
   "include": ["**/*"], // server 폴더 내 전체를 포함
-  "exclude": ["node_modules", "../dist"]
+  "exclude": ["node_modules", "../dist"],
+  "types": ["express", "./types/express.d.ts"]
 }

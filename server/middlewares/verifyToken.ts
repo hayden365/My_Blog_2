@@ -20,7 +20,7 @@ export const verifyToken = async (
   try {
     const secretKey = process.env.JWT_SECRET || "secret";
     const decoded = jwt.verify(userToken, secretKey) as CustomJwtPayload;
-    req.currentUserId = decoded.user_id;
+    req.user = { id: decoded.user_id };
     next();
   } catch (error) {
     res.status(403).json({ message: "유효하지 않은 토큰입니다." });
