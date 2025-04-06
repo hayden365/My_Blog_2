@@ -30,9 +30,9 @@ export default function RootLayout({
     <html lang="ko">
       <body className={`${inter.variable} ${nanum.variable} antialiased`}>
         <Header />
-        <main className="flex justify-center pt-[50px] w-full">
+        <div className="flex justify-center w-full">
           <Suspense fallback={<BlogListSkeleton />}>{children}</Suspense>
-        </main>
+        </div>
       </body>
     </html>
   );
