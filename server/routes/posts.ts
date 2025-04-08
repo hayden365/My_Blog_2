@@ -11,7 +11,7 @@ interface CustomUser {
 const router: Router = express.Router();
 
 // Create a post
-router.post("/", (async (req: Request, res: Response) => {
+router.post("/", verifyToken, (async (req: Request, res: Response) => {
   try {
     const { title, subtitle, content, tags } = req.body;
 
@@ -73,7 +73,7 @@ router.get("/:id", (async (req: Request, res: Response) => {
 }) as RequestHandler);
 
 // Update a post
-router.put("/:id", (async (req: Request, res: Response) => {
+router.put("/:id", verifyToken, (async (req: Request, res: Response) => {
   try {
     const currentPost = await Post.findById(req.params.id);
     if (!currentPost) {

@@ -21,7 +21,7 @@ export const verifyToken = async (
 
   const token = authHeader.split(" ")[1];
   const secretKey = process.env.JWT_SECRET || "your_fallback_secret";
-  console.log(secretKey, "secretKey");
+
   try {
     const decoded = jwt.verify(token, secretKey) as CustomJwtPayload;
     req.user = {
