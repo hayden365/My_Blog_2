@@ -73,9 +73,24 @@ router.get("/:id", (async (req: Request, res: Response) => {
 }) as RequestHandler);
 
 // Update a post
-router.put("/:id", verifyToken, (async (req: Request, res: Response) => {
+router.put("/:id", (async (req: Request, res: Response) => {
   try {
-    const slug = req.body.slug || (await slugify(req.body.title));
+    const currentPost = await Post.findById(req.params.id);
+    if (!currentPost) {
+      res.status(404).json({ message: "Post not found" });
+      return;
+    }
+
+    // 태그 처리
+    const tagIds = await Promise.all(
+      (req.body.tags || []).map(async (tagName: string) => {
+        let tag = await Tag.findOne({ name: tagName });
+        if (!tag) {
+          tag = await Tag.create({ name: tagName });
+        }
+        return tag._id;
+      })
+    );
 
     const updatedPost = await Post.findByIdAndUpdate(
       req.params.id,
@@ -83,8 +98,8 @@ router.put("/:id", verifyToken, (async (req: Request, res: Response) => {
         title: req.body.title,
         subtitle: req.body.subtitle,
         content: req.body.content,
-        slug,
-        tags: req.body.tags || [],
+        slug: await slugify(req.body.slug || req.body.title, currentPost.slug),
+        tags: tagIds,
       },
       { new: true }
     );
