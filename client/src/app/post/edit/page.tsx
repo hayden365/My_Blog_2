@@ -19,7 +19,12 @@ const PostEditPage = () => {
       <div role="header" className="px-6 py-6 flex justify-between">
         <HomeLogo />
         <div className="flex gap-8">
-          <Button onClick={() => setIsModalOpen(true)}>Publish</Button>
+          <Button
+            disabled={!title || !content}
+            onClick={() => setIsModalOpen(true)}
+          >
+            Publish
+          </Button>
           <LoginButton />
         </div>
       </div>
