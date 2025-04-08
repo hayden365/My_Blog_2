@@ -1,5 +1,6 @@
 import express, { Request, Response, Router, RequestHandler } from "express";
 import Post from "../models/Post";
+import Tag from "../models/Tag";
 import slugify from "../hooks/slugify";
 import { verifyToken } from "../middlewares/verifyToken";
 
@@ -10,25 +11,42 @@ interface CustomUser {
 const router: Router = express.Router();
 
 // Create a post
-router.post("/", verifyToken, async (req: Request, res: Response) => {
+router.post("/", (async (req: Request, res: Response) => {
   try {
-    const { title, subtitle, content, slug, tags } = req.body;
+    const { title, subtitle, content, tags } = req.body;
+
+    // 태그 처리
+    const tagIds = await Promise.all(
+      (tags || []).map(async (tagName: string) => {
+        let tag = await Tag.findOne({ name: tagName });
+        if (!tag) {
+          tag = await Tag.create({ name: tagName });
+        }
+        return tag._id;
+      })
+    );
+
+    // slug 생성
+    const slug = await slugify(req.body.slug || title);
+
     const post = new Post({
       title,
       subtitle,
       content,
       slug,
-      tags,
+      tags: tagIds,
       authorId: (req.user as CustomUser)?.id,
     });
+
     const savedPost = await post.save();
     res.json(savedPost);
     return;
   } catch (err) {
-    res.json({ message: err });
+    console.error("Post creation error:", err);
+    res.status(500).json({ message: err });
     return;
   }
-});
+}) as RequestHandler);
 
 // Get all posts
 router.get("/", (async (req: Request, res: Response) => {
@@ -41,34 +59,39 @@ router.get("/", (async (req: Request, res: Response) => {
 }) as RequestHandler);
 
 // Get a specific post
-router.get("/:slug", (async (req: Request, res: Response) => {
+router.get("/:id", (async (req: Request, res: Response) => {
   try {
-    const post = await Post.findOne({ slug: req.params.slug });
+    const post = await Post.findById(req.params.id);
+    if (!post) {
+      res.status(404).json({ message: "Post not found" });
+      return;
+    }
     res.json(post);
   } catch (err) {
-    res.json({ message: err });
+    res.status(500).json({ message: err });
   }
 }) as RequestHandler);
 
 // Update a post
-router.put("/:slug", verifyToken, (async (req: Request, res: Response) => {
+router.put("/:id", verifyToken, (async (req: Request, res: Response) => {
   try {
-    const updatedPost = await Post.findOneAndUpdate(
-      { slug: req.params.slug },
+    const currentPost = await Post.findById(req.params.id);
+    if (!currentPost) {
+      res.status(404).json({ message: "Post not found" });
+      return;
+    }
+
+    const updatedPost = await Post.findByIdAndUpdate(
+      req.params.id,
       {
         title: req.body.title,
         subtitle: req.body.subtitle,
         content: req.body.content,
-        slug: req.body.slug ? req.body.slug : slugify(req.body.title),
+        slug: await slugify(req.body.slug || req.body.title, currentPost.slug),
         tags: req.body.tags || [],
       },
       { new: true }
     );
-
-    if (!updatedPost) {
-      res.status(404).json({ message: "Post not found" });
-      return;
-    }
 
     res.json(updatedPost);
   } catch (err) {
@@ -77,22 +100,30 @@ router.put("/:slug", verifyToken, (async (req: Request, res: Response) => {
 }) as RequestHandler);
 
 // Delete a post
-router.delete("/:slug", verifyToken, (async (req: Request, res: Response) => {
+router.delete("/:id", verifyToken, (async (req: Request, res: Response) => {
   try {
-    const removedPost = await Post.deleteOne({ slug: req.params.slug });
+    const removedPost = await Post.findByIdAndDelete(req.params.id);
+    if (!removedPost) {
+      res.status(404).json({ message: "Post not found" });
+      return;
+    }
     res.json(removedPost);
   } catch (err) {
-    res.json({ message: err });
+    res.status(500).json({ message: err });
   }
 }) as RequestHandler);
 
-// Delete a post by Id
-router.delete("/id/:id", verifyToken, (async (req: Request, res: Response) => {
+// Get post by slug (for client-side routing)
+router.get("/slug/:slug", (async (req: Request, res: Response) => {
   try {
-    const removedPost = await Post.deleteOne({ _id: req.params.id });
-    res.json(removedPost);
+    const post = await Post.findOne({ slug: req.params.slug });
+    if (!post) {
+      res.status(404).json({ message: "Post not found" });
+      return;
+    }
+    res.json(post);
   } catch (err) {
-    res.json({ message: err });
+    res.status(500).json({ message: err });
   }
 }) as RequestHandler);
 

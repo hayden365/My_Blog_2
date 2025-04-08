@@ -15,7 +15,8 @@ const postSchema = new mongoose.Schema({
     unique: true,
   },
   tags: {
-    type: [String],
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Tag",
     required: false,
   },
   content: {

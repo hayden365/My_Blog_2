@@ -27,6 +27,7 @@ router.get(
       name: string;
       profileImage: string;
     };
+
     const token = jwt.sign(
       {
         _id: user._id,

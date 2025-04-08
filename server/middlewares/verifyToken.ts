@@ -2,27 +2,37 @@ import { Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 
 interface CustomJwtPayload extends JwtPayload {
-  user_id: string;
+  _id: string;
+  email: string;
+  name: string;
+  profileImage: string;
 }
 
 export const verifyToken = async (
   req: Request,
   res: Response,
   next: NextFunction
-) => {
-  const userToken = req.headers["authorization"]?.split(" ")[1] ?? "null";
-
-  if (userToken === "null") {
-    res.status(401).json({ message: "Unauthorized" });
+): Promise<void> => {
+  const authHeader = req.headers["authorization"];
+  if (!authHeader?.startsWith("Bearer ")) {
+    res.status(401).json({ message: "Authorization header malformed" });
     return;
   }
-  // 토큰이 정상적인지 확인
+
+  const token = authHeader.split(" ")[1];
+  const secretKey = process.env.JWT_SECRET || "your_fallback_secret";
+  console.log(secretKey, "secretKey");
   try {
-    const secretKey = process.env.JWT_SECRET || "secret";
-    const decoded = jwt.verify(userToken, secretKey) as CustomJwtPayload;
-    req.user = { id: decoded.user_id };
+    const decoded = jwt.verify(token, secretKey) as CustomJwtPayload;
+    req.user = {
+      id: decoded._id,
+      email: decoded.email,
+      name: decoded.name,
+      profileImage: decoded.profileImage,
+    };
     next();
   } catch (error) {
+    console.error("JWT 검증 실패:", error);
     res.status(403).json({ message: "유효하지 않은 토큰입니다." });
     return;
   }

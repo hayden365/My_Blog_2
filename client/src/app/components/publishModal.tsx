@@ -38,6 +38,7 @@ const PublishModal = ({
         <div className="flex items-center justify-between gap-16 flex-col md:flex-row">
           <div className="w-full flex flex-col gap-2">
             <h2 className="text-xl font-bold">Story Preview</h2>
+            {/* 이미지 들어갈 자리 */}
             <div className="w-full h-[200px] bg-gray-200 rounded-lg"></div>
             <p className="text-2xl font-bold border-b border-gray-200 pb-1">
               {postData.title}

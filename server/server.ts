@@ -7,6 +7,7 @@ import postRoutes from "./routes/posts";
 import authRoutes from "./routes/auth";
 import session from "express-session";
 import passport from "passport";
+import tagRoutes from "./routes/tag";
 
 // 🔧 .env 파일 읽기
 dotenv.config();
@@ -30,6 +31,7 @@ app.use(passport.session());
 // ✅ 라우터 등록
 app.use("/posts", postRoutes);
 app.use("/auth", authRoutes);
+app.use("/tag", tagRoutes);
 
 // 🔧 환경변수에서 MongoDB URI 불러오기
 const mongoURI = process.env.MONGO_URI;

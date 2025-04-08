@@ -9,7 +9,7 @@ export async function fetchPostList() {
 }
 
 export async function fetchPost(slug: string) {
-  const res = await fetch(`${API_URL}/posts/${slug}`, {
+  const res = await fetch(`${API_URL}/posts/slug/${slug}`, {
     cache: "no-store",
   });
   if (!res.ok) throw new Error("Failed to fetch post");
