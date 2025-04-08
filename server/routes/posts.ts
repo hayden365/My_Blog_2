@@ -27,7 +27,7 @@ router.post("/", (async (req: Request, res: Response) => {
     );
 
     // slug 생성
-    const slug = await slugify(req.body.slug || title);
+    const slug = req.body.slug || (await slugify(title));
 
     const post = new Post({
       title,
@@ -75,11 +75,7 @@ router.get("/:id", (async (req: Request, res: Response) => {
 // Update a post
 router.put("/:id", verifyToken, (async (req: Request, res: Response) => {
   try {
-    const currentPost = await Post.findById(req.params.id);
-    if (!currentPost) {
-      res.status(404).json({ message: "Post not found" });
-      return;
-    }
+    const slug = req.body.slug || (await slugify(req.body.title));
 
     const updatedPost = await Post.findByIdAndUpdate(
       req.params.id,
@@ -87,7 +83,7 @@ router.put("/:id", verifyToken, (async (req: Request, res: Response) => {
         title: req.body.title,
         subtitle: req.body.subtitle,
         content: req.body.content,
-        slug: await slugify(req.body.slug || req.body.title, currentPost.slug),
+        slug,
         tags: req.body.tags || [],
       },
       { new: true }
