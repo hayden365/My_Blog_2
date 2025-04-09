@@ -5,7 +5,6 @@ const router = express.Router();
 
 router.get("/search", (async (req: Request, res: Response) => {
   const query = req.query.query as string;
-
   if (!query || query.trim() === "") {
     return res.json([]);
   }
@@ -34,7 +33,6 @@ router.get("/search", (async (req: Request, res: Response) => {
       { $sort: { count: -1 } },
       { $limit: 5 },
     ]);
-
     res.json(tags);
   } catch (error) {
     console.error("Tag search error:", error);

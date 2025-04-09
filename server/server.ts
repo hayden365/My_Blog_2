@@ -5,9 +5,9 @@ import dotenv from "dotenv";
 import "./auth/googleStrategy";
 import postRoutes from "./routes/posts";
 import authRoutes from "./routes/auth";
+import tagRoutes from "./routes/tag";
 import session from "express-session";
 import passport from "passport";
-import tagRoutes from "./routes/tag";
 
 // 🔧 .env 파일 읽기
 dotenv.config();

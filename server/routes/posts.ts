@@ -51,7 +51,7 @@ router.post("/", verifyToken, (async (req: Request, res: Response) => {
 // Get all posts
 router.get("/", (async (req: Request, res: Response) => {
   try {
-    const posts = await Post.find();
+    const posts = await Post.find().populate("tags", "name");
     res.json(posts);
   } catch (err) {
     res.json({ message: err });
@@ -61,7 +61,7 @@ router.get("/", (async (req: Request, res: Response) => {
 // Get a specific post
 router.get("/:id", (async (req: Request, res: Response) => {
   try {
-    const post = await Post.findById(req.params.id);
+    const post = await Post.findById(req.params.id).populate("tags", "name");
     if (!post) {
       res.status(404).json({ message: "Post not found" });
       return;
@@ -127,7 +127,10 @@ router.delete("/:id", verifyToken, (async (req: Request, res: Response) => {
 // Get post by slug (for client-side routing)
 router.get("/slug/:slug", (async (req: Request, res: Response) => {
   try {
-    const post = await Post.findOne({ slug: req.params.slug });
+    const post = await Post.findOne({ slug: req.params.slug }).populate(
+      "tags",
+      "name"
+    );
     if (!post) {
       res.status(404).json({ message: "Post not found" });
       return;
