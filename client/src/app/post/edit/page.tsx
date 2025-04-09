@@ -3,16 +3,18 @@ import Button from "@/app/components/common/button";
 import { HomeLogo } from "@/app/components/common/homeLogo";
 import LoginButton from "@/app/components/loginButton";
 import PublishModal from "@/app/components/publishModal";
+import { usePostStore } from "@/app/store/postStore";
 import React, { useState } from "react";
 
 const PostEditPage = () => {
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { title, content, setTitle, setContent, resetPost } = usePostStore();
+
   const handlePublish = () => {
     // 실제 발행 API 호출이나 로직을 여기에 추가
     setIsModalOpen(false);
     alert("게시글이 발행되었습니다!");
+    resetPost(); // 상태 초기화
   };
   return (
     <>
@@ -49,7 +51,6 @@ const PostEditPage = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         handlePublish={handlePublish}
-        postData={{ title, content }}
       />
     </>
   );
