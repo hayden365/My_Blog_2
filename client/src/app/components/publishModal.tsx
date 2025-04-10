@@ -1,7 +1,10 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "./common/button";
 import { usePostStore } from "../store/postStore";
+import { useDebounce } from "../lib/hooks/useDebounce";
+import useTagSearch from "../lib/hooks/useTagSearch";
+import { Tag } from "../lib/types/post";
 
 interface PublishModalProps {
   isOpen: boolean;
@@ -14,7 +17,10 @@ const PublishModal = ({
   onClose,
   handlePublish,
 }: PublishModalProps) => {
-  const { title, content, tags, removeTag } = usePostStore();
+  const [input, setInput] = useState("");
+  const debouncedInput = useDebounce(input, 300);
+  const { data: suggestions } = useTagSearch(debouncedInput);
+  const { title, content, tags, addTag, removeTag } = usePostStore();
 
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
@@ -70,19 +76,34 @@ const PublishModal = ({
               <input
                 type="text"
                 placeholder="Add a topic..."
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
                 className="flex-1 bg-transparent focus:outline-none text-sm p-1"
               />
             </div>
 
             {/* 자동완성 예시 */}
-            <div className="mt-1 w-full bg-white border rounded shadow-md">
-              <ul className="max-h-60 overflow-y-auto">
-                <li className="px-4 py-2 hover:bg-gray-100 cursor-pointer">
-                  <span className="font-semibold">Servers</span>
-                  <span className="text-sm text-gray-500">(35K)</span>
-                </li>
-              </ul>
-            </div>
+            {input && suggestions?.length > 0 && (
+              <div className="mt-1 w-full bg-white border rounded shadow-md z-20">
+                <ul className="max-h-60 overflow-y-auto">
+                  {suggestions.map((tag: Tag) => (
+                    <li
+                      key={tag.name}
+                      onClick={() => {
+                        addTag(tag);
+                        setInput(""); // 입력 초기화
+                      }}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                    >
+                      <span className="font-semibold">{tag.name}</span>{" "}
+                      <span className="text-sm text-gray-500">
+                        ({tag.count.toLocaleString()})
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
 
             <div className="flex justify-end">
               <Button onClick={handlePublish}>Publish</Button>

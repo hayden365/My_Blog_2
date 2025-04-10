@@ -1,9 +1,5 @@
 import { create } from "zustand";
-
-interface Tag {
-  id: string;
-  name: string;
-}
+import { Tag } from "../lib/types/post";
 
 interface PostState {
   title: string;

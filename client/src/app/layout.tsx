@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "./components/header";
 import { Suspense } from "react";
 import BlogListSkeleton from "./components/common/blogListSkeleton";
+import Providers from "./provider";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -29,10 +30,12 @@ export default function RootLayout({
   return (
     <html lang="ko">
       <body className={`${inter.variable} ${nanum.variable} antialiased`}>
-        <Header />
-        <div className="flex justify-center w-full">
-          <Suspense fallback={<BlogListSkeleton />}>{children}</Suspense>
-        </div>
+        <Providers>
+          <Header />
+          <div className="flex justify-center w-full">
+            <Suspense fallback={<BlogListSkeleton />}>{children}</Suspense>
+          </div>
+        </Providers>
       </body>
     </html>
   );
