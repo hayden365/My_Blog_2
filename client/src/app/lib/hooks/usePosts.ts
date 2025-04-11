@@ -1,35 +1,27 @@
-import useSWR from "swr";
-import { Post } from "../types/post";
+import { useMutation } from "@tanstack/react-query";
 
-const fetcher = (...args: Parameters<typeof fetch>) =>
-  fetch(...args).then((res) => res.json());
-
-// 모든 포스트를 가져오는 훅
-export function usePosts(fallbackData: Post[]) {
-  const { data, error, isLoading } = useSWR<Post[]>(
-    `${process.env.NEXT_PUBLIC_URL}/posts`,
-    fetcher,
-    { fallbackData }
-  );
-
-  return {
-    posts: data,
-    isLoading,
-    isError: error,
-  };
+interface PostData {
+  title: string;
+  content: string;
+  tags: string[];
 }
 
-// 특정 포스트를 가져오는 훅
-export function usePost(slug: string, fallbackData: Post) {
-  const { data, error, isLoading } = useSWR<Post>(
-    `${process.env.NEXT_PUBLIC_URL}/posts/${slug}`,
-    fetcher,
-    { fallbackData }
-  );
-
-  return {
-    post: data,
-    isLoading,
-    isError: error,
-  };
+export default function useCreatePost() {
+  return useMutation({
+    mutationFn: async (post: PostData) => {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/posts`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(post),
+      });
+      if (!response.ok) {
+        throw new Error("Failed to create post");
+      }
+      return response.json();
+    },
+  });
 }

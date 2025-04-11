@@ -3,17 +3,29 @@ import Button from "@/app/components/common/button";
 import { HomeLogo } from "@/app/components/common/homeLogo";
 import LoginButton from "@/app/components/loginButton";
 import PublishModal from "@/app/components/publishModal";
+import useCreatePost from "@/app/lib/hooks/usePosts";
 import { usePostStore } from "@/app/store/postStore";
 import React, { useState } from "react";
 
 const PostEditPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { title, content, setTitle, setContent, resetPost } = usePostStore();
-
+  const { title, content, tags, setTitle, setContent, resetPost } =
+    usePostStore();
+  const { mutate: createPost } = useCreatePost();
   const handlePublish = () => {
+    createPost(
+      { title, content, tags },
+      {
+        onSuccess: (data) => {
+          console.log("Success", data);
+          resetPost(); // 상태 초기화
+        },
+        onError: (error) => {
+          console.log("Error", error);
+        },
+      }
+    );
     setIsModalOpen(false);
-    alert("게시글이 발행되었습니다!");
-    resetPost(); // 상태 초기화
   };
   return (
     <>
