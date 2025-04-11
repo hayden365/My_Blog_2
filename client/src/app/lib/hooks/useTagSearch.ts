@@ -6,7 +6,7 @@ function useTagSearch(query: string) {
   return useQuery({
     queryKey: ["tagSearch", query],
     queryFn: async () => {
-      const res = await fetch(`${API_URL}/tags/search?query=${query}`);
+      const res = await fetch(`${API_URL}/tag/search?query=${query}`);
       return res.json();
     },
     enabled: query.length > 0,

@@ -11,7 +11,6 @@ const PostEditPage = () => {
   const { title, content, setTitle, setContent, resetPost } = usePostStore();
 
   const handlePublish = () => {
-    // 실제 발행 API 호출이나 로직을 여기에 추가
     setIsModalOpen(false);
     alert("게시글이 발행되었습니다!");
     resetPost(); // 상태 초기화

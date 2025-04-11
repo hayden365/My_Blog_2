@@ -1,10 +1,8 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import Button from "./common/button";
 import { usePostStore } from "../store/postStore";
-import { useDebounce } from "../lib/hooks/useDebounce";
-import useTagSearch from "../lib/hooks/useTagSearch";
-import { Tag } from "../lib/types/post";
+import TagInput from "./common/tagInput";
 
 interface PublishModalProps {
   isOpen: boolean;
@@ -17,11 +15,7 @@ const PublishModal = ({
   onClose,
   handlePublish,
 }: PublishModalProps) => {
-  const [input, setInput] = useState("");
-  const debouncedInput = useDebounce(input, 300);
-  const { data: suggestions } = useTagSearch(debouncedInput);
-  const { title, content, tags, addTag, removeTag } = usePostStore();
-
+  const { title, content } = usePostStore();
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -31,7 +25,6 @@ const PublishModal = ({
   }, [onClose]);
 
   if (!isOpen) return null;
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* dim 처리된 배경 */}
@@ -58,53 +51,8 @@ const PublishModal = ({
               About
             </label>
 
-            <div className="flex flex-wrap items-center gap-2 p-2 border rounded bg-gray-50">
-              {tags.map((tag) => (
-                <span
-                  key={tag.name}
-                  className="bg-white border border-gray-300 px-3 py-1 rounded-full text-sm flex items-center gap-2"
-                >
-                  {tag.name}
-                  <button
-                    className="text-gray-500 hover:text-red-500"
-                    onClick={() => removeTag(tag)}
-                  >
-                    &times;
-                  </button>
-                </span>
-              ))}
-              <input
-                type="text"
-                placeholder="Add a topic..."
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                className="flex-1 bg-transparent focus:outline-none text-sm p-1"
-              />
-            </div>
-
-            {/* 자동완성 예시 */}
-            {input && suggestions?.length > 0 && (
-              <div className="mt-1 w-full bg-white border rounded shadow-md z-20">
-                <ul className="max-h-60 overflow-y-auto">
-                  {suggestions.map((tag: Tag) => (
-                    <li
-                      key={tag.name}
-                      onClick={() => {
-                        addTag(tag);
-                        setInput(""); // 입력 초기화
-                      }}
-                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                    >
-                      <span className="font-semibold">{tag.name}</span>{" "}
-                      <span className="text-sm text-gray-500">
-                        ({tag.count.toLocaleString()})
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-
+            {/* 태그 입력 영역 */}
+            <TagInput />
             <div className="flex justify-end">
               <Button onClick={handlePublish}>Publish</Button>
             </div>

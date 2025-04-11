@@ -1,14 +1,13 @@
 import { create } from "zustand";
-import { Tag } from "../lib/types/post";
 
 interface PostState {
   title: string;
   content: string;
-  tags: Tag[];
+  tags: string[];
   setTitle: (title: string) => void;
   setContent: (content: string) => void;
-  addTag: (tag: Tag) => void;
-  removeTag: (tag: Tag) => void;
+  addTag: (tag: string) => void;
+  removeTag: (tag: string) => void;
   resetPost: () => void;
 }
 
@@ -20,11 +19,11 @@ export const usePostStore = create<PostState>((set) => ({
   setContent: (content) => set({ content }),
   addTag: (tag) =>
     set((state) =>
-      state.tags.length < 5 && !state.tags.find((t) => t.name === tag.name)
+      state.tags.length < 5 && !state.tags.find((t) => t === tag)
         ? { tags: [...state.tags, tag] }
         : state
     ),
   removeTag: (tag) =>
-    set((state) => ({ tags: state.tags.filter((t) => t.name !== tag.name) })),
+    set((state) => ({ tags: state.tags.filter((t) => t !== tag) })),
   resetPost: () => set({ title: "", content: "", tags: [] }),
 }));
