@@ -26,7 +26,7 @@ const TagInput = () => {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2 p-2 border rounded bg-gray-50">
+    <div className="flex flex-wrap items-center gap-2 p-2 border rounded bg-gray-100 border-gray-300">
       {tags.map((tag) => (
         <span
           key={tag}
@@ -53,27 +53,28 @@ const TagInput = () => {
 
         {/* 자동완성 드롭다운 */}
         {input && suggestions?.length > 0 && (
-          <div className="absolute w-auto top-full left-0 mt-2 z-30">
+          <div className="absolute w-auto top-full left-0 mt-1   z-30">
             {/* 꼬리 (말풍선 화살표) */}
-            <div className="absolute top-[-6px] left-6 w-3 h-3 bg-white rotate-45 border-l border-t border-gray-200 z-40" />
+            {/* 테두리용 삼각형 */}
+            <div className="absolute top-[-7px] left-1.5 w-0 h-0 border-x-8 border-x-transparent border-b-8 border-b-gray-200 z-10" />
+            {/* 내용 삼각형 */}
+            <div className="absolute top-[-6px] left-1.5 w-0 h-0 border-x-7 border-x-transparent border-b-7 border-b-white z-20" />
 
-            <div className="bg-white border border-gray-200 rounded-md shadow-lg">
-              <ul className="max-h-60 w-full overflow-y-auto">
-                {suggestions.map((tag: Tag) => (
-                  <li
-                    key={tag.name}
-                    onClick={() => {
-                      addTag(tag.name);
-                      setInput("");
-                    }}
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                  >
-                    <span className="font-bold text-gray-800">{tag.name}</span>{" "}
-                    <span className="text-sm text-gray-500">({tag.count})</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
+            <ul className="max-h-60 w-full overflow-y-auto bg-white border border-gray-200 rounded-md shadow-lg">
+              {suggestions.map((tag: Tag) => (
+                <li
+                  key={tag.name}
+                  onClick={() => {
+                    addTag(tag.name);
+                    setInput("");
+                  }}
+                  className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
+                >
+                  <span className="font-bold text-gray-800">{tag.name}</span>{" "}
+                  <span className="text-sm text-gray-500">({tag.count})</span>
+                </li>
+              ))}
+            </ul>
           </div>
         )}
       </div>
