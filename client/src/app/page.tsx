@@ -1,9 +1,24 @@
 import React from "react";
-import PostList from "./components/postList";
-import { useGetPosts } from "./lib/hooks/usePosts";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+import { fetchPostList } from "./lib/api/fetch";
+import PostListWrapper from "./components/postListWrapper";
+export default async function Home() {
+  const queryClient = new QueryClient();
 
-export default function Home() {
-  const { data: postList } = useGetPosts();
+  await queryClient.prefetchQuery({
+    queryKey: ["posts"],
+    queryFn: fetchPostList,
+  });
 
-  return <PostList data={postList} />;
+  const dehydratedState = dehydrate(queryClient);
+
+  return (
+    <HydrationBoundary state={dehydratedState}>
+      <PostListWrapper />
+    </HydrationBoundary>
+  );
 }

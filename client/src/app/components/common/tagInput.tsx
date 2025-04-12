@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDebounce } from "@/app/lib/hooks/useDebounce";
 import useTagSearch from "@/app/lib/hooks/useTagSearch";
-import { usePostStore } from "@/app/store/postStore";
+import { usePostStore } from "@/app/lib/store/postStore";
 import { Tag } from "@/app/lib/types/post";
 import StyledDropdown from "./styledDropdown";
 

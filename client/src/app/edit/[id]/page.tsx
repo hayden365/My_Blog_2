@@ -4,7 +4,7 @@ import { HomeLogo } from "@/app/components/common/homeLogo";
 import LoginButton from "@/app/components/loginButton";
 import PublishModal from "@/app/components/publishModal";
 import useCreatePost from "@/app/lib/hooks/usePosts";
-import { usePostStore } from "@/app/store/postStore";
+import { usePostStore } from "@/app/lib/store/postStore";
 import React, { useState } from "react";
 
 const PostEditPage = () => {

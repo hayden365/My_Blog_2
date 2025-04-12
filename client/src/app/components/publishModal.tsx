@@ -1,7 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import Button from "./common/button";
-import { usePostStore } from "../store/postStore";
+import { usePostStore } from "../lib/store/postStore";
 import TagInput from "./common/tagInput";
 
 interface PublishModalProps {
