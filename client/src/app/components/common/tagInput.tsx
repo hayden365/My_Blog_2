@@ -53,13 +53,20 @@ const TagInput = () => {
 
         {/* 자동완성 드롭다운 */}
         {input && suggestions?.length > 0 && (
-          <div className="absolute w-auto top-full left-0 mt-1   z-30">
-            {/* 꼬리 (말풍선 화살표) */}
-            {/* 테두리용 삼각형 */}
-            <div className="absolute top-[-7px] left-1.5 w-0 h-0 border-x-8 border-x-transparent border-b-8 border-b-gray-200 z-10" />
-            {/* 내용 삼각형 */}
-            <div className="absolute top-[-6px] left-1.5 w-0 h-0 border-x-7 border-x-transparent border-b-7 border-b-white z-20" />
-
+          <div className="absolute w-auto top-full left-0 mt-1 z-30">
+            {/* 화살표 */}
+            <svg
+              className="absolute"
+              style={{ top: -7, left: 10 }}
+              width="16"
+              height="8"
+              viewBox="0 0 16 8"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path d="M0 8L8 0L16 8H0Z" fill="white" />
+              <path d="M0 8L8 0L16 8" stroke="#E5E7EB" strokeWidth="1" />
+            </svg>
             <ul className="max-h-60 w-full overflow-y-auto bg-white border border-gray-200 rounded-md shadow-lg">
               {suggestions.map((tag: Tag) => (
                 <li
