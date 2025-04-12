@@ -1,10 +1,20 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 
 interface PostData {
   title: string;
   content: string;
   tags: string[];
 }
+
+export const useGetPosts = () => {
+  return useQuery({
+    queryKey: ["posts"],
+    queryFn: async () => {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_URL}/posts`);
+      return response.json();
+    },
+  });
+};
 
 export default function useCreatePost() {
   return useMutation({
