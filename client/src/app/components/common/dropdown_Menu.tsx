@@ -10,7 +10,11 @@ const DropdownMenu = () => {
     <div className="relative">
       <button
         className="p-3 rounded-full text-gray-500 hover:text-black"
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          setIsOpen(!isOpen);
+        }}
       >
         <EllipsisHorizontalIcon className="w-5 h-5" />
       </button>

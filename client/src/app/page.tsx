@@ -6,6 +6,7 @@ import {
 } from "@tanstack/react-query";
 import { fetchPostList } from "./lib/api/fetch";
 import PostListWrapper from "./components/postListWrapper";
+
 export default async function Home() {
   const queryClient = new QueryClient();
 
