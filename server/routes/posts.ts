@@ -58,10 +58,13 @@ router.get("/", (async (req: Request, res: Response) => {
   }
 }) as RequestHandler);
 
-// Get a specific post
+// Get a specific post by id
 router.get("/:id", (async (req: Request, res: Response) => {
   try {
-    const post = await Post.findById(req.params.id).populate("tags", "name");
+    const post = await Post.findOne({
+      _id: req.params.id,
+    }).populate("tags", "name");
+
     if (!post) {
       res.status(404).json({ message: "Post not found" });
       return;
@@ -75,7 +78,10 @@ router.get("/:id", (async (req: Request, res: Response) => {
 // Update a post
 router.put("/:id", verifyToken, (async (req: Request, res: Response) => {
   try {
-    const currentPost = await Post.findById(req.params.id);
+    const currentPost = await Post.findOne({
+      _id: req.params.id,
+    });
+
     if (!currentPost) {
       res.status(404).json({ message: "Post not found" });
       return;
@@ -92,8 +98,8 @@ router.put("/:id", verifyToken, (async (req: Request, res: Response) => {
       })
     );
 
-    const updatedPost = await Post.findByIdAndUpdate(
-      req.params.id,
+    const updatedPost = await Post.findOneAndUpdate(
+      { _id: req.params.id },
       {
         title: req.body.title,
         subtitle: req.body.subtitle,
@@ -113,7 +119,10 @@ router.put("/:id", verifyToken, (async (req: Request, res: Response) => {
 // Delete a post
 router.delete("/:id", verifyToken, (async (req: Request, res: Response) => {
   try {
-    const removedPost = await Post.findByIdAndDelete(req.params.id);
+    const removedPost = await Post.findOneAndDelete({
+      _id: req.params.id,
+    });
+
     if (!removedPost) {
       res.status(404).json({ message: "Post not found" });
       return;

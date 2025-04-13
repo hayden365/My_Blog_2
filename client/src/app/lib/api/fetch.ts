@@ -1,3 +1,5 @@
+import axios from "axios";
+
 const API_URL = process.env.NEXT_PUBLIC_URL;
 
 export async function fetchPostList() {
@@ -14,4 +16,9 @@ export async function fetchPost(slug: string) {
   });
   if (!res.ok) throw new Error("Failed to fetch post");
   return res.json();
+}
+
+export async function getPost(id: string) {
+  const res = await axios.get(`${API_URL}/posts/${id}`);
+  return res.data;
 }

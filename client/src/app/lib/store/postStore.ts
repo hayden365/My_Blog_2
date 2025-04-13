@@ -6,6 +6,7 @@ interface PostState {
   tags: string[];
   setTitle: (title: string) => void;
   setContent: (content: string) => void;
+  setTags: (tags: string[]) => void;
   addTag: (tag: string) => void;
   removeTag: (tag: string) => void;
   resetPost: () => void;
@@ -17,6 +18,7 @@ export const usePostStore = create<PostState>((set) => ({
   tags: [],
   setTitle: (title) => set({ title }),
   setContent: (content) => set({ content }),
+  setTags: (tags) => set({ tags }),
   addTag: (tag) =>
     set((state) =>
       state.tags.length < 5 && !state.tags.find((t) => t === tag)

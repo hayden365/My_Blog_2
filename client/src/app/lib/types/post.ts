@@ -5,6 +5,7 @@ export interface Tag {
 }
 
 export interface Post {
+  _id: string;
   title: string;
   subtitle: string;
   content: string;

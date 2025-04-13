@@ -3,46 +3,50 @@ import Button from "@/app/components/common/button";
 import { HomeLogo } from "@/app/components/common/homeLogo";
 import LoginButton from "@/app/components/loginButton";
 import PublishModal from "@/app/components/publishModal";
-import useCreatePost from "@/app/lib/hooks/usePosts";
 import { usePostStore } from "@/app/lib/store/postStore";
 import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useUpdatePost } from "@/app/lib/hooks/usePosts";
 
-const PostEditPage = () => {
+const EditPostPage = ({ params }: { params: { slug: string; id: string } }) => {
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { title, content, tags, setTitle, setContent, resetPost } =
     usePostStore();
-  const { mutate: createPost } = useCreatePost();
+  const { mutate: updatePost } = useUpdatePost();
+  const slugAndId = `${params.slug}-${params.id}`;
+
   const handlePublish = () => {
-    createPost(
-      { title, content, tags },
+    updatePost(
+      { id: params.id, title, content, tags },
       {
-        onSuccess: (data) => {
-          console.log("Success", data);
-          resetPost(); // 상태 초기화
+        onSuccess: () => {
+          resetPost();
+          router.push(`/posts/${slugAndId}`);
         },
-        onError: (error) => {
-          console.log("Error", error);
+        onError: (error: Error) => {
+          console.error("Error updating post:", error);
         },
       }
     );
     setIsModalOpen(false);
   };
+
   return (
     <>
-      <div role="header" className="px-6 py-6 flex justify-between">
+      <div role="header" className="py-6 flex justify-between">
         <HomeLogo />
         <div className="flex gap-8">
           <Button
             disabled={!title || !content}
             onClick={() => setIsModalOpen(true)}
           >
-            Publish
+            Update
           </Button>
           <LoginButton />
         </div>
       </div>
-      <div role="main" className="px-6 py-6">
-        {/* 제목 */}
+      <div role="main" className="py-6">
         <input
           type="text"
           placeholder="제목을 입력해주세요"
@@ -50,7 +54,6 @@ const PostEditPage = () => {
           onChange={(e) => setTitle(e.target.value)}
           className="w-full text-4xl font-semibold outline-none placeholder-gray-400 mb-6"
         />
-        {/* 본문 */}
         <textarea
           placeholder="내용을 입력해주세요"
           value={content}
@@ -67,4 +70,4 @@ const PostEditPage = () => {
   );
 };
 
-export default PostEditPage;
+export default EditPostPage;
