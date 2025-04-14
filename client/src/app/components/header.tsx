@@ -10,7 +10,7 @@ const Header = () => {
   const { isLoggedIn } = useAuth();
   const pathname = usePathname();
 
-  if (pathname === "/edit") {
+  if (pathname === "/posts/new") {
     return null;
   }
 
@@ -20,7 +20,7 @@ const Header = () => {
       <div className="flex items-center gap-10">
         {isLoggedIn && (
           <Link
-            href="/edit"
+            href="/posts/new"
             className="text-gray-600 hover:text-gray-900 transition-colors flex items-end gap-2"
           >
             <svg

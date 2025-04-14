@@ -1,19 +1,21 @@
-import React from "react";
+import { ButtonHTMLAttributes } from "react";
+import { twMerge } from "tailwind-merge";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
   className?: string;
-  disabled?: boolean;
 }
 
-const Button = ({ children, className, disabled, ...props }: ButtonProps) => {
+const Button = ({ className, disabled, children, ...props }: ButtonProps) => {
   return (
     <button
-      className={`text-sm rounded-full px-3 py-0.5 cursor-pointer ${
+      className={twMerge(
+        "text-sm rounded-full px-3 py-0.5 cursor-pointer",
         disabled
-          ? "bg-gray-300 text-gray-500 cursor-not-allowed"
-          : "bg-green-700 text-white"
-      } ${className}`}
+          ? "!bg-green-700/25 text-gray-100 cursor-not-allowed"
+          : "!bg-green-700 text-white",
+        className
+      )}
       disabled={disabled}
       {...props}
     >
