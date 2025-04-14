@@ -12,8 +12,8 @@ const Button = ({ className, disabled, children, ...props }: ButtonProps) => {
       className={twMerge(
         "text-sm rounded-full px-3 py-0.5 cursor-pointer",
         disabled
-          ? "!bg-green-700/25 text-gray-100 cursor-not-allowed"
-          : "!bg-green-700 text-white",
+          ? "bg-green-700/25 text-gray-100 cursor-not-allowed"
+          : "bg-green-700 text-white",
         className
       )}
       disabled={disabled}

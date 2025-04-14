@@ -5,7 +5,7 @@ import Header from "./components/header";
 import { Suspense } from "react";
 import BlogListSkeleton from "./components/common/blogListSkeleton";
 import Providers from "./provider";
-
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -35,6 +35,7 @@ export default function RootLayout({
           <div className="flex justify-center w-full">
             <Suspense fallback={<BlogListSkeleton />}>{children}</Suspense>
           </div>
+          <ReactQueryDevtools initialIsOpen={false} />
         </Providers>
       </body>
     </html>

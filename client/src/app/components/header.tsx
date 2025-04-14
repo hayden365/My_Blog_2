@@ -10,7 +10,7 @@ const Header = () => {
   const { isLoggedIn } = useAuth();
   const pathname = usePathname();
 
-  if (pathname === "/posts/new") {
+  if (pathname === "/posts/new" || pathname.endsWith("/edit")) {
     return null;
   }
 

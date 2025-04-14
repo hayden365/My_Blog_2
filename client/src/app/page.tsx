@@ -4,7 +4,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { fetchPostList } from "./lib/api/fetch";
+import { getPostList } from "./lib/api/fetch";
 import PostListWrapper from "./components/postListWrapper";
 
 export default async function Home() {
@@ -12,7 +12,7 @@ export default async function Home() {
 
   await queryClient.prefetchQuery({
     queryKey: ["posts"],
-    queryFn: fetchPostList,
+    queryFn: getPostList,
   });
 
   const dehydratedState = dehydrate(queryClient);

@@ -18,6 +18,11 @@ export async function fetchPost(slug: string) {
   return res.json();
 }
 
+export async function getPostList() {
+  const res = await axios.get(`${API_URL}/posts`);
+  return res.data;
+}
+
 export async function getPost(id: string) {
   const res = await axios.get(`${API_URL}/posts/${id}`);
   return res.data;
