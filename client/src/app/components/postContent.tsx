@@ -2,13 +2,17 @@ import { formatDate } from "../lib/utils/date";
 import Link from "next/link";
 import { Post } from "../lib/types/post";
 import Markdown from "react-markdown";
+import DropdownMenu from "./dropdown_Menu";
 
 const PostContent = ({ data }: { data: Post }) => {
   return (
     <article className="py-15">
-      <header className="border-b border-gray-100 pb-8">
+      <header className="border-b border-gray-100 pb-4">
         <h1 className="text-[42px] font-bold mb-8">{data.title}</h1>
-        <time className="text-gray-500">{formatDate(data.createdAt)}</time>
+        <div className="flex items-center justify-between gap-2">
+          <time className="text-gray-500">{formatDate(data.createdAt)}</time>
+          <DropdownMenu post={data} />
+        </div>
       </header>
       <div className="my-10 prose prose-lg max-w-none">
         <Markdown>{data.content}</Markdown>
