@@ -2,7 +2,7 @@ import { formatDate } from "../lib/utils/date";
 import Link from "next/link";
 import { Post } from "../lib/types/post";
 import Markdown from "react-markdown";
-import DropdownMenu from "./dropdown_Menu";
+import PostOptionsMenu from "./postOptionsMenu";
 
 const PostContent = ({ data }: { data: Post }) => {
   return (
@@ -11,7 +11,7 @@ const PostContent = ({ data }: { data: Post }) => {
         <h1 className="text-[42px] font-bold mb-8">{data.title}</h1>
         <div className="flex items-center justify-between gap-2">
           <time className="text-gray-500">{formatDate(data.createdAt)}</time>
-          <DropdownMenu post={data} />
+          <PostOptionsMenu post={data} />
         </div>
       </header>
       <div className="my-10 prose prose-lg max-w-none">

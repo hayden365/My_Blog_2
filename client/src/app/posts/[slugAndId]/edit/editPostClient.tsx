@@ -1,41 +1,41 @@
 "use client";
-import Button from "@/app/components/common/button";
+import Button from "@/app/components/common/styledButton";
 import { HomeLogo } from "@/app/components/common/homeLogo";
 import LoginButton from "@/app/components/loginButton";
 import PublishModal from "@/app/components/publishModal";
 import { usePostStore } from "@/app/lib/store/postStore";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useUpdatePost } from "@/app/lib/hooks/usePosts";
 import { useQuery } from "@tanstack/react-query";
 import { getPost } from "@/app/lib/api/fetch";
+import { useUpdatePost } from "@/app/lib/hooks/usePosts";
 
-const EditPostClient = ({ id }: { id: string }) => {
+const EditPostClient = ({ _id }: { _id: string }) => {
   const router = useRouter();
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const { title, content, tags, setTitle, setContent, setTags, resetPost } =
     usePostStore();
-  const { mutate: updatePost } = useUpdatePost();
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["post", id],
-    queryFn: () => getPost(id),
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const { mutate: mutateUpdatePost } = useUpdatePost();
+
+  const { data: post, isLoading } = useQuery({
+    queryKey: ["post", _id],
+    queryFn: () => getPost(_id),
   });
 
   useEffect(() => {
-    if (data) {
-      setTitle(data.title);
-      setContent(data.content);
-      setTags(data.tags.map((tag: { name: string }) => tag.name));
+    if (post) {
+      setTitle(post.title);
+      setContent(post.content);
+      setTags(post.tags.map((tag: { name: string }) => tag.name));
     }
-  }, [data, setTitle, setContent, setTags]);
+  }, [post, setTitle, setContent, setTags]);
 
   const handlePublish = () => {
-    updatePost(
-      { id, title, content, tags },
+    mutateUpdatePost(
+      { _id, title, content, tags },
       {
         onSuccess: (updatedPost) => {
           resetPost();
-          console.log(updatedPost);
           router.push(`/posts/${updatedPost.slug}-${updatedPost._id}`);
         },
         onError: (error: Error) => {
@@ -47,7 +47,6 @@ const EditPostClient = ({ id }: { id: string }) => {
   };
 
   if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading post</div>;
 
   return (
     <>

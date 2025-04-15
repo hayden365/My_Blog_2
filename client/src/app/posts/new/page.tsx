@@ -1,5 +1,5 @@
 "use client";
-import Button from "@/app/components/common/button";
+import Button from "@/app/components/common/styledButton";
 import { HomeLogo } from "@/app/components/common/homeLogo";
 import LoginButton from "@/app/components/loginButton";
 import PublishModal from "@/app/components/publishModal";
@@ -17,7 +17,7 @@ const NewPostPage = () => {
 
   const handlePublish = () => {
     createPost(
-      { title, content, tags, id: "" },
+      { title, content, tags, _id: "" },
       {
         onSuccess: (data) => {
           console.log("Success", data);

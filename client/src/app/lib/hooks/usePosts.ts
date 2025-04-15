@@ -1,13 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
-
-interface PostData {
-  id: string;
-  title: string;
-  content: string;
-  tags: string[];
-}
-
+import { PostData } from "../types/post";
+import { deletePost, updatePost } from "../api/fetch";
 export const useGetPosts = () => {
   return useQuery({
     queryKey: ["posts"],
@@ -39,30 +33,23 @@ export function useCreatePost() {
   });
 }
 
-const updatePost = async ({ id, title, content, tags }: PostData) => {
-  const token = localStorage.getItem("token");
-  const response = await axios.put(
-    `${process.env.NEXT_PUBLIC_URL}/posts/${id}`,
-    {
-      title,
-      content,
-      tags,
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    }
-  );
-  return response.data;
-};
-
 export const useUpdatePost = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: updatePost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["posts"] });
+      queryClient.refetchQueries({ queryKey: ["posts"] });
+    },
+  });
+};
+
+export const useDeletePost = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deletePost,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.refetchQueries({ queryKey: ["posts"] });

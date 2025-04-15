@@ -3,12 +3,12 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { fetchPostList, getPost } from "../../lib/api/fetch";
+import { getPostList, getPost } from "../../lib/api/fetch";
 import { Post } from "../../lib/types/post";
 import PostContentWrapper from "../../components/postContentWrapper";
 
 export async function generateStaticParams() {
-  const posts = await fetchPostList();
+  const posts = await getPostList();
 
   const params = posts.map((post: Post) => ({
     slugAndId: `${post.slug}-${post._id}`,
@@ -23,12 +23,12 @@ export default async function PostPage({
   params: { slugAndId: string };
 }) {
   const resolvedParams = await params;
-  const id = resolvedParams.slugAndId?.split("-").pop() || "";
+  const _id = resolvedParams.slugAndId?.split("-").pop() || "";
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
-    queryKey: ["post", id],
-    queryFn: () => getPost(id),
+    queryKey: ["post", _id],
+    queryFn: () => getPost(_id),
   });
 
   const dehydratedState = dehydrate(queryClient);

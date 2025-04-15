@@ -59,10 +59,10 @@ router.get("/", (async (req: Request, res: Response) => {
 }) as RequestHandler);
 
 // Get a specific post by id
-router.get("/:id", (async (req: Request, res: Response) => {
+router.get("/:_id", (async (req: Request, res: Response) => {
   try {
     const post = await Post.findOne({
-      _id: req.params.id,
+      _id: req.params._id,
     }).populate("tags", "name");
 
     if (!post) {
@@ -76,10 +76,10 @@ router.get("/:id", (async (req: Request, res: Response) => {
 }) as RequestHandler);
 
 // Update a post
-router.put("/:id", verifyToken, (async (req: Request, res: Response) => {
+router.put("/:_id", verifyToken, (async (req: Request, res: Response) => {
   try {
     const currentPost = await Post.findOne({
-      _id: req.params.id,
+      _id: req.params._id,
     });
 
     if (!currentPost) {
@@ -99,7 +99,7 @@ router.put("/:id", verifyToken, (async (req: Request, res: Response) => {
     );
 
     const updatedPost = await Post.findOneAndUpdate(
-      { _id: req.params.id },
+      { _id: req.params._id },
       {
         title: req.body.title,
         subtitle: req.body.subtitle,
@@ -117,10 +117,10 @@ router.put("/:id", verifyToken, (async (req: Request, res: Response) => {
 }) as RequestHandler);
 
 // Delete a post
-router.delete("/:id", verifyToken, (async (req: Request, res: Response) => {
+router.delete("/:_id", verifyToken, (async (req: Request, res: Response) => {
   try {
     const removedPost = await Post.findOneAndDelete({
-      _id: req.params.id,
+      _id: req.params._id,
     });
 
     if (!removedPost) {

@@ -6,14 +6,14 @@ import PostContent from "./postContent";
 
 const PostContentWrapper = ({ slugAndId }: { slugAndId: string }) => {
   // slugAndId 형식: "slug-65f5d8b1a1234567890abcde"
-  const id = slugAndId?.split("-").pop() || "";
+  const _id = slugAndId?.split("-").pop() || "";
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["post", id],
-    queryFn: () => getPost(id),
+    queryKey: ["post", _id],
+    queryFn: () => getPost(_id),
   });
 
-  if (!id) return <div>Invalid post ID</div>;
+  if (!_id) return <div>Invalid post ID</div>;
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error: {error.message}</div>;
 

@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import Button from "./common/button";
+import Button from "./common/styledButton";
 import { usePostStore } from "../lib/store/postStore";
 import TagInput from "./common/tagInput";
 
@@ -67,7 +67,7 @@ const PublishModal = ({
               fill="none"
               viewBox="0 0 20 20"
               strokeWidth={1.5}
-              stroke="currentColor"
+              stroke="gray"
               className="size-6"
             >
               <path

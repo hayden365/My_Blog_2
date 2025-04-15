@@ -2,7 +2,7 @@ import Link from "next/link";
 import React from "react";
 import { formatDate } from "../lib/utils/date";
 import { Post } from "../lib/types/post";
-import DropdownMenu from "./dropdown_Menu";
+import PostOptionsMenu from "./postOptionsMenu";
 
 const PostList = ({ data }: { data: Post[] }) => {
   return (
@@ -17,9 +17,9 @@ const PostList = ({ data }: { data: Post[] }) => {
               <h2 className="font-inter font-bold text-xl">{post.title}</h2>
               <p className="text-sm text-gray-500 pt-2">{post.subtitle}</p>
             </div>
-            <div className="flex items-center justify-between pt-5">
+            <div className="flex items-center pt-5">
               <small>{formatDate(post.createdAt)}</small>
-              <DropdownMenu post={post} />
+              <PostOptionsMenu post={post} />
             </div>
           </Link>
         </li>

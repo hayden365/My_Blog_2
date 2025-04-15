@@ -6,11 +6,16 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   className?: string;
 }
 
-const Button = ({ className, disabled, children, ...props }: ButtonProps) => {
+const StyledButton = ({
+  className,
+  disabled,
+  children,
+  ...props
+}: ButtonProps) => {
   return (
     <button
       className={twMerge(
-        "text-sm rounded-full px-3 py-0.5 cursor-pointer",
+        "text-sm rounded-full px-4 py-2 cursor-pointer",
         disabled
           ? "bg-green-700/25 text-gray-100 cursor-not-allowed"
           : "bg-green-700 text-white",
@@ -24,4 +29,4 @@ const Button = ({ className, disabled, children, ...props }: ButtonProps) => {
   );
 };
 
-export default Button;
+export default StyledButton;
