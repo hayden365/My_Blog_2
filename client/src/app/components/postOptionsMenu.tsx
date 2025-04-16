@@ -53,6 +53,7 @@ const PostOptionsMenu = ({ post }: PostOptionsMenuProps) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
+                  setIsOpen(false);
                   router.push(`/posts/${post.slug}-${post._id}/edit`);
                 }}
               >
@@ -65,6 +66,7 @@ const PostOptionsMenu = ({ post }: PostOptionsMenuProps) => {
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
+                  setIsOpen(false);
                   setIsModalOpen(true);
                 }}
               >

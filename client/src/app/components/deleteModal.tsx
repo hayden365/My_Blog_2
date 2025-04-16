@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect } from "react";
 import StyledButton from "./common/styledButton";
+
 const DeleteModal = ({
   isOpen,
   onClose,
@@ -25,7 +26,7 @@ const DeleteModal = ({
       <div className="absolute inset-0 bg-white/95"> </div>
 
       {/* 모달 컨텐츠 */}
-      <div className="relative z-10 bg-white p-11 w-10/12 h-5/12 shadow-md flex flex-col items-center justify-center">
+      <div className="relative z-10 bg-white p-11 w-3/5 h-5/12 shadow-md flex flex-col items-center justify-center">
         <div className="flex flex-col items-center justify-center">
           <h2 className="text-2xl font-bold">Delete Post</h2>
           <p className="text-sm text-gray-500 pt-1.5 pb-9">
