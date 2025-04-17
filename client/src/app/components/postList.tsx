@@ -7,13 +7,13 @@ import HorizontalTabs from "./horizontalTabs";
 
 const PostList = ({ data }: { data: Post[] }) => {
   return (
-    <div className="flex flex-col gap-6 w-full max-w-[680px] pt-6 mx-6">
+    <div className="w-full max-w-[680px] flex flex-col justify-center items-center pt-6 mx-6">
       <HorizontalTabs />
-      <ul className="flex flex-col pt-3 gap-6">
+      <ul className="w-full flex flex-col pt-10 mx-5">
         {data.map((post, index) => (
           <li
             key={index}
-            className="flex flex-col border-b border-gray-100 py-4"
+            className="flex flex-col border-b border-gray-100 mx-6"
           >
             <Link
               href={`posts/${post.slug}-${post._id}`}
