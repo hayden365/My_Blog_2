@@ -1,16 +1,15 @@
 import React, { useState } from "react";
 import { useDebounce } from "@/app/lib/hooks/useDebounce";
-import useTagSearch from "@/app/lib/hooks/useTagSearch";
 import { usePostStore } from "@/app/lib/store/postStore";
 import { Tag } from "@/app/lib/types/post";
 import StyledDropdown from "./styledDropdown";
+import { useSearchTags } from "@/app/lib/hooks/useTag";
 
 const TagInput = () => {
   const [input, setInput] = useState("");
   const debouncedInput = useDebounce(input, 500);
-  const { data: suggestions = [] } = useTagSearch(debouncedInput);
+  const { data: suggestions = [] } = useSearchTags(debouncedInput);
   const { tags, addTag, removeTag } = usePostStore();
-
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.nativeEvent.isComposing) return;
 

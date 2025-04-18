@@ -3,7 +3,7 @@ import Button from "@/app/components/common/styledButton";
 import { HomeLogo } from "@/app/components/common/homeLogo";
 import LoginButton from "@/app/components/loginButton";
 import PublishModal from "@/app/components/publishModal";
-import { useCreatePost } from "@/app/lib/hooks/usePosts";
+import { useCreatePost } from "@/app/lib/hooks/usePost";
 import { usePostStore } from "@/app/lib/store/postStore";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";

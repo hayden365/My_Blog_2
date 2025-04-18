@@ -8,7 +8,7 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { getPost } from "@/app/lib/api/fetch";
-import { useUpdatePost } from "@/app/lib/hooks/usePosts";
+import { useUpdatePost } from "@/app/lib/hooks/usePost";
 
 const EditPostClient = ({ _id }: { _id: string }) => {
   const router = useRouter();

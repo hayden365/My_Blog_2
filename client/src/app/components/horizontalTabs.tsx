@@ -6,28 +6,13 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Swiper as SwiperCore } from "swiper";
 import { Mousewheel } from "swiper/modules";
 import "swiper/css";
-
-const tabs = [
-  "For you",
-  "Following",
-  "Featured",
-  "Typescript",
-  "Apple",
-  "Android",
-  "iOS",
-  "React",
-  "Next.js",
-  "Tailwind CSS",
-  "Node.js",
-  "Express",
-  "MongoDB",
-  "PostgreSQL",
-  "Docker",
-];
+import { useGetTags } from "@/app/lib/hooks/useTag";
+import { Tag } from "../lib/types/post";
 
 const HorizontalTabs = () => {
+  const { data: tags = [] } = useGetTags();
   const [swiper, setSwiper] = useState<SwiperCore | null>(null);
-  const [activeTab, setActiveTab] = useState(tabs[0]);
+  const [activeTab, setActiveTab] = useState<string>();
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
 
@@ -44,6 +29,10 @@ const HorizontalTabs = () => {
     const interval = setInterval(checkArrows, 200);
     return () => clearInterval(interval);
   }, [swiper, checkArrows]);
+
+  if (!tags || tags.length === 0) {
+    return null;
+  }
 
   return (
     <div className="relative w-full mx-10 pb-4 border-b border-gray-100">
@@ -78,26 +67,25 @@ const HorizontalTabs = () => {
           resistance={false}
           cssMode={true}
         >
-          {tabs.map((tab, index) => (
-            <SwiperSlide key={tab} className="!w-auto">
+          {tags.map((tag: Tag, index: number) => (
+            <SwiperSlide key={tag._id} className="!w-auto">
               <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
+                onClick={() => setActiveTab(tag.name)}
                 className={twMerge(
                   `flex-shrink-0 text-sm ${
                     index === 0
                       ? "mr-6"
-                      : index === tabs.length - 1
+                      : index === tags.length - 1
                         ? "mr-[50px]"
                         : "mr-8"
                   } ${
-                    activeTab === tab
+                    activeTab === tag.name
                       ? "font-bold border-b-2 border-black text-black"
                       : "text-gray-500"
                   }`
                 )}
               >
-                {tab}
+                {tag.name}
               </button>
             </SwiperSlide>
           ))}

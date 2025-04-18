@@ -5,7 +5,7 @@ import StyledDropdown from "./common/styledDropdown";
 import { Post } from "../lib/types/post";
 import { useRouter } from "next/navigation";
 import DeleteModal from "./deleteModal";
-import { useDeletePost } from "../lib/hooks/usePosts";
+import { useDeletePost } from "../lib/hooks/usePost";
 
 interface PostOptionsMenuProps {
   post: Post;
