@@ -47,4 +47,17 @@ router.get("/search", (async (req: Request, res: Response) => {
   }
 }) as RequestHandler);
 
+// 태그 삭제
+router.delete("/:_id", (async (req: Request, res: Response) => {
+  const tagId = req.params._id;
+  const tag = await Tag.findByIdAndDelete(tagId);
+  res.json(tag);
+}) as RequestHandler);
+
+// 태그 전체 삭제
+router.delete("/", (async (req: Request, res: Response) => {
+  const tags = await Tag.deleteMany();
+  res.json(tags);
+}) as RequestHandler);
+
 export default router;

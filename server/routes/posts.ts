@@ -119,14 +119,31 @@ router.put("/:_id", verifyToken, (async (req: Request, res: Response) => {
 // Delete a post
 router.delete("/:_id", verifyToken, (async (req: Request, res: Response) => {
   try {
+    const postToRemove = await Post.findOne({
+      _id: req.params._id,
+    });
+
+    if (!postToRemove) {
+      res.status(404).json({ message: "Post not found" });
+      return;
+    }
+
+    const postTags = postToRemove.tags;
+
     const removedPost = await Post.findOneAndDelete({
       _id: req.params._id,
     });
 
-    if (!removedPost) {
-      res.status(404).json({ message: "Post not found" });
-      return;
+    if (postTags) {
+      for (const tagId of postTags) {
+        const postCount = await Post.countDocuments({ tags: tagId });
+
+        if (postCount === 0) {
+          await Tag.findByIdAndDelete(tagId);
+        }
+      }
     }
+
     res.json(removedPost);
   } catch (err) {
     res.status(500).json({ message: err });
