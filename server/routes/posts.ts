@@ -3,6 +3,7 @@ import Post from "../models/Post";
 import Tag from "../models/Tag";
 import slugify from "../hooks/slugify";
 import { verifyToken } from "../middlewares/verifyToken";
+import { createOrUpdateTags, syncPostTags } from "../hooks/tagManager";
 
 interface CustomUser {
   id: string;
@@ -16,15 +17,7 @@ router.post("/", verifyToken, (async (req: Request, res: Response) => {
     const { title, subtitle, content, tags } = req.body;
 
     // 태그 처리
-    const tagIds = await Promise.all(
-      (tags || []).map(async (tagName: string) => {
-        let tag = await Tag.findOne({ name: tagName });
-        if (!tag) {
-          tag = await Tag.create({ name: tagName });
-        }
-        return tag._id;
-      })
-    );
+    const tagIds = await createOrUpdateTags(tags || []);
 
     // slug 생성
     const slug = req.body.slug || (await slugify(title));
@@ -88,15 +81,10 @@ router.put("/:_id", verifyToken, (async (req: Request, res: Response) => {
     }
 
     // 태그 처리
-    const tagIds = await Promise.all(
-      (req.body.tags || []).map(async (tagName: string) => {
-        let tag = await Tag.findOne({ name: tagName });
-        if (!tag) {
-          tag = await Tag.create({ name: tagName });
-        }
-        return tag._id;
-      })
-    );
+    const oldTagIds = currentPost.tags?.map((tagId) => tagId.toString()) || [];
+    const newTagNames = req.body.tags || [];
+
+    const newTagIds = await syncPostTags(oldTagIds, newTagNames);
 
     const updatedPost = await Post.findOneAndUpdate(
       { _id: req.params._id },
@@ -105,7 +93,7 @@ router.put("/:_id", verifyToken, (async (req: Request, res: Response) => {
         subtitle: req.body.subtitle,
         content: req.body.content,
         slug: await slugify(req.body.slug || req.body.title, currentPost.slug),
-        tags: tagIds,
+        tags: newTagIds,
       },
       { new: true }
     );
@@ -128,19 +116,21 @@ router.delete("/:_id", verifyToken, (async (req: Request, res: Response) => {
       return;
     }
 
-    const postTags = postToRemove.tags;
+    const postTags = postToRemove.tags || [];
 
     const removedPost = await Post.findOneAndDelete({
       _id: req.params._id,
     });
 
-    if (postTags) {
-      for (const tagId of postTags) {
-        const postCount = await Post.countDocuments({ tags: tagId });
+    for (const tagId of postTags) {
+      const tag = await Tag.findByIdAndUpdate(
+        tagId,
+        { $inc: { count: -1 } },
+        { new: true }
+      );
 
-        if (postCount === 0) {
-          await Tag.findByIdAndDelete(tagId);
-        }
+      if (tag && tag.count <= 0) {
+        await Tag.findByIdAndDelete(tagId);
       }
     }
 

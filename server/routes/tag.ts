@@ -17,29 +17,14 @@ router.get("/search", (async (req: Request, res: Response) => {
   }
 
   try {
-    const tags = await Tag.aggregate([
-      {
-        $match: {
-          name: { $regex: query, $options: "i" },
-        },
-      },
-      {
-        $lookup: {
-          from: "posts",
-          localField: "_id",
-          foreignField: "tags",
-          as: "posts",
-        },
-      },
-      {
-        $project: {
-          name: 1,
-          count: { $size: "$posts" },
-        },
-      },
-      { $sort: { count: -1 } },
-      { $limit: 5 },
-    ]);
+    const tags = await Tag.find({
+      name: { $regex: query, $options: "i" },
+      count: { $gt: 0 },
+    })
+      .sort({ count: -1 })
+      .limit(5)
+      .select("name count");
+
     res.json(tags);
   } catch (error) {
     console.error("Tag search error:", error);
