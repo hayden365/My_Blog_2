@@ -77,7 +77,7 @@ router.get(
   }
 );
 
-// 기존 사용자 삭제 API
+// 기존 사용자 삭제 API deleteByEmail
 router.delete("/user", (async (req: Request, res: Response) => {
   try {
     const { email } = req.body;
@@ -94,6 +94,84 @@ router.delete("/user", (async (req: Request, res: Response) => {
   } catch (error) {
     console.error("사용자 삭제 중 오류 발생:", error);
     res.status(500).json({ message: "서버 오류가 발생했습니다." });
+  }
+}) as RequestHandler);
+
+// POST /auth/refresh
+router.post("/refresh", (async (req: Request, res: Response) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!refreshToken) {
+    return res.status(401).json({ message: "No refresh token provided" });
+  }
+
+  try {
+    const decoded: any = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
+
+    const user = await User.findById(decoded._id);
+
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
+    // 저장된 해시와 비교
+    const hashedRefresh = crypto
+      .createHash("sha256")
+      .update(refreshToken)
+      .digest("hex");
+
+    if (user.refreshToken !== hashedRefresh) {
+      return res.status(403).json({ message: "Invalid refresh token" });
+    }
+
+    // 새로운 액세스 토큰 생성
+    const newAccessToken = jwt.sign(
+      {
+        _id: user._id,
+        email: user.email,
+        name: user.name,
+        profileImage: user.profileImage,
+      },
+      JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    res.json({ accessToken: newAccessToken });
+  } catch (error) {
+    console.error("Refresh token error:", error);
+    res.status(403).json({ message: "Invalid refresh token" });
+  }
+}) as RequestHandler);
+
+// POST /auth/logout
+router.post("/logout", (async (req: Request, res: Response) => {
+  try {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (refreshToken) {
+      const decoded: any = jwt.verify(refreshToken, JWT_REFRESH_SECRET);
+      const hashed = crypto
+        .createHash("sha256")
+        .update(refreshToken)
+        .digest("hex");
+
+      await User.findByIdAndUpdate(decoded._id, {
+        $unset: { refreshToken: 1 },
+      });
+    }
+
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 0,
+      path: "/api/auth",
+    });
+
+    res.json({ message: "Logged out successfully" });
+  } catch (error) {
+    console.error("Logout error:", error);
+    res.status(500).json({ message: "Logout failed" });
   }
 }) as RequestHandler);
 

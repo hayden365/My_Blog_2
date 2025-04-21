@@ -8,6 +8,7 @@ import authRoutes from "./routes/auth";
 import tagRoutes from "./routes/tag";
 import session from "express-session";
 import passport from "passport";
+import cookieParser from "cookie-parser";
 
 // 🔧 .env 파일 읽기
 dotenv.config();
@@ -17,6 +18,8 @@ const app = express();
 // 🔧 미들웨어 설정
 app.use(cors());
 app.use(express.json());
+app.use(cookieParser());
+
 // 🔧 세션 설정
 app.use(
   session({

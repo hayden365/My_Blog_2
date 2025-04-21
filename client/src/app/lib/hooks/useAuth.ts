@@ -1,5 +1,4 @@
 // hooks/useAuth.ts
-// 이전 코드
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
@@ -27,8 +26,12 @@ export const useAuth = () => {
     let currentUserData = getUserData();
 
     if (!currentUserData) {
-      await refreshToken();
-      currentUserData = getUserData();
+      try {
+        await refreshToken();
+        currentUserData = getUserData();
+      } catch (error) {
+        console.info("Not logged in yet.", error);
+      }
     }
 
     if (currentUserData) {

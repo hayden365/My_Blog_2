@@ -3,6 +3,8 @@ import { UserProfile } from "../hooks/useAuth";
 let accessToken: string | null = null;
 let userData: UserProfile | null = null;
 
+const API_URL = process.env.NEXT_PUBLIC_URL;
+
 export const initAuth = () => {
   // 세션 스토리지에서 임시 저장된 토큰과 사용자 정보 가져오기
   accessToken = sessionStorage.getItem("accessToken");
@@ -25,7 +27,7 @@ export const isAuthenticated = () => !!accessToken;
 // 로그인 함수
 export const login = () => {
   try {
-    window.location.href = `${process.env.NEXT_PUBLIC_API_URL}/auth/google`;
+    window.location.href = `${API_URL}/auth/google`;
   } catch (error) {
     console.error("Login failed:", error);
     throw error;
@@ -62,26 +64,20 @@ export const setAccessToken = (token: string) => {
 // 토큰 갱신 함수
 export const refreshToken = async (): Promise<boolean> => {
   try {
-    const response = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`,
-      {
-        method: "POST",
-        credentials: "include",
-      }
-    );
+    const response = await fetch(`${API_URL}/auth/refresh`, {
+      method: "POST",
+      credentials: "include",
+    });
 
     if (!response.ok) {
-      throw new Error("Failed to refresh token");
+      throw new Error("Failed to refresh token in refreshToken");
     }
 
     const data = await response.json();
-
     setAccessToken(data.accessToken);
-
     return true;
   } catch (error) {
     console.error("Token refresh failed:", error);
-    logout();
     return false;
   }
 };
@@ -89,7 +85,7 @@ export const refreshToken = async (): Promise<boolean> => {
 // 로그아웃 함수
 export const logout = async () => {
   try {
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {
+    await fetch(`${API_URL}/auth/logout`, {
       method: "POST",
       credentials: "include",
     });
@@ -124,7 +120,7 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
     const refreshSuccessful = await refreshToken();
 
     if (!refreshSuccessful) {
-      throw new Error("Failed to refresh token");
+      throw new Error("Failed to refresh token in fetchWithAuth");
     }
 
     fetchOptions.headers = {
