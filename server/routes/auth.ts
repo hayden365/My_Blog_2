@@ -2,8 +2,11 @@ import { Request, Response, Router, RequestHandler } from "express";
 import passport from "passport";
 import jwt from "jsonwebtoken";
 import User from "../models/User";
+import crypto from "crypto";
 const router = Router();
 const JWT_SECRET = process.env.JWT_SECRET || "your_fallback_secret";
+const JWT_REFRESH_SECRET =
+  process.env.JWT_REFRESH_SECRET || "your_refresh_secret";
 
 // 구글 로그인 페이지로 리다이렉트
 router.get(
@@ -28,7 +31,8 @@ router.get(
       profileImage: string;
     };
 
-    const token = jwt.sign(
+    // 짧은 수명의 액세스 토큰 생성
+    const accessToken = jwt.sign(
       {
         _id: user._id,
         email: user.email,
@@ -36,10 +40,40 @@ router.get(
         profileImage: user.profileImage,
       },
       JWT_SECRET,
-      { expiresIn: "1d" }
+      { expiresIn: "15m" }
     );
 
-    res.redirect(`${process.env.FRONTEND_URL}/login/success?token=${token}`);
+    // 긴 수명의 리프레시 토큰 생성
+    const refreshToken = jwt.sign(
+      {
+        _id: user._id,
+        tokenVersion: crypto.randomBytes(8).toString("hex"),
+      },
+      JWT_REFRESH_SECRET,
+      { expiresIn: "7d" }
+    );
+
+    // 리프레시 토큰을 DB에 저장 (무효화를 위해)
+    User.findByIdAndUpdate(user._id, {
+      refreshToken: crypto
+        .createHash("sha256")
+        .update(refreshToken)
+        .digest("hex"),
+      tokenVersion: crypto.randomBytes(8).toString("hex"),
+    }).exec();
+
+    // 리프레시 토큰을 쿠키에 저장
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7일
+      path: "/api/auth",
+    });
+
+    res.redirect(
+      `${process.env.FRONTEND_URL}/login/success?token=${accessToken}`
+    );
   }
 );
 

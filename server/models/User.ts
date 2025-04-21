@@ -26,6 +26,14 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  refreshToken: {
+    type: String,
+    default: null,
+  },
+  tokenVersion: {
+    type: String,
+    default: null,
+  },
 });
 
 const User = mongoose.model("User", userSchema);
