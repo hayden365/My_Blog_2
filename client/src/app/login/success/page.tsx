@@ -1,5 +1,6 @@
 "use client";
 
+import { setAccessToken } from "@/app/lib/services/authService";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useEffect } from "react";
 
@@ -11,22 +12,7 @@ const LoginSuccessPage = () => {
     const token = searchParams.get("token");
     if (token) {
       try {
-        // 토큰에서 사용자 정보 추출
-        const base64Url = token.split(".")[1];
-        const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-        const jsonPayload = decodeURIComponent(
-          atob(base64)
-            .split("")
-            .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-            .join("")
-        );
-
-        const userData = JSON.parse(jsonPayload);
-
-        // 토큰과 사용자 정보 저장
-        localStorage.setItem("token", token);
-        localStorage.setItem("userData", JSON.stringify(userData));
-
+        setAccessToken(token);
         router.replace("/");
       } catch (error) {
         console.error("토큰 처리 중 오류 발생:", error);

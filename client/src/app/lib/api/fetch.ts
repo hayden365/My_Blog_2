@@ -1,3 +1,4 @@
+import { fetchWithAuth } from "../services/authService";
 import { PostData } from "../types/post";
 
 const API_URL = process.env.NEXT_PUBLIC_URL;
@@ -10,36 +11,26 @@ const handleResponse = async (response: Response) => {
 };
 
 export async function getPostList() {
-  const res = await fetch(`${API_URL}/posts`);
-  return handleResponse(res);
+  const response = await fetch(`${API_URL}/posts`);
+  return handleResponse(response);
 }
 
 export async function getPost(_id: string) {
-  const res = await fetch(`${API_URL}/posts/${_id}`);
-  return handleResponse(res);
+  const response = await fetch(`${API_URL}/posts/${_id}`);
+  return handleResponse(response);
 }
 
 export const createPost = async (post: PostData) => {
-  const token = localStorage.getItem("token");
-  const response = await fetch(`${API_URL}/posts`, {
+  const response = await fetchWithAuth(`${API_URL}/posts`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
     body: JSON.stringify(post),
   });
   return handleResponse(response);
 };
 
 export const updatePost = async ({ _id, title, content, tags }: PostData) => {
-  const token = localStorage.getItem("token");
-  const response = await fetch(`${API_URL}/posts/${_id}`, {
+  const response = await fetchWithAuth(`${API_URL}/posts/${_id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
     body: JSON.stringify({
       title,
       content,
@@ -50,24 +41,20 @@ export const updatePost = async ({ _id, title, content, tags }: PostData) => {
 };
 
 export async function deletePost(_id: string) {
-  const token = localStorage.getItem("token");
-  const res = await fetch(`${API_URL}/posts/${_id}`, {
+  const response = await fetchWithAuth(`${API_URL}/posts/${_id}`, {
     method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
   });
-  return handleResponse(res);
+  return handleResponse(response);
 }
 
 // 태그 조회
 export async function getTags() {
-  const res = await fetch(`${API_URL}/tag`);
-  return handleResponse(res);
+  const response = await fetch(`${API_URL}/tag`);
+  return handleResponse(response);
 }
 
 // 태그 검색
 export async function searchTags(query: string) {
-  const res = await fetch(`${API_URL}/tag/search?query=${query}`);
-  return handleResponse(res);
+  const response = await fetch(`${API_URL}/tag/search?query=${query}`);
+  return handleResponse(response);
 }

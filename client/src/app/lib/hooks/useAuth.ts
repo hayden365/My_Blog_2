@@ -1,42 +1,55 @@
 // hooks/useAuth.ts
+// 이전 코드
 "use client";
 import { useState, useEffect, useCallback } from "react";
 import { usePathname } from "next/navigation";
+import {
+  getUserData,
+  refreshToken,
+  login as serviceLogin,
+  logout as serviceLogout,
+} from "../services/authService";
 
 export type UserProfile = {
   profileImage?: string;
+  name?: string;
+  email?: string;
 };
 
 export const useAuth = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const pathname = usePathname();
 
-  const checkAuthStatus = useCallback(() => {
+  const checkAuthStatus = useCallback(async () => {
     if (typeof window === "undefined") return;
 
-    const token = localStorage.getItem("token");
-    const storedUserData = localStorage.getItem("userData");
+    let currentUserData = getUserData();
 
-    if (token && storedUserData) {
-      try {
-        const userData: UserProfile = JSON.parse(storedUserData);
-        setUserProfile(userData);
-      } catch (error) {
-        console.error("사용자 데이터 파싱 오류:", error);
-        logout(); // 실패 시 로그아웃
-      }
+    if (!currentUserData) {
+      await refreshToken();
+      currentUserData = getUserData();
+    }
+
+    if (currentUserData) {
+      setUserProfile({
+        profileImage: currentUserData.profileImage,
+        name: currentUserData.name,
+        email: currentUserData.email,
+      });
     } else {
       setUserProfile({});
     }
+
+    setIsLoading(false);
   }, []);
 
   const login = () => {
-    window.location.href = `${process.env.NEXT_PUBLIC_URL}/auth/google`;
+    serviceLogin();
   };
 
-  const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("userData");
+  const logout = async () => {
+    await serviceLogout();
     setUserProfile({});
   };
 
@@ -46,7 +59,7 @@ export const useAuth = () => {
 
   return {
     userProfile,
-    isLoading: userProfile === null,
+    isLoading,
     isLoggedIn: !!userProfile?.profileImage,
     login,
     logout,
