@@ -20,6 +20,14 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
+// 🔧 CORS 설정
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  })
+);
+
 // 🔧 세션 설정
 app.use(
   session({
