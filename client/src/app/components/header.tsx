@@ -13,7 +13,6 @@ const Header = () => {
   if (pathname === "/posts/new" || pathname.endsWith("/edit")) {
     return null;
   }
-  console.log(isLoggedIn);
   return (
     <header className="flex items-center justify-between px-6 py-3 border-b border-gray-100 shadow-xs">
       <HomeLogo />

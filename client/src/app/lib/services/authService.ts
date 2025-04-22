@@ -103,6 +103,11 @@ export const logout = async () => {
 // TODO: fetch interceptor 패턴으로 변경 해보기
 // (함수 위치로 여기가 적절할까?)
 export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
+  // 함수 호출 시점에 최신 토큰을 가져옴
+  let accessToken = getAccessToken();
+
+  console.log("사용 중인 토큰", accessToken);
+
   const fetchOptions: RequestInit = {
     ...options,
     headers: {
@@ -113,6 +118,8 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
       ...(options.headers || {}),
     },
   };
+  console.log("요청 URL:", url);
+  console.log("요청 헤더:", fetchOptions.headers);
 
   let response = await fetch(url, fetchOptions);
 
@@ -122,6 +129,8 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
     if (!refreshSuccessful) {
       throw new Error("Failed to refresh token in fetchWithAuth");
     }
+
+    accessToken = getAccessToken();
 
     fetchOptions.headers = {
       ...fetchOptions.headers,

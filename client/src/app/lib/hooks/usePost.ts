@@ -1,5 +1,4 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { PostData } from "../types/post";
 import { createPost, deletePost, getPostList, updatePost } from "../api/fetch";
 
 export const useGetPosts = () => {
@@ -16,10 +15,7 @@ export function useCreatePost() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (post: PostData) => {
-      const response = await createPost(post);
-      return response;
-    },
+    mutationFn: createPost,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
       queryClient.refetchQueries({ queryKey: ["posts"] });
