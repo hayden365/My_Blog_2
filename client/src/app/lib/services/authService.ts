@@ -1,4 +1,4 @@
-import { UserProfile } from "../hooks/useAuth";
+import { UserProfile } from "../types/user";
 
 let accessToken: string | null = null;
 let userData: UserProfile | null = null;

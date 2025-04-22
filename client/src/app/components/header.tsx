@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import LoginButton from "./loginButton";
-import { useAuth } from "../lib/hooks/useAuth";
+import { useAuthStore } from "../lib/store/authStore";
 import { usePathname } from "next/navigation";
 import { HomeLogo } from "./common/homeLogo";
 
 const Header = () => {
-  const { isLoggedIn } = useAuth();
+  const { isLoggedIn } = useAuthStore();
   const pathname = usePathname();
 
   if (pathname === "/posts/new" || pathname.endsWith("/edit")) {
