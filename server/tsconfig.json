@@ -3,15 +3,16 @@
     "target": "ES2020",
     "module": "CommonJS",
     "lib": ["ES2020"],
-    "outDir": "dist", // 💡 루트 기준으로 dist 위치 설정
-    "rootDir": ".", // server 폴더 내에서 시작
+    "outDir": "dist",
+    "rootDir": ".",
     "strict": true,
     "moduleResolution": "node",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node", "express"]
   },
-  "include": ["**/*"], // server 폴더 내 전체를 포함
+  "include": ["**/*"],
   "exclude": ["node_modules", "../dist"],
-  "types": ["express", "./types/express.d.ts"]
+  "types": ["@types/express", "./types/express.d.ts"]
 }
