@@ -9,6 +9,7 @@ import {
 } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { initAuth } from "./lib/services/authService";
+import { useAuthStore } from "./lib/store/authStore";
 
 function makeQueryClient() {
   return new QueryClient({
@@ -39,15 +40,24 @@ function getQueryClient() {
 }
 
 export default function Providers({ children }: { children: React.ReactNode }) {
-  // NOTE: Avoid useState when initializing the query client if you don't
-  //       have a suspense boundary between this and the code that may
-  //       suspend because React will throw away the client on the initial
-  //       render if it suspends and there is no boundary
   const queryClient = getQueryClient();
+  const { checkAuth } = useAuthStore();
 
   useEffect(() => {
     initAuth();
-  }, []);
+    checkAuth(); // 최초 로드 시 인증 상태 체크
+
+    // 새로고침 시에도 인증 상태 체크하도록 이벤트 리스너 추가
+    // const handleFocus = () => {
+    //   checkAuth();
+    // };
+
+    // window.addEventListener("focus", handleFocus);
+
+    // return () => {
+    //   window.removeEventListener("focus", handleFocus);
+    // };
+  }, [checkAuth]);
 
   return (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>

@@ -14,8 +14,8 @@ export const initAuth = () => {
     userData = JSON.parse(userDataString);
   }
   // 세션 스토리지 삭제 (메모리에만 유지)
-  sessionStorage.removeItem("accessToken");
-  sessionStorage.removeItem("userData");
+  // sessionStorage.removeItem("accessToken");
+  // sessionStorage.removeItem("userData");
 };
 
 export const getAccessToken = () => accessToken;
@@ -64,16 +64,21 @@ export const setAccessToken = (token: string) => {
 // 토큰 갱신 함수
 export const refreshToken = async (): Promise<boolean> => {
   try {
+    console.log("토큰 갱신 시도");
     const response = await fetch(`${API_URL}/auth/refresh`, {
       method: "POST",
-      credentials: "include",
+      credentials: "include", // 반드시 포함
     });
 
+    console.log("토큰 갱신 응답", response.status);
+
     if (!response.ok) {
+      console.error("토큰 갱신 실패", response.status);
       throw new Error("Failed to refresh token in refreshToken");
     }
 
     const data = await response.json();
+    console.log("토큰 갱신 데이터", data);
     setAccessToken(data.accessToken);
     return true;
   } catch (error) {

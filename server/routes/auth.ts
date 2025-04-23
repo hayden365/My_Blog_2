@@ -68,7 +68,7 @@ router.get(
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7일
-      path: "/api/auth",
+      path: "/",
     });
 
     res.redirect(
@@ -163,9 +163,9 @@ router.post("/logout", (async (req: Request, res: Response) => {
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 0,
-      path: "/api/auth",
+      path: "/",
     });
 
     res.json({ message: "Logged out successfully" });
