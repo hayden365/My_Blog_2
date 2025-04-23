@@ -13,6 +13,5 @@
     "types": ["node"]
   },
   "include": ["**/*"],
-  "exclude": ["node_modules", "../dist"],
-  "types": ["@types/express", "./types/express.d.ts"]
+  "exclude": ["node_modules", "../dist"]
 }
