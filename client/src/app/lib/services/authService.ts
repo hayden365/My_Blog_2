@@ -64,21 +64,16 @@ export const setAccessToken = (token: string) => {
 // 토큰 갱신 함수
 export const refreshToken = async (): Promise<boolean> => {
   try {
-    console.log("토큰 갱신 시도");
     const response = await fetch(`${API_URL}/auth/refresh`, {
       method: "POST",
       credentials: "include", // 반드시 포함
     });
 
-    console.log("토큰 갱신 응답", response.status);
-
     if (!response.ok) {
-      console.error("토큰 갱신 실패", response.status);
       throw new Error("Failed to refresh token in refreshToken");
     }
 
     const data = await response.json();
-    console.log("토큰 갱신 데이터", data);
     setAccessToken(data.accessToken);
     return true;
   } catch (error) {
@@ -111,8 +106,6 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
   // 함수 호출 시점에 최신 토큰을 가져옴
   let accessToken = getAccessToken();
 
-  console.log("사용 중인 토큰", accessToken);
-
   const fetchOptions: RequestInit = {
     ...options,
     headers: {
@@ -123,8 +116,6 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
       ...(options.headers || {}),
     },
   };
-  console.log("요청 URL:", url);
-  console.log("요청 헤더:", fetchOptions.headers);
 
   let response = await fetch(url, fetchOptions);
 

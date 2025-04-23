@@ -25,23 +25,19 @@ export const useAuthStore = create<AuthStore>((set) => ({
     let userData = getUserData();
 
     if (!userData) {
-      console.log("Attempting to refresh token");
       const refreshsed = await refreshToken();
       if (refreshsed) {
         userData = getUserData();
-        console.log("checkAuth 유저 데이터", userData);
       }
     }
 
     if (userData) {
-      console.log("checkAuth 유저 데이터 설정");
       set({
         userProfile: userData,
         isLoggedIn: true,
         isLoading: false,
       });
     } else {
-      console.log("checkAuth 유저 데이터 설정 실패");
       set({
         userProfile: null,
         isLoggedIn: false,
