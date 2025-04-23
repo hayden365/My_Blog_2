@@ -3,7 +3,7 @@
     "target": "ES2020",
     "module": "CommonJS",
     "lib": ["ES2020"],
-    "outDir": "../dist/server", // 💡 루트 기준으로 dist 위치 설정
+    "outDir": "dist", // 💡 루트 기준으로 dist 위치 설정
     "rootDir": ".", // server 폴더 내에서 시작
     "strict": true,
     "moduleResolution": "node",
