@@ -16,7 +16,6 @@ dotenv.config();
 const app = express();
 
 // 🔧 미들웨어 설정
-app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
