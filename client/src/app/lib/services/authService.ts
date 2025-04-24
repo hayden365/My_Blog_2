@@ -63,6 +63,10 @@ export const setAccessToken = (token: string) => {
 
 // 토큰 갱신 함수
 export const refreshToken = async (): Promise<boolean> => {
+  if (!accessToken) {
+    return false;
+  }
+
   try {
     const response = await fetch(`${API_URL}/auth/refresh`, {
       method: "POST",
@@ -119,7 +123,7 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
 
   let response = await fetch(url, fetchOptions);
 
-  if (response.status === 401) {
+  if (response.status === 401 && accessToken) {
     const refreshSuccessful = await refreshToken();
 
     if (!refreshSuccessful) {
