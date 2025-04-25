@@ -1,0 +1,9 @@
+declare module "express";
+declare module "mongoose";
+declare module "cors";
+declare module "passport";
+declare module "passport-google-oauth20";
+declare module "express-session";
+declare module "jsonwebtoken";
+declare module "cookie-parser";
+declare module "connect-mongo";
