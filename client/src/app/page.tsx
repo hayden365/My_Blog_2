@@ -3,11 +3,12 @@ import { getPostList, getTags } from "./lib/api/fetch";
 import HorizontalTabs from "./components/horizontalTabs";
 import PostList from "./components/postList";
 
-export default async function PostsPage({
-  searchParams,
-}: {
-  searchParams: { tag?: string };
-}) {
+interface PageProps {
+  searchParams: Promise<{ tag?: string }>;
+}
+
+export default async function PostsPage({ searchParams }: PageProps) {
+  /* @next-codemod-ignore */
   const { tag } = await searchParams;
   const [posts, tags] = await Promise.all([getPostList(tag), getTags()]);
   return (
