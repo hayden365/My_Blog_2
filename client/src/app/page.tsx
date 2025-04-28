@@ -1,25 +1,19 @@
 import React from "react";
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
-import { getPostList } from "./lib/api/fetch";
-import PostListWrapper from "./components/postListWrapper";
+import { getPostList, getTags } from "./lib/api/fetch";
+import HorizontalTabs from "./components/horizontalTabs";
+import PostList from "./components/postList";
 
-export default async function Home() {
-  const queryClient = new QueryClient();
-
-  await queryClient.prefetchQuery({
-    queryKey: ["posts"],
-    queryFn: getPostList,
-  });
-
-  const dehydratedState = dehydrate(queryClient);
-
+export default async function PostsPage({
+  searchParams,
+}: {
+  searchParams: { tag?: string };
+}) {
+  const { tag } = await searchParams;
+  const [posts, tags] = await Promise.all([getPostList(tag), getTags()]);
   return (
-    <HydrationBoundary state={dehydratedState}>
-      <PostListWrapper />
-    </HydrationBoundary>
+    <div>
+      <HorizontalTabs tags={tags} activeTag={tag} />
+      <PostList data={posts} />
+    </div>
   );
 }

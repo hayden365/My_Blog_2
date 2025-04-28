@@ -5,7 +5,7 @@ import { getPost } from "../lib/api/fetch";
 import PostContent from "./postContent";
 
 const PostContentWrapper = ({ slugAndId }: { slugAndId: string }) => {
-  // slugAndId 형식: "slug-65f5d8b1a1234567890abcde"
+  // slugAndId 형식: "slug-id"
   const _id = slugAndId?.split("-").pop() || "";
 
   const { data, isLoading, error } = useQuery({

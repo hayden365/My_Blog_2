@@ -10,8 +10,16 @@ const handleResponse = async (response: Response) => {
   return response.json();
 };
 
-export async function getPostList() {
-  const response = await fetch(`${API_URL}/posts`);
+export async function getPostList(tag?: string) {
+  const url = new URL(`${API_URL}/posts`);
+  if (tag) {
+    url.searchParams.append("tag", tag);
+  }
+
+  const response = await fetch(url.toString(), {
+    cache: "no-store",
+  });
+
   return handleResponse(response);
 }
 

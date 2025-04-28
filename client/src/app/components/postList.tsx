@@ -3,16 +3,14 @@ import React from "react";
 import { formatDate } from "../lib/utils/date";
 import { Post } from "../lib/types/post";
 import PostOptionsMenu from "./postOptionsMenu";
-import HorizontalTabs from "./horizontalTabs";
 
 const PostList = ({ data }: { data: Post[] }) => {
   return (
     <div className="w-full max-w-[680px] flex flex-col justify-center items-center pt-6 mx-6">
-      <HorizontalTabs />
       <ul className="w-full flex flex-col mx-5">
-        {data.map((post, index) => (
+        {data.map((post) => (
           <li
-            key={index}
+            key={post._id}
             className="flex flex-col border-b border-gray-100 pt-8 mx-6"
           >
             <Link

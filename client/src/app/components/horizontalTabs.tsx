@@ -6,13 +6,17 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Swiper as SwiperCore } from "swiper";
 import { Mousewheel } from "swiper/modules";
 import "swiper/css";
-import { useGetTags } from "@/app/lib/hooks/useTag";
 import { Tag } from "../lib/types/post";
+import Link from "next/link";
 
-const HorizontalTabs = () => {
-  const { data: tags = [] } = useGetTags();
+const HorizontalTabs = ({
+  tags,
+  activeTag,
+}: {
+  tags: Tag[];
+  activeTag?: string;
+}) => {
   const [swiper, setSwiper] = useState<SwiperCore | null>(null);
-  const [activeTab, setActiveTab] = useState<string>();
   const [showLeftArrow, setShowLeftArrow] = useState(false);
   const [showRightArrow, setShowRightArrow] = useState(true);
 
@@ -65,12 +69,11 @@ const HorizontalTabs = () => {
           allowTouchMove={false}
           speed={100}
           resistance={false}
-          cssMode={true}
         >
           {tags.map((tag: Tag, index: number) => (
             <SwiperSlide key={tag._id} className="!w-auto">
-              <button
-                onClick={() => setActiveTab(tag.name)}
+              <Link
+                href={`/posts?tags=${tag.name}`}
                 className={twMerge(
                   `flex-shrink-0 text-sm ${
                     index === 0
@@ -79,14 +82,14 @@ const HorizontalTabs = () => {
                         ? "mr-[50px]"
                         : "mr-8"
                   } ${
-                    activeTab === tag.name
+                    activeTag === tag.name
                       ? "font-bold border-b-2 border-black text-black"
                       : "text-gray-500"
                   }`
                 )}
               >
                 {tag.name}
-              </button>
+              </Link>
             </SwiperSlide>
           ))}
         </Swiper>
