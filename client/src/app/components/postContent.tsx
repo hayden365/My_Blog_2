@@ -20,7 +20,7 @@ const PostContent = ({ data }: { data: Post }) => {
       {/* tags */}
       <ul className="flex gap-2">
         {data.tags?.map((tag) => (
-          <Link href={`/tags/${tag.name}`} key={tag.name}>
+          <Link href={`/?tag=${tag.name}`} key={tag.name}>
             <li className="text-neutral-800 bg-zinc-100 px-4 py-2 rounded-3xl">
               {tag.name}
             </li>

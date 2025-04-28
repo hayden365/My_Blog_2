@@ -44,10 +44,24 @@ router.post("/", verifyToken, (async (req: Request, res: Response) => {
 // Get all posts
 router.get("/", (async (req: Request, res: Response) => {
   try {
-    const posts = await Post.find().populate("tags", "name");
+    const { tag } = req.query;
+
+    let query = {};
+
+    if (tag) {
+      const tagDoc = await Tag.findOne({ name: tag });
+      if (tagDoc) {
+        query = { tags: tagDoc._id };
+      } else {
+        res.json([]);
+        return;
+      }
+    }
+
+    const posts = await Post.find(query).populate("tags", "name");
     res.json(posts);
-  } catch (err) {
-    res.json({ message: err });
+  } catch (error) {
+    res.status(500).json({ message: error });
   }
 }) as RequestHandler);
 

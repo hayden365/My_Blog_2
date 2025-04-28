@@ -73,7 +73,7 @@ const HorizontalTabs = ({
           {tags.map((tag: Tag, index: number) => (
             <SwiperSlide key={tag._id} className="!w-auto">
               <Link
-                href={`/posts?tags=${tag.name}`}
+                href={`/?tag=${tag.name}`}
                 className={twMerge(
                   `flex-shrink-0 text-sm ${
                     index === 0
