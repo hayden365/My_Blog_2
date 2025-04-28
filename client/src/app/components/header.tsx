@@ -8,6 +8,7 @@ import { HomeLogo } from "./common/homeLogo";
 
 const Header = () => {
   const { isLoggedIn } = useAuthStore();
+  console.log(isLoggedIn);
   const pathname = usePathname();
 
   if (pathname === "/posts/new" || pathname.endsWith("/edit")) {

@@ -46,17 +46,6 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     initAuth();
     checkAuth(); // 최초 로드 시 인증 상태 체크
-
-    // 새로고침 시에도 인증 상태 체크하도록 이벤트 리스너 추가
-    // const handleFocus = () => {
-    //   checkAuth();
-    // };
-
-    // window.addEventListener("focus", handleFocus);
-
-    // return () => {
-    //   window.removeEventListener("focus", handleFocus);
-    // };
   }, [checkAuth]);
 
   return (

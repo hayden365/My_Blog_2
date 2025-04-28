@@ -4,14 +4,9 @@ import Image from "next/image";
 import { useAuthStore } from "../lib/store/authStore";
 
 const LoginButton = () => {
-  const { userProfile, isLoading, isLoggedIn, login, logout, checkAuth } =
-    useAuthStore();
+  const { userProfile, isLoading, isLoggedIn, login, logout } = useAuthStore();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    checkAuth();
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
