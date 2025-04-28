@@ -6,30 +6,28 @@ import PostOptionsMenu from "./postOptionsMenu";
 
 const PostList = ({ data }: { data: Post[] }) => {
   return (
-    <div className="w-full max-w-[680px] flex flex-col justify-center items-center pt-6 mx-6">
-      <ul className="w-full flex flex-col mx-5">
-        {data.map((post) => (
-          <li
-            key={post._id}
-            className="flex flex-col border-b border-gray-100 pt-8 mx-6"
+    <ul className="w-full flex flex-col mx-5">
+      {data.map((post) => (
+        <li
+          key={post._id}
+          className="flex flex-col border-b border-gray-100 pt-8 mx-6"
+        >
+          <Link
+            href={`posts/${post.slug}-${post._id}`}
+            className="flex-1 pr-4 group"
           >
-            <Link
-              href={`posts/${post.slug}-${post._id}`}
-              className="flex-1 pr-4 group"
-            >
-              <div>
-                <h2 className="font-inter font-bold text-xl">{post.title}</h2>
-                <p className="text-sm text-gray-500 pt-2">{post.subtitle}</p>
-              </div>
-              <div className="flex items-center pt-5">
-                <small>{formatDate(post.createdAt)}</small>
-                <PostOptionsMenu post={post} />
-              </div>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
+            <div>
+              <h2 className="font-inter font-bold text-xl">{post.title}</h2>
+              <p className="text-sm text-gray-500 pt-2">{post.subtitle}</p>
+            </div>
+            <div className="flex items-center pt-5">
+              <small>{formatDate(post.createdAt)}</small>
+              <PostOptionsMenu post={post} />
+            </div>
+          </Link>
+        </li>
+      ))}
+    </ul>
   );
 };
 
