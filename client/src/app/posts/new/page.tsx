@@ -32,6 +32,7 @@ const NewPostPage = () => {
     setIsModalOpen(false);
   };
 
+  console.log(title);
   return (
     <>
       <div role="header" className="py-6 flex justify-between">
@@ -46,19 +47,27 @@ const NewPostPage = () => {
           <LoginButton />
         </div>
       </div>
-      <div role="main" className="py-6">
-        <input
-          type="text"
-          placeholder="제목을 입력해주세요"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="w-full text-4xl font-semibold outline-none placeholder-gray-400 mb-6"
-        />
+      <div role="main" className="flex flex-col py-6 gap-6">
+        <h3
+          contentEditable
+          suppressContentEditableWarning
+          className="relative min-h-20 text-4xl text-pretty font-semibold outline-none placeholder-gray-400"
+          onInput={(e) => {
+            const newText = e.currentTarget.textContent ?? "";
+            setTitle(newText);
+          }}
+        >
+          {!title && (
+            <span className="absolute left-0 top-0 pointer-events-none text-gray-400">
+              Title
+            </span>
+          )}
+        </h3>
         <textarea
           placeholder="내용을 입력해주세요"
           value={content}
           onChange={(e) => setContent(e.target.value)}
-          className="w-full h-[500px] resize-none text-lg leading-relaxed outline-none placeholder-gray-400"
+          className="h-full resize-none text-lg leading-relaxed outline-none placeholder-gray-400"
         />
       </div>
       <PublishModal
