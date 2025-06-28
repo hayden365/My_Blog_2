@@ -7,6 +7,7 @@ import { useCreatePost } from "@/app/lib/hooks/usePost";
 import { usePostStore } from "@/app/lib/store/postStore";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
+import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 
 const NewPostPage = () => {
   const router = useRouter();
@@ -32,7 +33,6 @@ const NewPostPage = () => {
     setIsModalOpen(false);
   };
 
-  console.log(title);
   return (
     <>
       <div role="header" className="py-6 flex justify-between">
@@ -63,12 +63,18 @@ const NewPostPage = () => {
             </span>
           )}
         </h3>
-        <textarea
-          placeholder="내용을 입력해주세요"
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
+        <main className="h-full">
+          <SimpleEditor content={content} setContent={setContent} />
+        </main>
+        {/* <aside
+          contentEditable
+          suppressContentEditableWarning
           className="h-full resize-none text-lg leading-relaxed outline-none placeholder-gray-400"
-        />
+          onInput={(e) => {
+            const newText = e.currentTarget.textContent ?? "";
+            setContent(newText);
+          }}
+        ></aside> */}
       </div>
       <PublishModal
         isOpen={isModalOpen}
