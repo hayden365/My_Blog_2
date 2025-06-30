@@ -12,13 +12,13 @@ import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor
 const NewPostPage = () => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { title, content, tags, setTitle, setContent, resetPost } =
+  const { title, content_json, tags, setTitle, setContent, resetPost } =
     usePostStore();
   const { mutate: createPost } = useCreatePost();
 
   const handlePublish = () => {
     createPost(
-      { title, content, tags, _id: "" },
+      { title, content_json: content_json ?? [], tags, _id: "" },
       {
         onSuccess: (data) => {
           console.log("Success", data);
@@ -39,7 +39,7 @@ const NewPostPage = () => {
         <HomeLogo />
         <div className="flex gap-8">
           <Button
-            disabled={!title || !content}
+            disabled={!title || !content_json}
             onClick={() => setIsModalOpen(true)}
           >
             Publish
@@ -47,7 +47,10 @@ const NewPostPage = () => {
           <LoginButton />
         </div>
       </div>
-      <div role="main" className="flex flex-col py-6 gap-6">
+      <div
+        role="main"
+        className="flex flex-col py-6 gap-6 h-[calc(100vh-65px)]"
+      >
         <h3
           contentEditable
           suppressContentEditableWarning
@@ -63,18 +66,7 @@ const NewPostPage = () => {
             </span>
           )}
         </h3>
-        <main className="h-full">
-          <SimpleEditor content={content} setContent={setContent} />
-        </main>
-        {/* <aside
-          contentEditable
-          suppressContentEditableWarning
-          className="h-full resize-none text-lg leading-relaxed outline-none placeholder-gray-400"
-          onInput={(e) => {
-            const newText = e.currentTarget.textContent ?? "";
-            setContent(newText);
-          }}
-        ></aside> */}
+        <SimpleEditor setContent={setContent} />
       </div>
       <PublishModal
         isOpen={isModalOpen}

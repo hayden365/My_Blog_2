@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
+import { JSONContent } from "@tiptap/core";
 
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit";
@@ -74,6 +75,10 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss";
+
+interface SimpleEditorProps {
+  setContent: (content: JSONContent) => void;
+}
 
 const MainToolbarContent = ({
   onHighlighterClick,
@@ -180,7 +185,7 @@ const MobileToolbarContent = ({
   </>
 );
 
-export function SimpleEditor({ content, setContent }) {
+export function SimpleEditor({ setContent }: SimpleEditorProps) {
   const isMobile = useMobile();
   const windowSize = useWindowSize();
   const [mobileView, setMobileView] = React.useState<
@@ -196,6 +201,9 @@ export function SimpleEditor({ content, setContent }) {
         autocapitalize: "off",
         "aria-label": "Main content area, start typing to enter text.",
       },
+    },
+    onUpdate: ({ editor }) => {
+      setContent(editor.getJSON());
     },
     extensions: [
       StarterKit,
@@ -220,12 +228,8 @@ export function SimpleEditor({ content, setContent }) {
       TrailingNode,
       Link.configure({ openOnClick: false }),
     ],
-    content: content,
-    onUpdate({ editor }) {
-      setContent(editor.getHTML);
-    },
+    content: "",
   });
-  console.log(editor?.getJSON());
 
   const bodyRect = useCursorVisibility({
     editor,

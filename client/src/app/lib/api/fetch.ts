@@ -36,12 +36,17 @@ export const createPost = async (post: PostData) => {
   return handleResponse(response);
 };
 
-export const updatePost = async ({ _id, title, content, tags }: PostData) => {
+export const updatePost = async ({
+  _id,
+  title,
+  content_json,
+  tags,
+}: PostData) => {
   const response = await fetchWithAuth(`${API_URL}/posts/${_id}`, {
     method: "PUT",
     body: JSON.stringify({
       title,
-      content,
+      content_json,
       tags,
     }),
   });

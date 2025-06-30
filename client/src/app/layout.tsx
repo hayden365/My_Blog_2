@@ -32,7 +32,7 @@ export default function RootLayout({
       <body className={`${inter.variable} ${nanum.variable} antialiased`}>
         <Providers>
           <Header />
-          <div className="flex justify-center w-full">
+          <div className="flex flex-col items-center h-[calc(100vh-65px)]">
             <Suspense fallback={<BlogListSkeleton />}>{children}</Suspense>
           </div>
           <ReactQueryDevtools initialIsOpen={false} />

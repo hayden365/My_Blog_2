@@ -1,3 +1,5 @@
+import { JSONContent } from "@tiptap/react";
+
 export interface Tag {
   _id: string;
   name: string;
@@ -17,6 +19,6 @@ export interface Post {
 export interface PostData {
   _id: string;
   title: string;
-  content: string;
+  content_json: JSONContent;
   tags: string[];
 }

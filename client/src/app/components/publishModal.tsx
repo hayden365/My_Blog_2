@@ -15,7 +15,7 @@ const PublishModal = ({
   onClose,
   handlePublish,
 }: PublishModalProps) => {
-  const { title, content } = usePostStore();
+  const { title } = usePostStore();
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -40,9 +40,9 @@ const PublishModal = ({
             <p className="text-2xl font-bold border-b border-gray-200 pb-1">
               {title}
             </p>
-            <p className="text-sm border-b border-gray-200 pb-1">
+            {/* <p className="text-sm border-b border-gray-200 pb-1">
               {content.slice(0, 50)}
-            </p>
+            </p> */}
           </div>
 
           {/* Tag Section */}

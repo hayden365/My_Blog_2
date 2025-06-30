@@ -19,8 +19,8 @@ const postSchema = new mongoose.Schema({
     ref: "Tag",
     required: false,
   },
-  content: {
-    type: String,
+  content_json: {
+    type: Object,
     required: true,
   },
   createdAt: {

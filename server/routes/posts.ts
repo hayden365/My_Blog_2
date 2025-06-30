@@ -14,7 +14,7 @@ const router: Router = express.Router();
 // Create a post
 router.post("/", verifyToken, (async (req: Request, res: Response) => {
   try {
-    const { title, subtitle, content, tags } = req.body;
+    const { title, subtitle, content_json, tags } = req.body;
 
     // 태그 처리
     const tagIds = await createOrUpdateTags(tags || []);
@@ -25,7 +25,7 @@ router.post("/", verifyToken, (async (req: Request, res: Response) => {
     const post = new Post({
       title,
       subtitle,
-      content,
+      content_json,
       slug,
       tags: tagIds,
       authorId: (req.user as CustomUser)?.id,
@@ -105,7 +105,7 @@ router.put("/:_id", verifyToken, (async (req: Request, res: Response) => {
       {
         title: req.body.title,
         subtitle: req.body.subtitle,
-        content: req.body.content,
+        content_json: req.body.content_json,
         slug: await slugify(req.body.slug || req.body.title, currentPost.slug),
         tags: newTagIds,
       },
