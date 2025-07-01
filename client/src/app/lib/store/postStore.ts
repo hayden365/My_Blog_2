@@ -3,10 +3,10 @@ import { create } from "zustand";
 
 interface PostState {
   title: string;
-  content_json: JSONContent | null;
+  content_json: JSONContent;
   tags: string[];
   setTitle: (title: string) => void;
-  setContent: (content: JSONContent) => void;
+  setContent: (content_json: JSONContent) => void;
   setTags: (tags: string[]) => void;
   addTag: (tag: string) => void;
   removeTag: (tag: string) => void;
@@ -15,10 +15,10 @@ interface PostState {
 
 export const usePostStore = create<PostState>((set) => ({
   title: "",
-  content_json: null,
+  content_json: [],
   tags: [],
   setTitle: (title) => set({ title }),
-  setContent: (content) => set({ content_json: content }),
+  setContent: (content_json) => set({ content_json: content_json }),
   setTags: (tags) => set({ tags }),
   addTag: (tag) =>
     set((state) =>
@@ -28,5 +28,5 @@ export const usePostStore = create<PostState>((set) => ({
     ),
   removeTag: (tag) =>
     set((state) => ({ tags: state.tags.filter((t) => t !== tag) })),
-  resetPost: () => set({ title: "", content_json: null, tags: [] }),
+  resetPost: () => set({ title: "", content_json: [], tags: [] }),
 }));

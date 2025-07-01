@@ -1,4 +1,4 @@
-import EditPostClient from "./editPostClient";
+import EditPostClient from "./editPost";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

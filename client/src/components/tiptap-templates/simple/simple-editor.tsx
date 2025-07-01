@@ -75,9 +75,11 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss";
+import { MarkdownPaste } from "@/hooks/use-markdown-paste";
 
 interface SimpleEditorProps {
   setContent: (content: JSONContent) => void;
+  content: JSONContent;
 }
 
 const MainToolbarContent = ({
@@ -185,7 +187,7 @@ const MobileToolbarContent = ({
   </>
 );
 
-export function SimpleEditor({ setContent }: SimpleEditorProps) {
+export function SimpleEditor({ setContent, content }: SimpleEditorProps) {
   const isMobile = useMobile();
   const windowSize = useWindowSize();
   const [mobileView, setMobileView] = React.useState<
@@ -227,8 +229,9 @@ export function SimpleEditor({ setContent }: SimpleEditorProps) {
       }),
       TrailingNode,
       Link.configure({ openOnClick: false }),
+      MarkdownPaste,
     ],
-    content: "",
+    content: content || "",
   });
 
   const bodyRect = useCursorVisibility({

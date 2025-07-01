@@ -16,7 +16,10 @@ const NewPostPage = () => {
     usePostStore();
   const { mutate: createPost } = useCreatePost();
 
+  const titleRef = React.useRef<HTMLHeadingElement>(null);
+
   const handlePublish = () => {
+    setTitle(titleRef.current?.innerText ?? "");
     createPost(
       { title, content_json: content_json ?? [], tags, _id: "" },
       {
@@ -52,13 +55,10 @@ const NewPostPage = () => {
         className="flex flex-col py-6 gap-6 h-[calc(100vh-65px)]"
       >
         <h3
+          ref={titleRef}
           contentEditable
           suppressContentEditableWarning
           className="relative min-h-20 text-4xl text-pretty font-semibold outline-none placeholder-gray-400"
-          onInput={(e) => {
-            const newText = e.currentTarget.textContent ?? "";
-            setTitle(newText);
-          }}
         >
           {!title && (
             <span className="absolute left-0 top-0 pointer-events-none text-gray-400">

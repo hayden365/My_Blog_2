@@ -10,7 +10,7 @@ export interface Post {
   _id: string;
   title: string;
   subtitle: string;
-  content: string;
+  content_json: JSONContent;
   createdAt: string;
   slug: string;
   tags: Tag[];

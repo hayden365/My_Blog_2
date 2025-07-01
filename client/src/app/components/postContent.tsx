@@ -1,10 +1,21 @@
 import { formatDate } from "../lib/utils/date";
 import Link from "next/link";
 import { Post } from "../lib/types/post";
-import Markdown from "react-markdown";
 import PostOptionsMenu from "./postOptionsMenu";
+import { EditorContent, useEditor } from "@tiptap/react";
+import StarterKit from "@tiptap/starter-kit";
 
 const PostContent = ({ data }: { data: Post }) => {
+  const editor = useEditor({
+    extensions: [StarterKit],
+    content: data.content_json,
+    editable: false,
+  });
+
+  if (!editor) {
+    return null;
+  }
+
   return (
     <article className="py-15">
       <header className="border-b border-gray-100 pb-4">
@@ -15,7 +26,7 @@ const PostContent = ({ data }: { data: Post }) => {
         </div>
       </header>
       <div className="my-10 prose prose-lg max-w-none">
-        <Markdown>{data.content}</Markdown>
+        <EditorContent editor={editor} />
       </div>
       {/* tags */}
       <ul className="flex gap-2">
