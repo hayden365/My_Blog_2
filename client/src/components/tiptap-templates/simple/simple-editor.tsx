@@ -79,7 +79,7 @@ import { MarkdownPaste } from "@/hooks/use-markdown-paste";
 
 interface SimpleEditorProps {
   setContent: (content: JSONContent) => void;
-  content: JSONContent;
+  content?: JSONContent;
 }
 
 const MainToolbarContent = ({

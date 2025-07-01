@@ -1,4 +1,4 @@
-import EditPostClient from "./editPost";
+import EditPost from "./editPost";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -17,5 +17,5 @@ export default async function EditPostPage({
   const [resolvedParams] = await Promise.all([params, searchParams]);
   const _id = resolvedParams.slugAndId?.split("-").pop() || "";
 
-  return <EditPostClient _id={_id} />;
+  return <EditPost _id={_id} />;
 }

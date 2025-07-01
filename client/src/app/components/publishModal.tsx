@@ -16,6 +16,7 @@ const PublishModal = ({
   handlePublish,
 }: PublishModalProps) => {
   const { title } = usePostStore();
+  console.log(title);
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();

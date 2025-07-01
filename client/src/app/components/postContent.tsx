@@ -2,22 +2,12 @@ import { formatDate } from "../lib/utils/date";
 import Link from "next/link";
 import { Post } from "../lib/types/post";
 import PostOptionsMenu from "./postOptionsMenu";
-import { EditorContent, useEditor } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
+import TiptapRenderer from "./tiptapRenderer";
+import "./tiptapRenderer.scss";
 
 const PostContent = ({ data }: { data: Post }) => {
-  const editor = useEditor({
-    extensions: [StarterKit],
-    content: data.content_json,
-    editable: false,
-  });
-
-  if (!editor) {
-    return null;
-  }
-
   return (
-    <article className="py-15">
+    <div className="py-15">
       <header className="border-b border-gray-100 pb-4">
         <h1 className="text-[42px] font-bold mb-8">{data.title}</h1>
         <div className="flex items-center justify-between gap-2">
@@ -25,9 +15,9 @@ const PostContent = ({ data }: { data: Post }) => {
           <PostOptionsMenu post={data} />
         </div>
       </header>
-      <div className="my-10 prose prose-lg max-w-none">
-        <EditorContent editor={editor} />
-      </div>
+      <article className="my-10 prose prose-lg max-w-none">
+        <TiptapRenderer content={data.content_json} className="prose" />
+      </article>
       {/* tags */}
       <ul className="flex gap-2">
         {data.tags?.map((tag) => (
@@ -38,7 +28,7 @@ const PostContent = ({ data }: { data: Post }) => {
           </Link>
         ))}
       </ul>
-    </article>
+    </div>
   );
 };
 
