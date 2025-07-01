@@ -54,18 +54,13 @@ const NewPostPage = () => {
         role="main"
         className="flex flex-col py-6 gap-6 h-[calc(100vh-65px)]"
       >
-        <h3
-          ref={titleRef}
-          contentEditable
-          suppressContentEditableWarning
+        <input
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="Title"
           className="relative min-h-20 text-4xl text-pretty font-semibold outline-none placeholder-gray-400"
-        >
-          {!title && (
-            <span className="absolute left-0 top-0 pointer-events-none text-gray-400">
-              Title
-            </span>
-          )}
-        </h3>
+        ></input>
         <SimpleEditor setContent={setContent} />
       </div>
       <PublishModal

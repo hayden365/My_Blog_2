@@ -1,5 +1,5 @@
 import React from "react";
-import { getPostList, getTags } from "./lib/api/fetch";
+import { getPostList, getTags } from "./api/fetch";
 import HorizontalTabs from "./components/horizontalTabs";
 import PostList from "./components/postList";
 

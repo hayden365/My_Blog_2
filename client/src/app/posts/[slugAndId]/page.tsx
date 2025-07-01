@@ -3,7 +3,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { getPostList, getPost } from "../../lib/api/fetch";
+import { getPostList, getPost } from "../../api/fetch";
 import { Post } from "../../lib/types/post";
 import PostContentWrapper from "../../components/postContentWrapper";
 

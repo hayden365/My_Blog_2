@@ -1,5 +1,5 @@
-import { fetchWithAuth } from "../services/authService";
-import { PostData } from "../types/post";
+import { fetchWithAuth } from "../lib/services/authService";
+import { PostData } from "../lib/types/post";
 
 const API_URL = process.env.NEXT_PUBLIC_URL;
 

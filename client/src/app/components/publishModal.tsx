@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import Button from "./common/styledButton";
 import { usePostStore } from "../lib/store/postStore";
 import TagInput from "./common/tagInput";
+import UploadExample from "./uploadExample";
 
 interface PublishModalProps {
   isOpen: boolean;
@@ -16,7 +17,6 @@ const PublishModal = ({
   handlePublish,
 }: PublishModalProps) => {
   const { title } = usePostStore();
-  console.log(title);
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -37,6 +37,7 @@ const PublishModal = ({
           <div className="w-full flex flex-col gap-2">
             <h2 className="text-xl font-bold">Story Preview</h2>
             {/* 이미지 들어갈 자리 */}
+            <UploadExample />
             <div className="w-full h-[200px] bg-gray-200 rounded-lg"></div>
             <p className="text-2xl font-bold border-b border-gray-200 pb-1">
               {title}
