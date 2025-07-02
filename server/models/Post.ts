@@ -9,6 +9,10 @@ const postSchema = new mongoose.Schema({
     type: String,
     required: false,
   },
+  isFeatured: {
+    type: Boolean,
+    default: false,
+  },
   slug: {
     type: String,
     required: true,
@@ -17,6 +21,11 @@ const postSchema = new mongoose.Schema({
   tags: {
     type: [mongoose.Schema.Types.ObjectId],
     ref: "Tag",
+    required: false,
+  },
+  projects: {
+    type: [mongoose.Schema.Types.ObjectId],
+    ref: "Project",
     required: false,
   },
   content_json: {

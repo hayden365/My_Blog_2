@@ -14,7 +14,7 @@ const router: Router = express.Router();
 // Create a post
 router.post("/", verifyToken, (async (req: Request, res: Response) => {
   try {
-    const { title, subtitle, content_json, tags } = req.body;
+    const { title, subtitle, content_json, tags, projects } = req.body;
 
     // 태그 처리
     const tagIds = await createOrUpdateTags(tags || []);
@@ -29,6 +29,7 @@ router.post("/", verifyToken, (async (req: Request, res: Response) => {
       slug,
       tags: tagIds,
       authorId: (req.user as CustomUser)?.id,
+      projects,
     });
 
     const savedPost = await post.save();
@@ -44,7 +45,7 @@ router.post("/", verifyToken, (async (req: Request, res: Response) => {
 // Get all posts
 router.get("/", (async (req: Request, res: Response) => {
   try {
-    const { tag } = req.query;
+    const { tag, project } = req.query;
 
     let query = {};
 
@@ -58,7 +59,13 @@ router.get("/", (async (req: Request, res: Response) => {
       }
     }
 
-    const posts = await Post.find(query).populate("tags", "name");
+    if (project) {
+      query = { ...query, projects: project };
+    }
+
+    const posts = await Post.find(query)
+      .populate("tags", "name")
+      .populate("projects", "title");
     res.json(posts);
   } catch (error) {
     res.status(500).json({ message: error });
@@ -97,7 +104,6 @@ router.put("/:_id", verifyToken, (async (req: Request, res: Response) => {
     // 태그 처리
     const oldTagIds = currentPost.tags?.map((tagId) => tagId.toString()) || [];
     const newTagNames = req.body.tags || [];
-
     const newTagIds = await syncPostTags(oldTagIds, newTagNames);
 
     const updatedPost = await Post.findOneAndUpdate(
@@ -108,6 +114,7 @@ router.put("/:_id", verifyToken, (async (req: Request, res: Response) => {
         content_json: req.body.content_json,
         slug: await slugify(req.body.slug || req.body.title, currentPost.slug),
         tags: newTagIds,
+        projects: req.body.projects,
       },
       { new: true }
     );
@@ -149,6 +156,19 @@ router.delete("/:_id", verifyToken, (async (req: Request, res: Response) => {
     }
 
     res.json(removedPost);
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+}) as RequestHandler);
+
+// Get posts by project ID
+router.get("/project/:projectId", (async (req: Request, res: Response) => {
+  try {
+    const posts = await Post.find({ projects: req.params.projectId })
+      .populate("tags", "name")
+      .populate("projects", "title");
+
+    res.json(posts);
   } catch (err) {
     res.status(500).json({ message: err });
   }
