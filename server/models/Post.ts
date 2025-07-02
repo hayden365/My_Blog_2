@@ -32,6 +32,10 @@ const postSchema = new mongoose.Schema({
     type: Object,
     required: true,
   },
+  img_thumbnail: {
+    type: String,
+    required: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,

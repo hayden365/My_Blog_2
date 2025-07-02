@@ -3,6 +3,7 @@ import React from "react";
 import { formatDate } from "../lib/utils/date";
 import { Post } from "../lib/types/post";
 import PostOptionsMenu from "./postOptionsMenu";
+import Image from "next/image";
 
 const PostList = ({ data }: { data: Post[] }) => {
   return (
@@ -17,13 +18,24 @@ const PostList = ({ data }: { data: Post[] }) => {
             className="flex-1 pr-4 group"
           >
             <div>
-              <h2 className="font-inter font-bold text-xl">{post.title}</h2>
-              <p className="text-sm text-gray-500 pt-2">{post.subtitle}</p>
+              <div>
+                <h2 className="font-inter font-bold text-xl">{post.title}</h2>
+                <p className="text-sm text-gray-500 pt-2">{post.subtitle}</p>
+              </div>
+              <div className="flex items-center pt-5">
+                <small>{formatDate(post.createdAt)}</small>
+                <PostOptionsMenu post={post} />
+              </div>
             </div>
-            <div className="flex items-center pt-5">
-              <small>{formatDate(post.createdAt)}</small>
-              <PostOptionsMenu post={post} />
-            </div>
+            {post.img_thumbnail && (
+              <Image
+                src={post.img_thumbnail}
+                alt={post.title}
+                width={100}
+                height={100}
+                className="w-full h-full object-cover rounded-lg"
+              />
+            )}
           </Link>
         </li>
       ))}

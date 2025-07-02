@@ -14,6 +14,7 @@ export interface Post {
   createdAt: string;
   slug: string;
   tags: Tag[];
+  img_thumbnail?: string;
 }
 
 export interface PostData {
