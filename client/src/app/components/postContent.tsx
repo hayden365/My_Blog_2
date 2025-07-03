@@ -7,7 +7,7 @@ import "./tiptapRenderer.scss";
 
 const PostContent = ({ data }: { data: Post }) => {
   return (
-    <div className="py-15">
+    <div className="h-full py-15 mx-5">
       <header className="border-b border-gray-100 pb-4">
         <h1 className="text-[42px] font-bold mb-8">{data.title}</h1>
         <div className="flex items-center justify-between gap-2">

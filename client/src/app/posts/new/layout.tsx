@@ -5,5 +5,5 @@ export default function NewPostLayout({
 }: {
   children: React.ReactNode;
 }) {
-  return <div className="w-full max-w-[800px] mx-auto px-6">{children}</div>;
+  return <div className="w-full mx-auto max-w-[800px] px-6">{children}</div>;
 }
