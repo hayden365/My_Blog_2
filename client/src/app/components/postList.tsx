@@ -17,25 +17,27 @@ const PostList = ({ data }: { data: Post[] }) => {
             href={`posts/${post.slug}-${post._id}`}
             className="flex-1 pr-4 group"
           >
-            <div>
+            <div className="flex gap-4 justify-between">
               <div>
-                <h2 className="font-inter font-bold text-xl">{post.title}</h2>
-                <p className="text-sm text-gray-500 pt-2">{post.subtitle}</p>
+                <div>
+                  <h2 className="font-inter font-bold text-xl">{post.title}</h2>
+                  <p className="text-sm text-gray-500 pt-2">{post.subtitle}</p>
+                </div>
+                <div className="flex items-center pt-5">
+                  <small>{formatDate(post.createdAt)}</small>
+                  <PostOptionsMenu post={post} />
+                </div>
               </div>
-              <div className="flex items-center pt-5">
-                <small>{formatDate(post.createdAt)}</small>
-                <PostOptionsMenu post={post} />
-              </div>
+              {post.img_thumbnail && (
+                <Image
+                  src={post.img_thumbnail}
+                  alt={post.title}
+                  width={100}
+                  height={100}
+                  className="w-32 h-20 object-cover"
+                />
+              )}
             </div>
-            {post.img_thumbnail && (
-              <Image
-                src={post.img_thumbnail}
-                alt={post.title}
-                width={100}
-                height={100}
-                className="w-full h-full object-cover rounded-lg"
-              />
-            )}
           </Link>
         </li>
       ))}

@@ -12,8 +12,15 @@ import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor
 const NewPostPage = () => {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { title, content_json, tags, setTitle, setContent, resetPost } =
-    usePostStore();
+  const {
+    title,
+    content_json,
+    tags,
+    img_thumbnail,
+    setTitle,
+    setContent,
+    resetPost,
+  } = usePostStore();
   const { mutate: createPost } = useCreatePost();
 
   const titleRef = React.useRef<HTMLHeadingElement>(null);
@@ -21,7 +28,13 @@ const NewPostPage = () => {
   const handlePublish = () => {
     setTitle(titleRef.current?.innerText ?? "");
     createPost(
-      { title, content_json: content_json ?? [], tags, _id: "" },
+      {
+        title,
+        content_json: content_json ?? [],
+        tags,
+        img_thumbnail: img_thumbnail ?? "",
+        _id: "",
+      },
       {
         onSuccess: (data) => {
           console.log("Success", data);

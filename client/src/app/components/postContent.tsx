@@ -4,10 +4,11 @@ import { Post } from "../lib/types/post";
 import PostOptionsMenu from "./postOptionsMenu";
 import TiptapRenderer from "./tiptapRenderer";
 import "./tiptapRenderer.scss";
+import Image from "next/image";
 
 const PostContent = ({ data }: { data: Post }) => {
   return (
-    <div className="h-full py-15 mx-5">
+    <div className="h-full py-15 mx-5 flex flex-col gap-4">
       <header className="border-b border-gray-100 pb-4">
         <h1 className="text-[42px] font-bold mb-8">{data.title}</h1>
         <div className="flex items-center justify-between gap-2">
@@ -16,6 +17,17 @@ const PostContent = ({ data }: { data: Post }) => {
         </div>
       </header>
       <article className="my-10 prose prose-lg max-w-none">
+        {data.img_thumbnail && (
+          <div className="w-full h-[300px] bg-white flex items-center justify-center mb-6">
+            <Image
+              src={data.img_thumbnail}
+              alt={data.title}
+              width={100}
+              height={100}
+              className="w-full h-full object-contain"
+            />
+          </div>
+        )}
         <TiptapRenderer content={data.content_json} className="prose" />
       </article>
       {/* tags */}

@@ -22,4 +22,5 @@ export interface PostData {
   title: string;
   content_json: JSONContent;
   tags: string[];
+  img_thumbnail?: string;
 }
