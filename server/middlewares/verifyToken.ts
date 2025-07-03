@@ -24,6 +24,12 @@ export const verifyToken = async (
 
   try {
     const decoded = jwt.verify(token, secretKey) as CustomJwtPayload;
+
+    if (decoded.exp && Date.now() >= decoded.exp * 1000) {
+      res.status(401).json({ message: "토큰이 만료되었습니다." });
+      return;
+    }
+
     req.user = {
       id: decoded._id,
       email: decoded.email,
@@ -32,8 +38,17 @@ export const verifyToken = async (
     };
     next();
   } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      res.status(401).json({ message: "토큰이 만료되었습니다." });
+      return;
+    }
+    if (error instanceof jwt.JsonWebTokenError) {
+      res.status(403).json({ message: "유효하지 않은 토큰입니다." });
+      return;
+    }
+
     console.error("JWT 검증 실패:", error);
-    res.status(403).json({ message: "유효하지 않은 토큰입니다." });
+    res.status(500).json({ message: "토큰 검증 중 오류가 발생했습니다." });
     return;
   }
 };

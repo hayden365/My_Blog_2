@@ -64,6 +64,7 @@ export const setAccessToken = (token: string) => {
 // 토큰 갱신 함수
 export const refreshToken = async (): Promise<boolean> => {
   if (!accessToken) {
+    console.log("No access token available for refresh");
     return false;
   }
 
@@ -73,11 +74,28 @@ export const refreshToken = async (): Promise<boolean> => {
       credentials: "include", // 반드시 포함
     });
 
+    console.log("Refresh response status:", response.status);
+
     if (!response.ok) {
-      throw new Error("Failed to refresh token in refreshToken");
+      // 서버 응답 내용을 확인
+      const errorData = await response.text();
+      console.error("Refresh token failed:", {
+        status: response.status,
+        statusText: response.statusText,
+        body: errorData,
+      });
+
+      // 401이나 403 에러인 경우 로그아웃 처리
+      if (response.status === 401 || response.status === 403) {
+        console.log("Token refresh failed, logging out user");
+        await logout();
+      }
+
+      return false;
     }
 
     const data = await response.json();
+    console.log("Token refresh successful");
     setAccessToken(data.accessToken);
     return true;
   } catch (error) {
@@ -103,11 +121,11 @@ export const logout = async () => {
   }
 };
 
-// 인증 헤더를 포함한 fetch 함수
+// api 요청을 인증 헤더 포함하게 해주는 fetch 함수
 // TODO: fetch interceptor 패턴으로 변경 해보기
 // (함수 위치로 여기가 적절할까?)
 export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
-  // 함수 호출 시점에 최신 토큰을 가져옴
+  // 함수 호출 시점에 세션 스토리지에서 최신 토큰을 가져옴
   let accessToken = getAccessToken();
 
   const fetchOptions: RequestInit = {
@@ -124,10 +142,14 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
   let response = await fetch(url, fetchOptions);
 
   if (response.status === 401 && accessToken) {
+    console.log("Access token expired, attempting refresh");
     const refreshSuccessful = await refreshToken();
 
     if (!refreshSuccessful) {
-      throw new Error("Failed to refresh token in fetchWithAuth");
+      console.log("Token refresh failed, redirecting to login");
+      // 로그인 페이지로 리다이렉트
+      window.location.href = "/";
+      throw new Error("Authentication failed");
     }
 
     accessToken = getAccessToken();
