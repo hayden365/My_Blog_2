@@ -1,19 +1,24 @@
-import { formatDate } from "../lib/utils/date";
 import Link from "next/link";
 import { Post } from "../lib/types/post";
 import PostOptionsMenu from "./postOptionsMenu";
 import TiptapRenderer from "./tiptapRenderer";
 import "./tiptapRenderer.scss";
+import { format, register } from "timeago.js";
 import Image from "next/image";
+import koLocale from "timeago.js/lib/lang/ko";
+import { useAuthStore } from "../lib/store/authStore";
 
 const PostContent = ({ data }: { data: Post }) => {
+  register("ko", koLocale);
+  const { isLoggedIn } = useAuthStore();
+
   return (
     <div className="h-full py-15 mx-5 flex flex-col gap-4">
       <header className="border-b border-gray-100 pb-4">
         <h1 className="text-[42px] font-bold mb-8">{data.title}</h1>
         <div className="flex items-center justify-between gap-2">
-          <time className="text-gray-500">{formatDate(data.createdAt)}</time>
-          <PostOptionsMenu post={data} />
+          <time className="text-gray-500">{format(data.createdAt, "ko")}</time>
+          {isLoggedIn && <PostOptionsMenu post={data} />}
         </div>
       </header>
       <article className="my-10 prose prose-lg max-w-none">

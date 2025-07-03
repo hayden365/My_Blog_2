@@ -49,7 +49,7 @@ const HorizontalTabs = ({
           <ChevronLeftIcon className="w-6 h-6 text-gray-400" />
         </button>
       </div>
-      <div className="overflow-x-auto mx-10">
+      <div className="overflow-x-auto mx-8">
         <Swiper
           onSwiper={setSwiper}
           slidesPerView="auto"
