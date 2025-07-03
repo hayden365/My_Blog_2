@@ -81,9 +81,16 @@ router.get(
       path: "/",
     });
 
-    res.redirect(
-      `${process.env.FRONTEND_URL}/login/success?token=${accessToken}`
-    );
+    // 액세스 토큰을 쿠키에 저장
+    res.cookie("accessToken", accessToken, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 15 * 60 * 1000, // 15분
+      path: "/",
+    });
+
+    res.redirect(`${process.env.FRONTEND_URL}/login/success`);
   }
 );
 
@@ -153,6 +160,15 @@ router.post("/refresh", (async (req: Request, res: Response) => {
       { expiresIn: "15m" }
     );
 
+    // 새로운 액세스 토큰을 쿠키에 저장
+    res.cookie("accessToken", newAccessToken, {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 15 * 60 * 1000, // 15분
+      path: "/",
+    });
+
     res.json({ accessToken: newAccessToken });
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
@@ -190,6 +206,15 @@ router.post("/logout", (async (req: Request, res: Response) => {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",
+      maxAge: 0,
+      path: "/",
+    });
+
+    // 액세스 토큰 쿠키도 삭제
+    res.clearCookie("accessToken", {
+      httpOnly: false,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
       maxAge: 0,
       path: "/",
     });

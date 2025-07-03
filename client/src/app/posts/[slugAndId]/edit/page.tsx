@@ -17,7 +17,7 @@ export default async function EditPostPage({
   searchParams,
 }: PageProps) {
   const cookieStore = await cookies();
-  const token = cookieStore.get("access_token");
+  const token = cookieStore.get("accessToken");
 
   if (!token) {
     redirect("/login");

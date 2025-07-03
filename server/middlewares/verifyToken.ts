@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from "express";
-import jwt, { JwtPayload } from "jsonwebtoken";
+import jwt from "jsonwebtoken";
 
-interface CustomJwtPayload extends JwtPayload {
+interface CustomJwtPayload {
   _id: string;
   email: string;
   name: string;
   profileImage: string;
+  exp?: number;
 }
 
 export const verifyToken = async (
@@ -13,13 +14,24 @@ export const verifyToken = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
+  // Authorization 헤더에서 토큰 확인
+  let token: string | undefined;
+
   const authHeader = req.headers["authorization"];
-  if (!authHeader?.startsWith("Bearer ")) {
-    res.status(401).json({ message: "Authorization header malformed" });
+  if (authHeader?.startsWith("Bearer ")) {
+    token = authHeader.split(" ")[1];
+  }
+
+  // 헤더에 없으면 쿠키에서 확인
+  if (!token && req.cookies?.accessToken) {
+    token = req.cookies.accessToken;
+  }
+
+  if (!token) {
+    res.status(401).json({ message: "No token provided" });
     return;
   }
 
-  const token = authHeader.split(" ")[1];
   const secretKey = process.env.JWT_SECRET || "your_fallback_secret";
 
   try {

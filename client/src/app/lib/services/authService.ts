@@ -5,17 +5,58 @@ let userData: UserProfile | null = null;
 
 const API_URL = process.env.NEXT_PUBLIC_URL;
 
-export const initAuth = () => {
-  // 세션 스토리지에서 임시 저장된 토큰과 사용자 정보 가져오기
-  accessToken = sessionStorage.getItem("accessToken");
-  const userDataString = sessionStorage.getItem("userData");
+// 쿠키에서 토큰 읽기
+const getCookie = (name: string): string | null => {
+  if (typeof document === "undefined") return null;
 
-  if (userDataString) {
-    userData = JSON.parse(userDataString);
+  const cookies = document.cookie.split(";");
+
+  for (const cookie of cookies) {
+    const trimmedCookie = cookie.trim();
+
+    if (trimmedCookie.startsWith(`${name}=`)) {
+      const value = trimmedCookie.substring(name.length + 1);
+      return value;
+    }
   }
-  // 세션 스토리지 삭제 (메모리에만 유지)
-  // sessionStorage.removeItem("accessToken");
-  // sessionStorage.removeItem("userData");
+  return null;
+};
+
+// 쿠키 설정
+const setCookie = (name: string, value: string, maxAge: number) => {
+  if (typeof document === "undefined") return;
+
+  document.cookie = `${name}=${value}; path=/; max-age=${maxAge}; SameSite=Strict`;
+};
+
+// 쿠키 삭제
+const deleteCookie = (name: string) => {
+  if (typeof document === "undefined") return;
+
+  document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
+};
+
+export const initAuth = () => {
+  // 쿠키에서 토큰과 사용자 정보 가져오기
+  accessToken = getCookie("accessToken");
+
+  if (accessToken) {
+    try {
+      const base64Url = accessToken.split(".")[1];
+      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split("")
+          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
+          .join("")
+      );
+      userData = JSON.parse(jsonPayload);
+    } catch (error) {
+      console.error("Failed to parse user data from token:", error);
+      accessToken = null;
+      userData = null;
+    }
+  }
 };
 
 export const getAccessToken = () => accessToken;
@@ -50,9 +91,8 @@ export const setAccessToken = (token: string) => {
 
     userData = JSON.parse(jsonPayload);
 
-    // 세션 스토리지에 저장
-    sessionStorage.setItem("accessToken", token);
-    sessionStorage.setItem("userData", JSON.stringify(userData));
+    // 쿠키에 저장 (15분 유효)
+    setCookie("accessToken", token, 15 * 60);
 
     return userData;
   } catch (error) {
@@ -116,8 +156,9 @@ export const logout = async () => {
   } finally {
     accessToken = null;
     userData = null;
-    sessionStorage.removeItem("accessToken");
-    sessionStorage.removeItem("userData");
+
+    // 쿠키 삭제
+    deleteCookie("accessToken");
   }
 };
 
@@ -125,11 +166,12 @@ export const logout = async () => {
 // TODO: fetch interceptor 패턴으로 변경 해보기
 // (함수 위치로 여기가 적절할까?)
 export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
-  // 함수 호출 시점에 세션 스토리지에서 최신 토큰을 가져옴
-  let accessToken = getAccessToken();
+  // 함수 호출 시점에 쿠키에서 최신 토큰을 가져옴
+  let accessToken = getCookie("accessToken") || getAccessToken();
 
   const fetchOptions: RequestInit = {
     ...options,
+    credentials: "include", // 쿠키 포함
     headers: {
       "Content-Type": "application/json",
       ...(accessToken && {
@@ -152,7 +194,7 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
       throw new Error("Authentication failed");
     }
 
-    accessToken = getAccessToken();
+    accessToken = getCookie("accessToken") || getAccessToken();
 
     fetchOptions.headers = {
       ...fetchOptions.headers,

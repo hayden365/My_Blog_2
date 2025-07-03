@@ -4,7 +4,7 @@ import NewPostPageClient from "@/app/components/newPostPageClient";
 
 const NewPostPage = async () => {
   const cookieStore = await cookies();
-  const token = cookieStore.get("access_token");
+  const token = cookieStore.get("accessToken");
 
   if (!token) {
     redirect("/login");
