@@ -23,7 +23,6 @@ export function useCreatePost() {
     mutationFn: createPost,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
-      queryClient.refetchQueries({ queryKey: ["posts"] });
     },
   });
 }
@@ -35,7 +34,6 @@ export const useUpdatePost = () => {
     mutationFn: updatePost,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
-      queryClient.refetchQueries({ queryKey: ["posts"] });
     },
   });
 };
@@ -47,7 +45,6 @@ export const useDeletePost = () => {
     mutationFn: deletePost,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["posts"] });
-      queryClient.refetchQueries({ queryKey: ["posts"] });
     },
   });
 };

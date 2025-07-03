@@ -1,20 +1,39 @@
-import React from "react";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
 import { getPostList, getTags } from "./api/fetch";
-import HorizontalTabs from "./components/horizontalTabs";
-import PostList from "./components/postList";
+import PostsPageClient from "./components/postsPageClient";
 
 interface PageProps {
   searchParams: Promise<{ tag?: string }>;
 }
 
 export default async function PostsPage({ searchParams }: PageProps) {
-  /* @next-codemod-ignore */
   const { tag } = await searchParams;
-  const [posts, tags] = await Promise.all([getPostList(tag), getTags()]);
+  const queryClient = new QueryClient();
+
+  try {
+    await Promise.all([
+      queryClient.prefetchQuery({
+        queryKey: ["posts", tag], // tag를 포함한 쿼리키
+        queryFn: () => getPostList(tag),
+      }),
+      queryClient.prefetchQuery({
+        queryKey: ["tags"],
+        queryFn: () => getTags(),
+      }),
+    ]);
+  } catch (error) {
+    console.error("Failed to fetch data:", error);
+  }
+
+  const dehydratedState = dehydrate(queryClient);
+
   return (
-    <div className="w-full max-w-[700px] flex flex-col justify-center items-center pt-6 mx-6">
-      <HorizontalTabs tags={tags} activeTag={tag} />
-      <PostList data={posts} />
-    </div>
+    <HydrationBoundary state={dehydratedState}>
+      <PostsPageClient tag={tag} />
+    </HydrationBoundary>
   );
 }

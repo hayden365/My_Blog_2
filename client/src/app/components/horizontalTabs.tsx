@@ -14,7 +14,7 @@ const HorizontalTabs = ({
   activeTag,
 }: {
   tags: Tag[];
-  activeTag?: string;
+  activeTag: string | "all";
 }) => {
   const [swiper, setSwiper] = useState<SwiperCore | null>(null);
   const [showLeftArrow, setShowLeftArrow] = useState(false);
@@ -33,10 +33,6 @@ const HorizontalTabs = ({
     const interval = setInterval(checkArrows, 200);
     return () => clearInterval(interval);
   }, [swiper, checkArrows]);
-
-  if (!tags || tags.length === 0) {
-    return null;
-  }
 
   return (
     <div className="relative w-full mx-10 pb-4 border-b border-gray-100">
@@ -70,28 +66,43 @@ const HorizontalTabs = ({
           speed={100}
           resistance={false}
         >
-          {tags.map((tag: Tag, index: number) => (
-            <SwiperSlide key={tag._id} className="!w-auto">
-              <Link
-                href={`/?tag=${tag.name}`}
-                className={twMerge(
-                  `flex-shrink-0 text-sm ${
-                    index === 0
-                      ? "mr-6"
-                      : index === tags.length - 1
-                        ? "mr-[50px]"
-                        : "mr-8"
-                  } ${
-                    activeTag === tag.name
-                      ? "font-bold border-b-2 border-black text-black"
-                      : "text-gray-500"
-                  }`
-                )}
-              >
-                {tag.name}
-              </Link>
-            </SwiperSlide>
-          ))}
+          <SwiperSlide key="all" className="!w-auto">
+            <Link
+              href="/"
+              className={twMerge(
+                `flex-shrink-0 text-sm mr-6 ${
+                  activeTag === "all"
+                    ? "font-bold border-b-2 border-black text-black"
+                    : "text-gray-500"
+                }`
+              )}
+            >
+              All
+            </Link>
+          </SwiperSlide>
+          {tags &&
+            tags.map((tag: Tag, index: number) => (
+              <SwiperSlide key={tag._id} className="!w-auto">
+                <Link
+                  href={`/?tag=${tag.name}`}
+                  className={twMerge(
+                    `flex-shrink-0 text-sm ${
+                      index === 0
+                        ? "mr-6"
+                        : index === tags.length - 1
+                          ? "mr-[50px]"
+                          : "mr-8"
+                    } ${
+                      activeTag === tag.name
+                        ? "font-bold border-b-2 border-black text-black"
+                        : "text-gray-500"
+                    }`
+                  )}
+                >
+                  {tag.name}
+                </Link>
+              </SwiperSlide>
+            ))}
         </Swiper>
       </div>
       <div

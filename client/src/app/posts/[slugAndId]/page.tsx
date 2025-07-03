@@ -8,14 +8,25 @@ import { Post } from "../../lib/types/post";
 import PostContentWrapper from "../../components/postContentWrapper";
 
 export async function generateStaticParams() {
+  const queryClient = new QueryClient();
+
   try {
-    const posts = await getPostList();
+    // posts 쿼리키를 사용하여 포스트 목록을 가져옴
+    await queryClient.prefetchQuery({
+      queryKey: ["posts"],
+      queryFn: () => getPostList(),
+    });
+
+    const posts = queryClient.getQueryData<Post[]>(["posts"]) || [];
+
     return posts.map((post: Post) => ({
       slugAndId: `${post.slug}-${post._id}`,
     }));
   } catch (error) {
     console.error("Failed to fetch posts:", error);
     return [];
+  } finally {
+    queryClient.clear(); // 메모리 정리
   }
 }
 
