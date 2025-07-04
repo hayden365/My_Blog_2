@@ -1,7 +1,7 @@
 "use client";
 import Button from "@/app/components/common/styledButton";
 import { HomeLogo } from "@/app/components/common/homeLogo";
-import LoginButton from "@/app/components/loginButton";
+import ProfileButton from "@/app/components/profileButton";
 import PublishModal from "@/app/components/publishModal";
 import { usePostStore } from "@/app/lib/store/postStore";
 import React, { useState, useEffect } from "react";
@@ -77,7 +77,7 @@ const EditPostClient = ({ _id }: { _id: string }) => {
           >
             Publish
           </Button>
-          <LoginButton />
+          <ProfileButton />
         </div>
       </div>
       <div

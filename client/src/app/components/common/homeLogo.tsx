@@ -5,9 +5,9 @@ export const HomeLogo = () => {
   return (
     <Link
       href="/"
-      className="font-inter text-3xl font-semibold hover:text-gray-600 transition-colors"
+      className="font-inter text-2xl font-semibold hover:text-gray-600 transition-colors"
     >
-      Blog
+      Node & Flow
     </Link>
   );
 };

@@ -5,7 +5,7 @@ import { usePostStore } from "../lib/store/postStore";
 import { useCreatePost } from "../lib/hooks/usePost";
 import { HomeLogo } from "./common/homeLogo";
 import StyledButton from "./common/styledButton";
-import LoginButton from "./loginButton";
+import ProfileButton from "./profileButton";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import PublishModal from "./publishModal";
 
@@ -61,7 +61,7 @@ const NewPostPageClient = () => {
           >
             Publish
           </StyledButton>
-          <LoginButton />
+          <ProfileButton />
         </div>
       </div>
       <div

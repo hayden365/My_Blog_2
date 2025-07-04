@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import LoginButton from "./loginButton";
+import ProfileButton from "./profileButton";
 import { useAuthStore } from "../lib/store/authStore";
 import { usePathname } from "next/navigation";
 import { HomeLogo } from "./common/homeLogo";
@@ -39,7 +39,7 @@ const Header = () => {
             <span className="text-sm">Write</span>
           </Link>
         )}
-        <LoginButton />
+        <ProfileButton />
       </div>
     </header>
   );

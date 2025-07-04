@@ -2,9 +2,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useAuthStore } from "../lib/store/authStore";
+import Link from "next/link";
 
-const LoginButton = () => {
-  const { userProfile, isLoading, isLoggedIn, login, logout } = useAuthStore();
+const ProfileButton = () => {
+  const { userProfile, isLoading, isLoggedIn, logout } = useAuthStore();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -56,13 +57,13 @@ const LoginButton = () => {
   }
 
   return (
-    <button
-      onClick={() => login()}
-      className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700"
+    <Link
+      href="/login"
+      className="px-5 py-2 text-sm font-medium border-black border-1 rounded-sm p-1 cursor-pointer shadow-md hover:shadow-lg transition-all duration-300"
     >
-      Google 로그인
-    </button>
+      Login
+    </Link>
   );
 };
 
-export default LoginButton;
+export default ProfileButton;
