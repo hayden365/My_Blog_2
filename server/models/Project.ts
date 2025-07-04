@@ -40,13 +40,19 @@ const projectSchema = new mongoose.Schema({
   isOngoing: {
     type: Boolean,
     default: false,
-  },
-  links: {
-    type: [String],
     required: true,
   },
-  images: {
-    type: [String],
+  links: {
+    type: {
+      github: { type: String, default: "" },
+      notion: { type: String, default: "" },
+      demo: { type: String, default: "" },
+      figma: { type: String, default: "" },
+    },
+    required: false,
+  },
+  coverImg: {
+    type: String,
     required: true,
   },
   createdAt: {

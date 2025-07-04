@@ -9,12 +9,16 @@ import {
   upload,
 } from "@imagekit/next";
 import { useRef, useState } from "react";
-import { usePostStore } from "../lib/store/postStore";
 
-const ImageUploader = () => {
+const ImageUploader = ({
+  image,
+  imageSetter,
+}: {
+  image: string;
+  imageSetter: (image: string) => void;
+}) => {
   const [progress, setProgress] = useState(0);
   const [isUploading, setIsUploading] = useState(false);
-  const { img_thumbnail, setImgThumbnail } = usePostStore();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -75,7 +79,7 @@ const ImageUploader = () => {
       });
       console.log("Upload response:", uploadResponse);
       if (uploadResponse.url) {
-        setImgThumbnail(uploadResponse.url);
+        imageSetter(uploadResponse.url);
       }
     } catch (error) {
       if (error instanceof ImageKitAbortError) {
@@ -112,10 +116,10 @@ const ImageUploader = () => {
         className="hidden"
       />
 
-      {img_thumbnail ? (
+      {image ? (
         <div className="w-full h-full relative">
           <Image
-            src={img_thumbnail}
+            src={image}
             width={100}
             height={100}
             alt="Uploaded preview"

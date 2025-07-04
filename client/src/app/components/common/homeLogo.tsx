@@ -7,7 +7,7 @@ export const HomeLogo = () => {
       href="/"
       className="font-inter text-2xl font-semibold hover:text-gray-600 transition-colors"
     >
-      Node & Flow
+      Nodes
     </Link>
   );
 };

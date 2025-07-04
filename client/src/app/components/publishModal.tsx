@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import Button from "./common/styledButton";
+import Button from "./common/styledGreenButton";
 import { usePostStore } from "../lib/store/postStore";
 import TagInput from "./common/tagInput";
 import ImageUploader from "./imageUploader";
@@ -16,7 +16,7 @@ const PublishModal = ({
   onClose,
   handlePublish,
 }: PublishModalProps) => {
-  const { title } = usePostStore();
+  const { title, img_thumbnail, setImgThumbnail } = usePostStore();
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -38,7 +38,10 @@ const PublishModal = ({
             <h2 className="text-xl font-bold">Story Preview</h2>
             {/* 이미지 들어갈 자리 */}
             <div className="w-full h-[200px] bg-gray-200 rounded-lg">
-              <ImageUploader />
+              <ImageUploader
+                image={img_thumbnail}
+                imageSetter={setImgThumbnail}
+              />
             </div>
             <p className="text-2xl font-bold border-b border-gray-200 pb-1">
               {title}

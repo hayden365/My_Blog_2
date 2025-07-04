@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import StyledButton from "./common/styledButton";
+import StyledGreenButton from "./common/styledGreenButton";
 
 const DeleteModal = ({
   isOpen,
@@ -33,7 +33,7 @@ const DeleteModal = ({
             Are you sure you want to delete this post?
           </p>
           <div className="flex gap-2">
-            <StyledButton
+            <StyledGreenButton
               className="bg-white border border-gray-700 text-gray-700"
               onClick={(e) => {
                 e.stopPropagation();
@@ -42,8 +42,8 @@ const DeleteModal = ({
               }}
             >
               Cancel
-            </StyledButton>
-            <StyledButton
+            </StyledGreenButton>
+            <StyledGreenButton
               className="bg-red-700 text-white"
               onClick={(e) => {
                 e.stopPropagation();
@@ -52,7 +52,7 @@ const DeleteModal = ({
               }}
             >
               Delete
-            </StyledButton>
+            </StyledGreenButton>
           </div>
         </div>
         <button

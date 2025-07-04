@@ -14,8 +14,22 @@ const Header = () => {
     return null;
   }
   return (
-    <header className="flex items-center justify-between px-6 py-3 border-b border-gray-100 shadow-xs">
-      <HomeLogo />
+    <header className="flex items-center justify-between px-6 py-3 border-b border-gray-100">
+      <div className="flex items-center gap-10">
+        <HomeLogo />
+        <Link
+          href="/posts"
+          className="font-bold text-gray-500 hover:text-gray-900 transition-colors"
+        >
+          Posts
+        </Link>
+        <Link
+          href="/projects"
+          className="font-bold text-gray-500 hover:text-gray-900 transition-colors"
+        >
+          Projects
+        </Link>
+      </div>
       <div className="flex items-center gap-10">
         {isLoggedIn && (
           <Link

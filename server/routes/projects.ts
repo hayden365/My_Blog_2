@@ -19,7 +19,7 @@ router.post("/", verifyToken, (async (req: Request, res: Response) => {
       endDate,
       isOngoing,
       links,
-      images,
+      coverImg,
     } = req.body;
 
     const project = new Project({
@@ -34,7 +34,7 @@ router.post("/", verifyToken, (async (req: Request, res: Response) => {
       endDate,
       isOngoing,
       links,
-      images,
+      coverImg,
     });
 
     const savedProject = await project.save();

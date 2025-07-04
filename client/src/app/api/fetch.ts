@@ -1,5 +1,6 @@
 import { fetchWithAuth } from "../lib/services/authService";
 import { PostData } from "../lib/types/post";
+import { ProjectData } from "../lib/types/project";
 
 const API_URL = process.env.NEXT_PUBLIC_URL;
 
@@ -71,3 +72,17 @@ export async function searchTags(query: string) {
   const response = await fetch(`${API_URL}/tag/search?query=${query}`);
   return handleResponse(response);
 }
+
+// 프로젝트 조회
+export async function getProjects() {
+  const response = await fetch(`${API_URL}/projects`);
+  return handleResponse(response);
+}
+
+export const createProject = async (project: ProjectData) => {
+  const response = await fetchWithAuth(`${API_URL}/projects`, {
+    method: "POST",
+    body: JSON.stringify(project),
+  });
+  return handleResponse(response);
+};

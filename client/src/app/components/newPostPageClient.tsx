@@ -4,7 +4,7 @@ import React, { useRef, useState } from "react";
 import { usePostStore } from "../lib/store/postStore";
 import { useCreatePost } from "../lib/hooks/usePost";
 import { HomeLogo } from "./common/homeLogo";
-import StyledButton from "./common/styledButton";
+import StyledGreenButton from "./common/styledGreenButton";
 import ProfileButton from "./profileButton";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import PublishModal from "./publishModal";
@@ -55,12 +55,12 @@ const NewPostPageClient = () => {
       <div role="header" className="py-6 flex justify-between">
         <HomeLogo />
         <div className="flex gap-8">
-          <StyledButton
+          <StyledGreenButton
             disabled={!title || !content_json}
             onClick={() => setIsModalOpen(true)}
           >
             Publish
-          </StyledButton>
+          </StyledGreenButton>
           <ProfileButton />
         </div>
       </div>

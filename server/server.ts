@@ -79,4 +79,4 @@ app.use(passport.session());
 app.use("/posts", postRoutes);
 app.use("/auth", authRoutes);
 app.use("/tag", tagRoutes);
-app.use("/project", projectRoutes);
+app.use("/projects", projectRoutes);

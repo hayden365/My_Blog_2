@@ -1,5 +1,5 @@
 "use client";
-import Button from "@/app/components/common/styledButton";
+import Button from "@/app/components/common/styledGreenButton";
 import { HomeLogo } from "@/app/components/common/homeLogo";
 import ProfileButton from "@/app/components/profileButton";
 import PublishModal from "@/app/components/publishModal";
