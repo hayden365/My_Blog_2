@@ -19,12 +19,12 @@ const LoginSuccessPage = () => {
   const { checkAuth } = useAuthStore();
   const router = useRouter();
 
-  const handleLogin = useCallback(async () => {
+  const handleLogin = useCallback(() => {
     const token = getCookie("accessToken");
     if (token) {
       try {
         setAccessToken(token);
-        await checkAuth();
+        checkAuth();
         router.replace("/");
       } catch (error) {
         console.error("토큰 처리 중 오류 발생:", error);

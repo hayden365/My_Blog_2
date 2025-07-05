@@ -26,7 +26,7 @@ const getCookie = (name: string): string | null => {
 const setCookie = (name: string, value: string, maxAge: number) => {
   if (typeof document === "undefined") return;
 
-  document.cookie = `${name}=${value}; path=/; max-age=${maxAge}; SameSite=Strict`;
+  document.cookie = `${name}=${value}; path=/; max-age=${maxAge}; SameSite=Strict; Secure`;
 };
 
 // 쿠키 삭제
