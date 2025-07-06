@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { UserProfile } from "../types/user";
 import {
   getUserData,
+  initAuth,
   refreshToken,
   login as serviceLogin,
   logout as serviceLogout,
@@ -22,6 +23,8 @@ export const useAuthStore = create<AuthStore>((set) => ({
   isLoggedIn: false,
 
   checkAuth: async () => {
+    initAuth();
+
     let userData = getUserData();
 
     if (!userData) {

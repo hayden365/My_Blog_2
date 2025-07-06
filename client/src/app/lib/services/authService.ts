@@ -37,6 +37,12 @@ const deleteCookie = (name: string) => {
 };
 
 export const initAuth = () => {
+  // 이미 초기화되었다면 스킵
+  if (accessToken && userData) {
+    console.log("Auth already initialized");
+    return;
+  }
+
   // 쿠키에서 토큰과 사용자 정보 가져오기
   accessToken = getCookie("accessToken");
 

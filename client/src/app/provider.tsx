@@ -8,7 +8,6 @@ import {
   QueryClientProvider,
 } from "@tanstack/react-query";
 import { useEffect } from "react";
-import { initAuth } from "./lib/services/authService";
 import { useAuthStore } from "./lib/store/authStore";
 
 function makeQueryClient() {
@@ -44,7 +43,6 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const { checkAuth } = useAuthStore();
 
   useEffect(() => {
-    initAuth();
     checkAuth(); // 최초 로드 시 인증 상태 체크
   }, [checkAuth]);
 
