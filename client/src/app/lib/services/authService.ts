@@ -51,10 +51,12 @@ export const initAuth = () => {
           .join("")
       );
       userData = JSON.parse(jsonPayload);
+      console.log("User data parsed successfully:", userData?.email);
     } catch (error) {
       console.error("Failed to parse user data from token:", error);
       accessToken = null;
       userData = null;
+      deleteCookie("accessToken");
     }
   }
 };
