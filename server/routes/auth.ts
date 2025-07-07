@@ -41,6 +41,13 @@ router.get(
     const user = req.user as AuthenticatedUser;
     const tokenVersion = crypto.randomBytes(8).toString("hex");
 
+    console.log("🔐 사용자 정보:", {
+      _id: user._id,
+      email: user.email,
+      name: user.name,
+      profileImage: user.profileImage,
+    });
+
     // 짧은 수명의 액세스 토큰 생성
     const accessToken = jwt.sign(
       {
@@ -52,6 +59,12 @@ router.get(
       JWT_SECRET,
       { expiresIn: "15m" }
     );
+
+    console.log("🎫 액세스 토큰 생성 완료:", {
+      토큰_길이: accessToken.length,
+      JWT_SECRET_길이: JWT_SECRET.length,
+      만료시간: "15m",
+    });
 
     // 긴 수명의 리프레시 토큰 생성
     const refreshToken = jwt.sign(
@@ -73,10 +86,21 @@ router.get(
     }).exec();
 
     // 리프레시 토큰을 쿠키에 저장
+    const isProduction = process.env.NODE_ENV === "production";
+    const isSecure = isProduction;
+    const sameSite = isProduction ? "strict" : "lax";
+
+    console.log("🍪 쿠키 설정 정보:", {
+      isProduction,
+      isSecure,
+      sameSite,
+      NODE_ENV: process.env.NODE_ENV,
+    });
+
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: isSecure,
+      sameSite: sameSite,
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7일
       path: "/",
     });
@@ -84,11 +108,18 @@ router.get(
     // 액세스 토큰을 쿠키에 저장
     res.cookie("accessToken", accessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: isSecure,
+      sameSite: sameSite,
       maxAge: 15 * 60 * 1000, // 15분
       path: "/",
     });
+
+    console.log("🍪 쿠키 설정 완료:");
+    console.log("- accessToken:", accessToken.substring(0, 20) + "...");
+    console.log("- httpOnly:", true);
+    console.log("- secure:", isSecure);
+    console.log("- sameSite:", sameSite);
+    console.log("- path: /");
 
     res.redirect(`${process.env.FRONTEND_URL}/login/success`);
   }
@@ -161,10 +192,14 @@ router.post("/refresh", (async (req: Request, res: Response) => {
     );
 
     // 새로운 액세스 토큰을 쿠키에 저장
+    const isProduction = process.env.NODE_ENV === "production";
+    const isSecure = isProduction;
+    const sameSite = isProduction ? "strict" : "lax";
+
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: isSecure,
+      sameSite: sameSite,
       maxAge: 15 * 60 * 1000, // 15분
       path: "/",
     });
@@ -202,10 +237,14 @@ router.post("/logout", (async (req: Request, res: Response) => {
       }
     }
 
+    const isProduction = process.env.NODE_ENV === "production";
+    const isSecure = isProduction;
+    const sameSite = isProduction ? "strict" : "lax";
+
     res.clearCookie("refreshToken", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: isSecure,
+      sameSite: sameSite,
       maxAge: 0,
       path: "/",
     });
@@ -213,8 +252,8 @@ router.post("/logout", (async (req: Request, res: Response) => {
     // 액세스 토큰 쿠키도 삭제
     res.clearCookie("accessToken", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: isSecure,
+      sameSite: sameSite,
       maxAge: 0,
       path: "/",
     });
@@ -228,14 +267,27 @@ router.post("/logout", (async (req: Request, res: Response) => {
 
 // GET /auth/me - 현재 사용자 정보 가져오기
 router.get("/me", (async (req: Request, res: Response) => {
+  console.log("=== /auth/me API 호출 ===");
+  console.log("요청 헤더:", req.headers);
+  console.log("전체 쿠키:", req.cookies);
+  console.log("accessToken 쿠키:", req.cookies.accessToken);
+  console.log("JWT_SECRET 존재 여부:", !!JWT_SECRET);
+  console.log("JWT_SECRET 길이:", JWT_SECRET?.length);
+
   const accessToken = req.cookies.accessToken;
 
   if (!accessToken) {
+    console.log("❌ accessToken이 없음");
     return res.status(401).json({ message: "No access token provided" });
   }
 
+  console.log("✅ accessToken 발견:", accessToken.substring(0, 20) + "...");
+  console.log("토큰 전체 길이:", accessToken.length);
+
   try {
     const decoded = jwt.verify(accessToken, JWT_SECRET) as any;
+    console.log("✅ 토큰 검증 성공:", decoded.email);
+    console.log("토큰 페이로드:", decoded);
 
     res.json({
       _id: decoded._id,
@@ -244,10 +296,22 @@ router.get("/me", (async (req: Request, res: Response) => {
       profileImage: decoded.profileImage,
     });
   } catch (error) {
+    console.log("❌ 토큰 검증 실패:", error);
+    console.log(
+      "에러 타입:",
+      error instanceof Error ? error.constructor.name : typeof error
+    );
+    console.log(
+      "에러 메시지:",
+      error instanceof Error ? error.message : String(error)
+    );
+
     if (error instanceof jwt.TokenExpiredError) {
+      console.log("토큰 만료됨");
       return res.status(401).json({ message: "Access token expired" });
     }
     if (error instanceof jwt.JsonWebTokenError) {
+      console.log("JWT 형식 오류");
       return res.status(403).json({ message: "Invalid access token" });
     }
     console.error("Get user info error:", error);
