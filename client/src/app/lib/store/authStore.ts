@@ -3,7 +3,7 @@ import { UserProfile } from "../types/user";
 import {
   getUserData,
   initAuth,
-  refreshToken,
+  isAuthenticated,
   login as serviceLogin,
   logout as serviceLogout,
 } from "../services/authService";
@@ -12,9 +12,9 @@ type AuthStore = {
   userProfile: UserProfile | null;
   isLoading: boolean;
   isLoggedIn: boolean;
-  checkAuth: () => void;
+  checkAuth: () => Promise<void>;
   login: () => void;
-  logout: () => void;
+  logout: () => Promise<void>;
 };
 
 export const useAuthStore = create<AuthStore>((set) => ({
@@ -23,24 +23,37 @@ export const useAuthStore = create<AuthStore>((set) => ({
   isLoggedIn: false,
 
   checkAuth: async () => {
-    initAuth();
+    try {
+      // 서버에서 사용자 정보 가져오기
+      const userData = await initAuth();
 
-    let userData = getUserData();
+      if (userData) {
+        set({
+          userProfile: userData,
+          isLoggedIn: true,
+          isLoading: false,
+        });
+      } else {
+        // 사용자 정보가 없으면 인증 상태 한 번 더 확인
+        const authenticated = await isAuthenticated();
 
-    if (!userData) {
-      const refreshsed = await refreshToken();
-      if (refreshsed) {
-        userData = getUserData();
+        if (authenticated) {
+          const currentUserData = getUserData();
+          set({
+            userProfile: currentUserData,
+            isLoggedIn: true,
+            isLoading: false,
+          });
+        } else {
+          set({
+            userProfile: null,
+            isLoggedIn: false,
+            isLoading: false,
+          });
+        }
       }
-    }
-
-    if (userData) {
-      set({
-        userProfile: userData,
-        isLoggedIn: true,
-        isLoading: false,
-      });
-    } else {
+    } catch (error) {
+      console.error("Auth check failed:", error);
       set({
         userProfile: null,
         isLoggedIn: false,

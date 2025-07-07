@@ -43,7 +43,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   const { checkAuth } = useAuthStore();
 
   useEffect(() => {
-    checkAuth(); // 최초 로드 시 인증 상태 체크
+    const initializeAuth = async () => {
+      await checkAuth(); // 최초 로드 시 인증 상태 체크
+    };
+
+    initializeAuth();
   }, [checkAuth]);
 
   return (

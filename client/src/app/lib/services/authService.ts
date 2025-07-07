@@ -1,77 +1,62 @@
 import { UserProfile } from "../types/user";
 
-let accessToken: string | null = null;
 let userData: UserProfile | null = null;
 
 const API_URL = process.env.NEXT_PUBLIC_URL;
 
-// 쿠키에서 토큰 읽기
-const getCookie = (name: string): string | null => {
-  if (typeof document === "undefined") return null;
+// 사용자 정보를 서버에서 가져오는 함수
+const fetchUserData = async (): Promise<UserProfile | null> => {
+  try {
+    const response = await fetch(`${API_URL}/auth/me`, {
+      method: "GET",
+      credentials: "include", // 쿠키 포함
+    });
 
-  const cookies = document.cookie.split(";");
-
-  for (const cookie of cookies) {
-    const trimmedCookie = cookie.trim();
-
-    if (trimmedCookie.startsWith(`${name}=`)) {
-      const value = trimmedCookie.substring(name.length + 1);
-      return value;
+    if (!response.ok) {
+      if (response.status === 401) {
+        // 토큰이 만료되었거나 없음
+        return null;
+      }
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
-  }
-  return null;
-};
 
-// 쿠키 설정
-const setCookie = (name: string, value: string, maxAge: number) => {
-  if (typeof document === "undefined") return;
-
-  document.cookie = `${name}=${value}; path=/; max-age=${maxAge}; SameSite=Strict; Secure`;
-};
-
-// 쿠키 삭제
-const deleteCookie = (name: string) => {
-  if (typeof document === "undefined") return;
-
-  document.cookie = `${name}=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
-};
-
-export const initAuth = () => {
-  // 이미 초기화되었다면 스킵
-  if (accessToken && userData) {
-    console.log("Auth already initialized");
-    return;
-  }
-
-  // 쿠키에서 토큰과 사용자 정보 가져오기
-  accessToken = getCookie("accessToken");
-
-  if (accessToken) {
-    try {
-      const base64Url = accessToken.split(".")[1];
-      const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-      const jsonPayload = decodeURIComponent(
-        atob(base64)
-          .split("")
-          .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-          .join("")
-      );
-      userData = JSON.parse(jsonPayload);
-      console.log("User data parsed successfully:", userData?.email);
-    } catch (error) {
-      console.error("Failed to parse user data from token:", error);
-      accessToken = null;
-      userData = null;
-      deleteCookie("accessToken");
-    }
+    const userData = await response.json();
+    return userData;
+  } catch (error) {
+    console.error("Failed to fetch user data:", error);
+    return null;
   }
 };
 
-export const getAccessToken = () => accessToken;
+// 인증 초기화 - 서버에서 사용자 정보 가져오기
+export const initAuth = async (): Promise<UserProfile | null> => {
+  try {
+    userData = await fetchUserData();
+    return userData;
+  } catch (error) {
+    console.error("Auth initialization failed:", error);
+    return null;
+  }
+};
+
+// 사용자 데이터 가져오기
 export const getUserData = () => userData;
 
-// 토큰이 있는지 확인
-export const isAuthenticated = () => !!accessToken;
+// 인증 상태 확인
+export const isAuthenticated = async (): Promise<boolean> => {
+  if (userData) {
+    return true;
+  }
+
+  // 서버에서 최신 정보 확인
+  const freshUserData = await fetchUserData();
+  if (freshUserData) {
+    userData = freshUserData;
+    return true;
+  }
+
+  return false;
+};
 
 // 로그인 함수
 export const login = () => {
@@ -80,75 +65,6 @@ export const login = () => {
   } catch (error) {
     console.error("Login failed:", error);
     throw error;
-  }
-};
-
-export const setAccessToken = (token: string) => {
-  accessToken = token;
-
-  // 토큰에서 사용자 정보 추출
-  try {
-    const base64Url = token.split(".")[1];
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split("")
-        .map((c) => "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2))
-        .join("")
-    );
-
-    userData = JSON.parse(jsonPayload);
-
-    // 쿠키에 저장 (15분 유효)
-    setCookie("accessToken", token, 15 * 60);
-
-    return userData;
-  } catch (error) {
-    console.error("Failed to parse user data:", error);
-    return null;
-  }
-};
-
-// 토큰 갱신 함수
-export const refreshToken = async (): Promise<boolean> => {
-  if (!accessToken) {
-    console.log("No access token available for refresh");
-    return false;
-  }
-
-  try {
-    const response = await fetch(`${API_URL}/auth/refresh`, {
-      method: "POST",
-      credentials: "include", // 반드시 포함
-    });
-
-    console.log("Refresh response status:", response.status);
-
-    if (!response.ok) {
-      // 서버 응답 내용을 확인
-      const errorData = await response.text();
-      console.error("Refresh token failed:", {
-        status: response.status,
-        statusText: response.statusText,
-        body: errorData,
-      });
-
-      // 401이나 403 에러인 경우 로그아웃 처리
-      if (response.status === 401 || response.status === 403) {
-        console.log("Token refresh failed, logging out user");
-        await logout();
-      }
-
-      return false;
-    }
-
-    const data = await response.json();
-    console.log("Token refresh successful");
-    setAccessToken(data.accessToken);
-    return true;
-  } catch (error) {
-    console.error("Token refresh failed:", error);
-    return false;
   }
 };
 
@@ -162,36 +78,51 @@ export const logout = async () => {
   } catch (error) {
     console.error("Logout failed:", error);
   } finally {
-    accessToken = null;
     userData = null;
-
-    // 쿠키 삭제
-    deleteCookie("accessToken");
   }
 };
 
-// api 요청을 인증 헤더 포함하게 해주는 fetch 함수
-// TODO: fetch interceptor 패턴으로 변경 해보기
-// (함수 위치로 여기가 적절할까?)
-export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
-  // 함수 호출 시점에 쿠키에서 최신 토큰을 가져옴
-  let accessToken = getCookie("accessToken") || getAccessToken();
+// 토큰 갱신 함수 (서버에서 자동 처리되므로 간단하게)
+export const refreshToken = async (): Promise<boolean> => {
+  try {
+    const response = await fetch(`${API_URL}/auth/refresh`, {
+      method: "POST",
+      credentials: "include",
+    });
 
+    if (!response.ok) {
+      console.error("Token refresh failed:", response.status);
+      return false;
+    }
+
+    // 토큰이 갱신되었으므로 사용자 정보도 새로 가져오기
+    const freshUserData = await fetchUserData();
+    if (freshUserData) {
+      userData = freshUserData;
+      return true;
+    }
+
+    return false;
+  } catch (error) {
+    console.error("Token refresh failed:", error);
+    return false;
+  }
+};
+
+// 인증이 포함된 fetch 함수
+export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
   const fetchOptions: RequestInit = {
     ...options,
     credentials: "include", // 쿠키 포함
     headers: {
       "Content-Type": "application/json",
-      ...(accessToken && {
-        Authorization: `Bearer ${accessToken}`,
-      }),
       ...(options.headers || {}),
     },
   };
 
   let response = await fetch(url, fetchOptions);
 
-  if (response.status === 401 && accessToken) {
+  if (response.status === 401) {
     console.log("Access token expired, attempting refresh");
     const refreshSuccessful = await refreshToken();
 
@@ -202,13 +133,7 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
       throw new Error("Authentication failed");
     }
 
-    accessToken = getCookie("accessToken") || getAccessToken();
-
-    fetchOptions.headers = {
-      ...fetchOptions.headers,
-      Authorization: `Bearer ${accessToken}`,
-    };
-
+    // 토큰이 갱신되었으므로 원래 요청 재시도
     response = await fetch(url, fetchOptions);
   }
 

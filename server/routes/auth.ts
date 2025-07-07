@@ -83,7 +83,7 @@ router.get(
 
     // 액세스 토큰을 쿠키에 저장
     res.cookie("accessToken", accessToken, {
-      httpOnly: false,
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 15 * 60 * 1000, // 15분
@@ -162,7 +162,7 @@ router.post("/refresh", (async (req: Request, res: Response) => {
 
     // 새로운 액세스 토큰을 쿠키에 저장
     res.cookie("accessToken", newAccessToken, {
-      httpOnly: false,
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 15 * 60 * 1000, // 15분
@@ -205,14 +205,14 @@ router.post("/logout", (async (req: Request, res: Response) => {
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: "strict",
       maxAge: 0,
       path: "/",
     });
 
     // 액세스 토큰 쿠키도 삭제
     res.clearCookie("accessToken", {
-      httpOnly: false,
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 0,
@@ -223,6 +223,35 @@ router.post("/logout", (async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Logout error:", error);
     res.status(500).json({ message: "Logout failed" });
+  }
+}) as RequestHandler);
+
+// GET /auth/me - 현재 사용자 정보 가져오기
+router.get("/me", (async (req: Request, res: Response) => {
+  const accessToken = req.cookies.accessToken;
+
+  if (!accessToken) {
+    return res.status(401).json({ message: "No access token provided" });
+  }
+
+  try {
+    const decoded = jwt.verify(accessToken, JWT_SECRET) as any;
+
+    res.json({
+      _id: decoded._id,
+      email: decoded.email,
+      name: decoded.name,
+      profileImage: decoded.profileImage,
+    });
+  } catch (error) {
+    if (error instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({ message: "Access token expired" });
+    }
+    if (error instanceof jwt.JsonWebTokenError) {
+      return res.status(403).json({ message: "Invalid access token" });
+    }
+    console.error("Get user info error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 }) as RequestHandler);
 

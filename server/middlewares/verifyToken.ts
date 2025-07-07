@@ -9,26 +9,17 @@ interface CustomJwtPayload {
   exp?: number;
 }
 
+// 토큰 검증 미들웨어
 export const verifyToken = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  // Authorization 헤더에서 토큰 확인
-  let token: string | undefined;
-
-  const authHeader = req.headers["authorization"];
-  if (authHeader?.startsWith("Bearer ")) {
-    token = authHeader.split(" ")[1];
-  }
-
-  // 헤더에 없으면 쿠키에서 확인
-  if (!token && req.cookies?.accessToken) {
-    token = req.cookies.accessToken;
-  }
+  // httpOnly 쿠키에서 토큰 확인
+  const token = req.cookies?.accessToken;
 
   if (!token) {
-    res.status(401).json({ message: "No token provided" });
+    res.status(401).json({ message: "No access token provided" });
     return;
   }
 
