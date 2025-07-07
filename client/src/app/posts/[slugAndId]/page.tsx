@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-query";
 import { getPostList, getPost } from "../../api/fetch";
 import { Post } from "../../lib/types/post";
-import PostContentWrapper from "../../components/postContentWrapper";
+import PostContentClient from "../../components/postContentClient";
 
 export async function generateStaticParams() {
   const queryClient = new QueryClient();
@@ -53,7 +53,7 @@ export default async function PostPage({ params, searchParams }: PageProps) {
 
   return (
     <HydrationBoundary state={dehydratedState}>
-      <PostContentWrapper slugAndId={resolvedParams.slugAndId} />
+      <PostContentClient slugAndId={resolvedParams.slugAndId} />
     </HydrationBoundary>
   );
 }

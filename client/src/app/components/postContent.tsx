@@ -15,7 +15,7 @@ const PostContent = ({ data }: { data: Post }) => {
   return (
     <div className="h-full py-15 mx-5 flex flex-col gap-4">
       <header className="border-b border-gray-100 pb-4">
-        <h1 className="text-[42px] font-bold mb-8">{data.title}</h1>
+        <h1 className="text-4xl text-wrap font-bold mb-8">{data.title}</h1>
         <div className="flex items-center justify-between gap-2">
           <time className="text-gray-500">{format(data.createdAt, "ko")}</time>
           {isLoggedIn && <PostOptionsMenu post={data} />}

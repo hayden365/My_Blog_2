@@ -4,7 +4,7 @@ import React from "react";
 import { getPost } from "../api/fetch";
 import PostContent from "./postContent";
 
-const PostContentWrapper = ({ slugAndId }: { slugAndId: string }) => {
+const PostContentClient = ({ slugAndId }: { slugAndId: string }) => {
   // slugAndId 형식: "slug-id"
   const _id = slugAndId?.split("-").pop() || "";
 
@@ -20,4 +20,4 @@ const PostContentWrapper = ({ slugAndId }: { slugAndId: string }) => {
   return <PostContent data={data} />;
 };
 
-export default PostContentWrapper;
+export default PostContentClient;
