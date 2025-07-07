@@ -8,8 +8,14 @@ import StyledGreenButton from "./common/styledGreenButton";
 import ProfileButton from "./profileButton";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import PublishModal from "./publishModal";
+import { useAuthStore } from "../lib/store/authStore";
+import { redirect } from "next/navigation";
 
 const NewPostPageClient = () => {
+  const { isLoggedIn } = useAuthStore();
+  if (!isLoggedIn) {
+    redirect("/login");
+  }
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const {

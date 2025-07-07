@@ -4,7 +4,7 @@ let userData: UserProfile | null = null;
 
 const API_URL = process.env.NEXT_PUBLIC_URL;
 
-// 사용자 정보를 서버에서 가져오는 함수
+// 사용자 정보를 서버에서 가져오는 함수 (리프레시 토큰 포함)
 const fetchUserData = async (): Promise<UserProfile | null> => {
   try {
     const response = await fetch(`${API_URL}/auth/me`, {
@@ -12,16 +12,36 @@ const fetchUserData = async (): Promise<UserProfile | null> => {
       credentials: "include", // 쿠키 포함
     });
 
-    if (!response.ok) {
-      if (response.status === 401) {
-        // 토큰이 만료되었거나 없음
-        return null;
-      }
-      throw new Error(`HTTP error! status: ${response.status}`);
+    if (response.ok) {
+      const userData = await response.json();
+      return userData;
     }
 
-    const userData = await response.json();
-    return userData;
+    if (response.status === 401) {
+      console.log("액세스 토큰 만료, 리프레시 토큰으로 갱신 시도");
+
+      // 리프레시 토큰으로 새로운 액세스 토큰 발급 시도
+      const refreshSuccessful = await refreshToken();
+
+      if (refreshSuccessful) {
+        console.log("✅ 토큰 갱신 성공, 사용자 정보 다시 가져오기");
+        // 토큰이 갱신되었으므로 다시 사용자 정보 요청
+        const retryResponse = await fetch(`${API_URL}/auth/me`, {
+          method: "GET",
+          credentials: "include",
+        });
+
+        if (retryResponse.ok) {
+          const userData = await retryResponse.json();
+          return userData;
+        }
+      }
+
+      console.log("❌ 리프레시 토큰도 만료됨");
+      return null;
+    }
+
+    throw new Error(`HTTP error! status: ${response.status}`);
   } catch (error) {
     console.error("Failed to fetch user data:", error);
     return null;
