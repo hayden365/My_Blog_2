@@ -88,7 +88,7 @@ router.get(
     // 리프레시 토큰을 쿠키에 저장
     const isProduction = process.env.NODE_ENV === "production";
     const isSecure = isProduction;
-    const sameSite = isProduction ? "strict" : "lax";
+    const sameSite = isProduction ? "none" : "lax";
 
     console.log("🍪 쿠키 설정 정보:", {
       isProduction,
@@ -194,7 +194,7 @@ router.post("/refresh", (async (req: Request, res: Response) => {
     // 새로운 액세스 토큰을 쿠키에 저장
     const isProduction = process.env.NODE_ENV === "production";
     const isSecure = isProduction;
-    const sameSite = isProduction ? "strict" : "lax";
+    const sameSite = isProduction ? "none" : "lax";
 
     res.cookie("accessToken", newAccessToken, {
       httpOnly: true,
@@ -239,7 +239,7 @@ router.post("/logout", (async (req: Request, res: Response) => {
 
     const isProduction = process.env.NODE_ENV === "production";
     const isSecure = isProduction;
-    const sameSite = isProduction ? "strict" : "lax";
+    const sameSite = isProduction ? "none" : "lax";
 
     res.clearCookie("refreshToken", {
       httpOnly: true,
@@ -271,10 +271,18 @@ router.get("/me", (async (req: Request, res: Response) => {
   console.log("요청 헤더:", req.headers);
   console.log("전체 쿠키:", req.cookies);
   console.log("accessToken 쿠키:", req.cookies.accessToken);
+  console.log("Authorization 헤더:", req.headers.authorization);
   console.log("JWT_SECRET 존재 여부:", !!JWT_SECRET);
   console.log("JWT_SECRET 길이:", JWT_SECRET?.length);
 
-  const accessToken = req.cookies.accessToken;
+  // 쿠키에서 토큰 확인
+  let accessToken = req.cookies.accessToken;
+
+  // 쿠키에 없으면 Authorization 헤더에서 확인
+  if (!accessToken && req.headers.authorization?.startsWith("Bearer ")) {
+    accessToken = req.headers.authorization.split(" ")[1];
+    console.log("✅ Authorization 헤더에서 토큰 발견");
+  }
 
   if (!accessToken) {
     console.log("❌ accessToken이 없음");
