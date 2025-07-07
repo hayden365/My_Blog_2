@@ -2,8 +2,8 @@ export interface ProjectData {
   _id: string;
   title: string;
   language: string;
-  frontend_tech: string;
-  backend_tech: string;
+  frontend_tech: string[];
+  backend_tech: string[];
   isGroupProject: boolean;
   myRole: string;
   description: string;

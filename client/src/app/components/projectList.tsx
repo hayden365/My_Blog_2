@@ -7,11 +7,14 @@ interface ProjectListProps {
 }
 
 const ProjectList = ({ data }: ProjectListProps) => {
+  console.log(data);
   return (
-    <div className="w-full flex flex-col gap-4">
-      {data.map((project) => (
-        <ProjectCard key={project._id} project={project} />
-      ))}
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+      {/* {data.map((project) => ( */}
+      <ProjectCard key={data[0]._id} project={data[0]} />
+      <ProjectCard key="dlkjsfoeifjs" project={data[0]} />
+      <ProjectCard key="dlkjsfoeifjsdsfse" project={data[0]} />
+      {/* ))} */}
     </div>
   );
 };
