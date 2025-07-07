@@ -57,7 +57,7 @@ router.get(
         profileImage: user.profileImage,
       },
       JWT_SECRET,
-      { expiresIn: "1m" }
+      { expiresIn: "15m" }
     );
 
     console.log("🎫 액세스 토큰 생성 완료:", {
@@ -110,7 +110,7 @@ router.get(
       httpOnly: true,
       secure: isSecure,
       sameSite: sameSite,
-      maxAge: 1 * 60 * 1000, // 15분
+      maxAge: 15 * 60 * 1000, // 15분
       path: "/",
     });
 
@@ -188,7 +188,7 @@ router.post("/refresh", (async (req: Request, res: Response) => {
         profileImage: user.profileImage,
       },
       JWT_SECRET,
-      { expiresIn: "1m" }
+      { expiresIn: "15m" }
     );
 
     // 새로운 액세스 토큰을 쿠키에 저장
