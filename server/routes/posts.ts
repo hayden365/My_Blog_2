@@ -107,27 +107,36 @@ router.put("/:_id", verifyToken, (async (req: Request, res: Response) => {
       return;
     }
 
+    // 클라이언트에서 post 객체로 감싸서 보내므로 req.body.post에서 데이터 추출
+    const postData = req.body.post || req.body;
+
     // 태그 처리
     const oldTagIds = currentPost.tags?.map((tagId) => tagId.toString()) || [];
-    const newTagNames = req.body.tags || [];
+    const newTagNames = postData.tags || [];
     const newTagIds = await syncPostTags(oldTagIds, newTagNames);
+
+    // 프로젝트 처리
+    const projectIds = await Project.find({
+      _id: { $in: postData.projects || [] },
+    });
 
     const updatedPost = await Post.findOneAndUpdate(
       { _id: req.params._id },
       {
-        title: req.body.title,
-        subtitle: req.body.subtitle,
-        content_json: req.body.content_json,
-        slug: await slugify(req.body.slug || req.body.title, currentPost.slug),
+        title: postData.title,
+        subtitle: postData.subtitle,
+        content_json: postData.content_json,
+        slug: await slugify(postData.slug || postData.title, currentPost.slug),
         tags: newTagIds,
-        projects: req.body.projects,
-        img_thumbnail: req.body.img_thumbnail,
+        projects: projectIds,
+        img_thumbnail: postData.img_thumbnail,
       },
       { new: true }
     );
 
     res.json(updatedPost);
   } catch (err) {
+    console.error("Post update error:", err);
     res.status(500).json({ message: err });
   }
 }) as RequestHandler);

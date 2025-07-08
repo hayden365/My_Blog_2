@@ -79,7 +79,7 @@ const EditPostClient = ({ _id }: { _id: string }) => {
 
   return (
     <>
-      <div role="header" className="py-6 flex justify-between">
+      <div role="header" className="py-6 flex items-center justify-between">
         <HomeLogo />
         <div className="flex gap-8">
           <Button
