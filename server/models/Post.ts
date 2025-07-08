@@ -28,6 +28,12 @@ const postSchema = new mongoose.Schema({
     ref: "Project",
     required: false,
   },
+  types: {
+    type: [String],
+    enum: ["error-handling", "feature", "theory", "retrospective", "design"],
+    required: false,
+    default: [],
+  },
   content_json: {
     type: Object,
     required: true,

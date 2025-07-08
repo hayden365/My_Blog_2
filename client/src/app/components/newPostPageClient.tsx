@@ -25,6 +25,7 @@ const NewPostPageClient = () => {
     tags,
     img_thumbnail,
     projects,
+    types,
     setTitle,
     setContent,
     resetPost,
@@ -43,6 +44,7 @@ const NewPostPageClient = () => {
         tags,
         img_thumbnail: img_thumbnail ?? "",
         projects,
+        types,
       },
       {
         onSuccess: (data) => {

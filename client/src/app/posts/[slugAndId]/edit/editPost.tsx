@@ -25,11 +25,13 @@ const EditPostClient = ({ _id }: { _id: string }) => {
     content_json,
     tags,
     projects,
+    types,
     setTitle,
     setContent,
     setTags,
     resetPost,
     setProjects,
+    setTypes,
   } = usePostStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { mutate: mutateUpdatePost } = useUpdatePost();
@@ -44,8 +46,9 @@ const EditPostClient = ({ _id }: { _id: string }) => {
       setContent(post.content_json);
       setTags(post.tags.map((tag: { name: string }) => tag.name));
       setProjects(post.projects.map((project: string) => project));
+      setTypes(post.types.map((type: string[]) => type));
     }
-  }, [post, setTitle, setContent, setTags, setProjects]);
+  }, [post, setTitle, setContent, setTags, setProjects, setTypes]);
 
   const titleRef = React.useRef<HTMLHeadingElement>(null);
 
@@ -58,7 +61,7 @@ const EditPostClient = ({ _id }: { _id: string }) => {
   const handlePublish = () => {
     const title = titleRef.current?.innerText ?? "";
     mutateUpdatePost(
-      { _id, title, content_json: content_json ?? [], tags, projects },
+      { _id, title, content_json: content_json ?? [], tags, projects, types },
       {
         onSuccess: (updatedPost) => {
           resetPost();

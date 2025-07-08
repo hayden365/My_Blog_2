@@ -26,4 +26,13 @@ export interface PostData {
   tags: string[];
   img_thumbnail?: string;
   projects: string[];
+  types: string[];
 }
+
+export const POST_TYPES = [
+  { key: "error", label: "에러 처리" },
+  { key: "feature", label: "기능 구현" },
+  { key: "theory", label: "이론 정리" },
+  { key: "retrospective", label: "회고" },
+  { key: "planning", label: "기획" },
+];

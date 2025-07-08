@@ -5,6 +5,7 @@ import { usePostStore } from "../lib/store/postStore";
 import TagInput from "./common/tagInput";
 import ImageUploader from "./imageUploader";
 import ProjectSelector from "./common/projectSelector";
+import TypeSelector from "./common/typeSelector";
 
 interface PublishModalProps {
   isOpen: boolean;
@@ -18,6 +19,7 @@ const PublishModal = ({
   handlePublish,
 }: PublishModalProps) => {
   const { title, img_thumbnail, setImgThumbnail } = usePostStore();
+
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
@@ -34,7 +36,8 @@ const PublishModal = ({
 
       {/* 모달 컨텐츠 */}
       <div className="relative z-10 bg-white p-6 w-11/12 max-w-[1040px] transition-transform duration-300 ease-out starting:opacity-0 starting:scale-50 opacity-100 scale-100">
-        <div className="flex items-center justify-between gap-16 flex-col md:flex-row">
+        <div className="flex items-center justify-center gap-14 flex-col md:flex-row">
+          {/* 왼쪽 컨텐츠 */}
           <div className="w-full flex flex-col gap-2">
             <h2 className="text-xl font-bold">Story Preview</h2>
             {/* 이미지 들어갈 자리 */}
@@ -52,19 +55,31 @@ const PublishModal = ({
             </p> */}
           </div>
 
-          {/* Tag Section */}
+          {/* 오른쪽 컨텐츠 */}
           <div className="flex flex-col gap-4 w-full max-w-xl">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              About
-            </label>
-
-            {/* 태그 입력 영역 */}
-            <TagInput />
-            {/* 프로젝트 선택 영역 */}
-            <ProjectSelector />
-            <div className="flex justify-end">
-              <Button onClick={handlePublish}>Publish</Button>
+            <div className="flex flex-col gap-1">
+              <label className="block text-sm font-medium text-gray-700 mt-1">
+                About
+              </label>
+              <TagInput />
             </div>
+
+            {/* 프로젝트 선택 영역 */}
+            <div className="flex flex-col gap-1">
+              <label className="block text-sm font-medium text-gray-700 mt-1">
+                Project
+              </label>
+              <ProjectSelector />
+            </div>
+            <div className="flex flex-col gap-1">
+              <label className="block text-sm font-medium text-gray-700 mt-1">
+                Type
+              </label>
+              <TypeSelector />
+            </div>
+          </div>
+          <div className="absolute right-[30px] bottom-[-30px]">
+            <Button onClick={handlePublish}>Publish</Button>
           </div>
 
           <button
