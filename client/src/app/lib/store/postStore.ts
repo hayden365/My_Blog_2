@@ -6,6 +6,7 @@ interface PostState {
   content_json: JSONContent;
   tags: string[];
   img_thumbnail: string;
+  projects: string[];
   setTitle: (title: string) => void;
   setContent: (content_json: JSONContent) => void;
   setTags: (tags: string[]) => void;
@@ -14,6 +15,7 @@ interface PostState {
   resetPost: () => void;
   setImgThumbnail: (img_thumbnail: string) => void;
   removeImgThumbnail: () => void;
+  setProjects: (project: string[]) => void;
 }
 
 export const usePostStore = create<PostState>((set) => ({
@@ -21,6 +23,7 @@ export const usePostStore = create<PostState>((set) => ({
   content_json: [],
   tags: [],
   img_thumbnail: "",
+  projects: [],
   setTitle: (title) => set({ title }),
   setContent: (content_json) => set({ content_json: content_json }),
   setTags: (tags) => set({ tags }),
@@ -36,4 +39,5 @@ export const usePostStore = create<PostState>((set) => ({
 
   setImgThumbnail: (img_thumbnail) => set({ img_thumbnail }),
   removeImgThumbnail: () => set({ img_thumbnail: "" }),
+  setProjects: (projects) => set({ projects }),
 }));

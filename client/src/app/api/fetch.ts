@@ -37,18 +37,11 @@ export const createPost = async (post: PostData) => {
   return handleResponse(response);
 };
 
-export const updatePost = async ({
-  _id,
-  title,
-  content_json,
-  tags,
-}: PostData) => {
-  const response = await fetchWithAuth(`${API_URL}/posts/${_id}`, {
+export const updatePost = async (post: PostData) => {
+  const response = await fetchWithAuth(`${API_URL}/posts/${post._id}`, {
     method: "PUT",
     body: JSON.stringify({
-      title,
-      content_json,
-      tags,
+      post,
     }),
   });
   return handleResponse(response);
@@ -73,12 +66,14 @@ export async function searchTags(query: string) {
   return handleResponse(response);
 }
 
+/* 프로젝트 */
 // 프로젝트 조회
 export async function getProjects() {
   const response = await fetch(`${API_URL}/projects`);
   return handleResponse(response);
 }
 
+// 프로젝트 생성
 export const createProject = async (project: ProjectData) => {
   const response = await fetchWithAuth(`${API_URL}/projects`, {
     method: "POST",

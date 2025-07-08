@@ -26,7 +26,7 @@ const TagInput = () => {
   };
 
   return (
-    <div className="flex flex-wrap items-center gap-2 p-2 border rounded bg-gray-100 border-gray-300">
+    <div className="p-2 border rounded bg-gray-100 border-gray-300">
       {tags.map((tag) => (
         <span
           key={tag}
@@ -44,11 +44,11 @@ const TagInput = () => {
       <div className="relative">
         <input
           type="text"
-          placeholder="Add a topic..."
+          placeholder="Add a tag..."
           value={input}
           onChange={(e) => setInput(e.target.value)}
           onKeyDown={handleKeyDown}
-          className="shrink bg-transparent focus:outline-none text-sm p-1"
+          className="w-full bg-transparent focus:outline-none text-sm p-1"
         />
         {/* 자동완성 드롭다운 */}
         {input !== "" && suggestions?.length > 0 && (

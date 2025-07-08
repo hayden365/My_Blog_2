@@ -4,6 +4,7 @@ import Tag from "../models/Tag";
 import slugify from "../hooks/slugify";
 import { verifyToken } from "../middlewares/verifyToken";
 import { createOrUpdateTags, syncPostTags } from "../hooks/tagManager";
+import Project from "../models/Project";
 
 interface CustomUser {
   id: string;
@@ -20,6 +21,9 @@ router.post("/", verifyToken, (async (req: Request, res: Response) => {
     // 태그 처리
     const tagIds = await createOrUpdateTags(tags || []);
 
+    // 프로젝트 처리
+    const projectIds = await Project.find({ _id: { $in: projects } });
+
     // slug 생성
     const slug = req.body.slug || (await slugify(title));
 
@@ -30,7 +34,7 @@ router.post("/", verifyToken, (async (req: Request, res: Response) => {
       slug,
       tags: tagIds,
       authorId: (req.user as CustomUser)?.id,
-      projects,
+      projects: projectIds,
       img_thumbnail,
     });
 
@@ -180,10 +184,9 @@ router.get("/project/:projectId", (async (req: Request, res: Response) => {
 // Get post by slug (for client-side routing)
 router.get("/slug/:slug", (async (req: Request, res: Response) => {
   try {
-    const post = await Post.findOne({ slug: req.params.slug }).populate(
-      "tags",
-      "name"
-    );
+    const post = await Post.findOne({ slug: req.params.slug })
+      .populate("tags", "name")
+      .populate("projects", "title");
     if (!post) {
       res.status(404).json({ message: "Post not found" });
       return;

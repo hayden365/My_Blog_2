@@ -12,8 +12,9 @@ import { useAuthStore } from "../lib/store/authStore";
 import { redirect } from "next/navigation";
 
 const NewPostPageClient = () => {
-  const { isLoggedIn } = useAuthStore();
-  if (!isLoggedIn) {
+  const { isLoggedIn, isLoading } = useAuthStore();
+
+  if (!isLoggedIn && !isLoading) {
     redirect("/login");
   }
   const router = useRouter();
@@ -23,6 +24,7 @@ const NewPostPageClient = () => {
     content_json,
     tags,
     img_thumbnail,
+    projects,
     setTitle,
     setContent,
     resetPost,
@@ -40,7 +42,7 @@ const NewPostPageClient = () => {
         content_json: content_json ?? [],
         tags,
         img_thumbnail: img_thumbnail ?? "",
-        _id: "",
+        projects,
       },
       {
         onSuccess: (data) => {
@@ -58,7 +60,7 @@ const NewPostPageClient = () => {
 
   return (
     <>
-      <div role="header" className="py-6 flex justify-between">
+      <div role="header" className="py-6 flex items-center justify-between">
         <HomeLogo />
         <div className="flex gap-8">
           <StyledGreenButton
@@ -70,10 +72,7 @@ const NewPostPageClient = () => {
           <ProfileButton />
         </div>
       </div>
-      <div
-        role="main"
-        className="flex flex-col py-6 gap-6 h-[calc(100vh-65px)]"
-      >
+      <div role="main" className="flex flex-col py-6 gap-6 min-h-0 flex-1">
         <input
           type="text"
           value={title}

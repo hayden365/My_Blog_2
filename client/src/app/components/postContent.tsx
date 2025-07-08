@@ -13,7 +13,7 @@ const PostContent = ({ data }: { data: Post }) => {
   const { isLoggedIn } = useAuthStore();
 
   return (
-    <div className="h-full py-15 mx-5 flex flex-col gap-4">
+    <div className="py-13 mx-5 flex flex-col gap-4">
       <header className="border-b border-gray-100 pb-4">
         <h1 className="text-4xl text-wrap font-bold mb-8">{data.title}</h1>
         <div className="flex items-center justify-between gap-2">

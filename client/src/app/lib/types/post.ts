@@ -6,6 +6,7 @@ export interface Tag {
   count: number;
 }
 
+// 서버에서 받아오는 데이터
 export interface Post {
   _id: string;
   title: string;
@@ -17,10 +18,12 @@ export interface Post {
   img_thumbnail?: string;
 }
 
+// 서버에 보내는 데이터
 export interface PostData {
-  _id: string;
+  _id?: string;
   title: string;
   content_json: JSONContent;
   tags: string[];
   img_thumbnail?: string;
+  projects: string[];
 }

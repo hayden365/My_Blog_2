@@ -29,12 +29,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <body className={`${inter.variable} ${nanum.variable} antialiased`}>
+      <body
+        className={`${inter.variable} ${nanum.variable} antialiased min-h-screen flex flex-col`}
+      >
         <Providers>
           <Header />
-          <div className="flex-1 flex flex-col items-center min-h-screen max-w-[1034px] mx-auto">
+          <main className="flex-1 flex flex-col items-center w-full max-w-[1034px] mx-auto">
             <Suspense fallback={<BlogListSkeleton />}>{children}</Suspense>
-          </div>
+          </main>
           <footer className="h-10" />
           <ReactQueryDevtools initialIsOpen={false} />
         </Providers>

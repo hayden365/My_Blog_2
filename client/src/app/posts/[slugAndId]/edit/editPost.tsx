@@ -14,8 +14,9 @@ import { useAuthStore } from "@/app/lib/store/authStore";
 import { redirect } from "next/navigation";
 
 const EditPostClient = ({ _id }: { _id: string }) => {
-  const { isLoggedIn } = useAuthStore();
-  if (!isLoggedIn) {
+  const { isLoggedIn, isLoading: isAuthLoading } = useAuthStore();
+
+  if (!isLoggedIn && !isAuthLoading) {
     redirect("/login");
   }
   const router = useRouter();
@@ -23,10 +24,12 @@ const EditPostClient = ({ _id }: { _id: string }) => {
     title,
     content_json,
     tags,
+    projects,
     setTitle,
     setContent,
     setTags,
     resetPost,
+    setProjects,
   } = usePostStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { mutate: mutateUpdatePost } = useUpdatePost();
@@ -35,14 +38,14 @@ const EditPostClient = ({ _id }: { _id: string }) => {
     queryKey: ["post", _id],
     queryFn: () => getPost(_id),
   });
-
   useEffect(() => {
     if (post) {
       setTitle(post.title);
       setContent(post.content_json);
       setTags(post.tags.map((tag: { name: string }) => tag.name));
+      setProjects(post.projects.map((project: string) => project));
     }
-  }, [post, setTitle, setContent, setTags]);
+  }, [post, setTitle, setContent, setTags, setProjects]);
 
   const titleRef = React.useRef<HTMLHeadingElement>(null);
 
@@ -55,11 +58,13 @@ const EditPostClient = ({ _id }: { _id: string }) => {
   const handlePublish = () => {
     const title = titleRef.current?.innerText ?? "";
     mutateUpdatePost(
-      { _id, title, content_json: content_json ?? [], tags },
+      { _id, title, content_json: content_json ?? [], tags, projects },
       {
         onSuccess: (updatedPost) => {
           resetPost();
-          router.push(`/posts/${updatedPost.slug}-${updatedPost._id}`);
+          router.replace(`/posts/${updatedPost.slug}-${updatedPost._id}`);
+          router.refresh();
+          window.scrollTo(0, 0);
         },
         onError: (error: Error) => {
           console.error("게시물 업데이트 중 오류 발생:", error);
@@ -86,10 +91,7 @@ const EditPostClient = ({ _id }: { _id: string }) => {
           <ProfileButton />
         </div>
       </div>
-      <div
-        role="main"
-        className="flex flex-col py-6 gap-6 h-[calc(100vh-65px)]"
-      >
+      <div role="main" className="flex flex-col py-6 gap-6 min-h-0 flex-1">
         <h3
           ref={titleRef}
           contentEditable

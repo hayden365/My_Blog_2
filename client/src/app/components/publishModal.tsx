@@ -4,6 +4,7 @@ import Button from "./common/styledGreenButton";
 import { usePostStore } from "../lib/store/postStore";
 import TagInput from "./common/tagInput";
 import ImageUploader from "./imageUploader";
+import ProjectSelector from "./common/projectSelector";
 
 interface PublishModalProps {
   isOpen: boolean;
@@ -59,6 +60,8 @@ const PublishModal = ({
 
             {/* 태그 입력 영역 */}
             <TagInput />
+            {/* 프로젝트 선택 영역 */}
+            <ProjectSelector />
             <div className="flex justify-end">
               <Button onClick={handlePublish}>Publish</Button>
             </div>
