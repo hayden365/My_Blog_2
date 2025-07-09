@@ -6,9 +6,11 @@ import { TbBrandNextjs } from "react-icons/tb";
 import { BiLogoTailwindCss, BiLogoTypescript } from "react-icons/bi";
 import { BiLogoMongodb } from "react-icons/bi";
 import { SiExpress, SiStyledcomponents } from "react-icons/si";
+import { twMerge } from "tailwind-merge";
 
 interface TechTagProps {
   name: string;
+  className?: string;
 }
 
 const TECH_TAGS = {
@@ -58,9 +60,14 @@ const TECH_TAGS = {
   },
 };
 
-const TechTag = ({ name }: TechTagProps) => {
+const TechTag = ({ name, className }: TechTagProps) => {
   return (
-    <div className="bg-gray-100 text-gray-500 px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+    <div
+      className={twMerge(
+        "w-fit bg-gray-100 text-gray-500 px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1",
+        className
+      )}
+    >
       {TECH_TAGS[name as keyof typeof TECH_TAGS].icon}
       <span>{TECH_TAGS[name as keyof typeof TECH_TAGS].name}</span>
     </div>

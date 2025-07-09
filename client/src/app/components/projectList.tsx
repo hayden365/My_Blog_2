@@ -10,11 +10,9 @@ const ProjectList = ({ data }: ProjectListProps) => {
   console.log(data);
   return (
     <div className="flex flex-col gap-10">
-      {/* {data.map((project) => ( */}
-      <ProjectCard key={data[0]._id} project={data[0]} />
-      <ProjectCard key="dlkjsfoeifjs" project={data[0]} />
-      <ProjectCard key="dlkjsfoeifjsdsfse" project={data[0]} />
-      {/* ))} */}
+      {data.map((project) => (
+        <ProjectCard key={project._id} project={project} />
+      ))}
     </div>
   );
 };

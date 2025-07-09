@@ -57,4 +57,15 @@ router.get("/", (async (req: Request, res: Response) => {
   }
 }) as RequestHandler);
 
+router.get("/:id", (async (req: Request, res: Response) => {
+  const { id } = req.params;
+  try {
+    const project = await Project.findById(id);
+    res.json(project);
+  } catch (err) {
+    console.error("Project retrieval error:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+}) as RequestHandler);
+
 export default router;

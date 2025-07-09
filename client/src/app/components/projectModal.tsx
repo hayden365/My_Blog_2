@@ -164,6 +164,7 @@ const ProjectModal = ({ isOpen, onClose }: ProjectModalProps) => {
             <CalendarIcon className="w-4 h-4 text-gray-500" />
             <span className="text-gray-500 ml-2">endDate</span>
             <input
+              type="date"
               {...register("endDate")}
               className="text-sm right-0 absolute ml-8 border-b-2 border-gray-200 p-1 w-6/10 focus:shadow-lg focus:border-gray-500 focus:outline-none"
               placeholder="비어 있음"

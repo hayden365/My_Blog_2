@@ -73,6 +73,11 @@ export async function getProjects() {
   return handleResponse(response);
 }
 
+export async function getProject(_id: string) {
+  const response = await fetch(`${API_URL}/projects/${_id}`);
+  return handleResponse(response);
+}
+
 // 프로젝트 생성
 export const createProject = async (project: ProjectData) => {
   const response = await fetchWithAuth(`${API_URL}/projects`, {

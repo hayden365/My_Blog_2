@@ -39,10 +39,10 @@ const ProjectsPageClient = () => {
     );
 
   return (
-    <div className="w-full flex flex-col py-6 px-6 gap-12">
+    <div className="w-full flex flex-col gap-12">
       <div className="flex items-center justify-between">
         <div className="flex flex-col gap-2">
-          <h1 className="text-3xl font-bold">Projects</h1>
+          <h1 className="text-4xl font-bold">Projects</h1>
           <p className="text-gray-500 text-sm">
             개발 경험을 담은 주요 프로젝트들을 소개합니다.
           </p>
@@ -57,6 +57,10 @@ const ProjectsPageClient = () => {
         )}
       </div>
       <ProjectList data={projects} />
+      <ProjectModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 };

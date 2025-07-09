@@ -10,7 +10,10 @@ interface ProjectCardProps {
 
 const ProjectCard = ({ project }: ProjectCardProps) => {
   return (
-    <Link href={`/projects/${project._id}`} className="w-full flex gap-4 ">
+    <Link
+      href={`/projects/${project._id}`}
+      className="w-full flex flex-col md:flex-row gap-4 "
+    >
       <Image
         src={project.coverImg}
         alt={project.title}
