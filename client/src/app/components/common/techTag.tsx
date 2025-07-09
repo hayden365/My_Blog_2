@@ -28,7 +28,15 @@ const TECH_TAGS = {
     name: "TypeScript",
     icon: <BiLogoTypescript />,
   },
+  ts: {
+    name: "TypeScript",
+    icon: <BiLogoTypescript />,
+  },
   javascript: {
+    name: "JavaScript",
+    icon: <FaJs />,
+  },
+  js: {
     name: "JavaScript",
     icon: <FaJs />,
   },
@@ -52,9 +60,9 @@ const TECH_TAGS = {
 
 const TechTag = ({ name }: TechTagProps) => {
   return (
-    <div className="bg-gray-100 text-gray-500 px-2 py-1 rounded-full text-xs font-bold">
+    <div className="bg-gray-100 text-gray-500 px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1">
       {TECH_TAGS[name as keyof typeof TECH_TAGS].icon}
-      {TECH_TAGS[name as keyof typeof TECH_TAGS].name}
+      <span>{TECH_TAGS[name as keyof typeof TECH_TAGS].name}</span>
     </div>
   );
 };
