@@ -23,7 +23,7 @@ const PostContent = ({ data }: { data: Post }) => {
       </header>
       <article className="my-10 prose prose-lg max-w-none">
         {data.img_thumbnail && (
-          <div className="w-full h-[300px] bg-white flex items-center justify-center mb-6">
+          <div className="w-full h-[300px] bg-white flex items-center justify-center mb-10">
             <Image
               src={data.img_thumbnail}
               alt={data.title}

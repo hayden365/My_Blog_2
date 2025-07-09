@@ -30,9 +30,9 @@ export interface PostData {
 }
 
 export const POST_TYPES = [
-  { key: "error", label: "에러 처리" },
+  { key: "error-handling", label: "에러 처리" },
   { key: "feature", label: "기능 구현" },
   { key: "theory", label: "이론 정리" },
   { key: "retrospective", label: "회고" },
-  { key: "planning", label: "기획" },
+  { key: "design", label: "기획" },
 ];

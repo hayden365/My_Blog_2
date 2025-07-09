@@ -26,11 +26,11 @@ const TagInput = () => {
   };
 
   return (
-    <div className="p-2 border rounded bg-gray-100 border-gray-300">
+    <div className="flex flex-wrap gap-2 p-2 border rounded bg-gray-100 border-gray-300">
       {tags.map((tag) => (
         <span
           key={tag}
-          className="flex-none bg-white border border-gray-300 px-3 py-1 rounded-full text-sm flex items-center gap-2"
+          className="w-fit bg-white border border-gray-300 px-3 py-1 rounded-full text-sm flex items-center gap-2"
         >
           {tag}
           <button
