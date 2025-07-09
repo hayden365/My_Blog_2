@@ -3,7 +3,12 @@ import { JSONContent } from "@tiptap/react";
 export interface Tag {
   _id: string;
   name: string;
-  count: number;
+  count?: number;
+}
+
+export interface Project {
+  _id: string;
+  title: string;
 }
 
 // 서버에서 받아오는 데이터
@@ -16,6 +21,8 @@ export interface Post {
   slug: string;
   tags: Tag[];
   img_thumbnail?: string;
+  types: string[];
+  projects: Project[];
 }
 
 // 서버에 보내는 데이터

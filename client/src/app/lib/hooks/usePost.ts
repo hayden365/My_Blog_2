@@ -1,20 +1,5 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import {
-  createPost,
-  deletePost,
-  getPostList,
-  updatePost,
-} from "../../api/fetch";
-
-export const useGetPosts = () => {
-  return useQuery({
-    queryKey: ["posts"],
-    queryFn: async () => {
-      const response = await getPostList();
-      return response;
-    },
-  });
-};
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createPost, deletePost, updatePost } from "../../api/fetch";
 
 export function useCreatePost() {
   const queryClient = useQueryClient();

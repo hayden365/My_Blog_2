@@ -79,7 +79,8 @@ router.get("/", (async (req: Request, res: Response) => {
 
     const posts = await Post.find(query)
       .populate("tags", "name")
-      .populate("projects", "title");
+      .populate("projects", "title")
+      .sort({ createdAt: -1 });
     res.json(posts);
   } catch (error) {
     res.status(500).json({ message: error });
@@ -191,7 +192,8 @@ router.get("/project/:projectId", (async (req: Request, res: Response) => {
   try {
     const posts = await Post.find({ projects: req.params.projectId })
       .populate("tags", "name")
-      .populate("projects", "title");
+      .populate("projects", "title")
+      .sort({ createdAt: -1 }); // createdAt 기준 최신순 정렬
 
     res.json(posts);
   } catch (err) {

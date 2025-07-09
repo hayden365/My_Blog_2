@@ -35,6 +35,12 @@ function sanitizeHtml(html: string): string {
       "img",
       "hr",
       "input",
+      "table",
+      "thead",
+      "tbody",
+      "tr",
+      "th",
+      "td",
     ],
     ALLOWED_ATTR: [
       "href",
@@ -48,6 +54,8 @@ function sanitizeHtml(html: string): string {
       "type",
       "checked",
       "disabled",
+      "colspan",
+      "rowspan",
     ],
     ALLOWED_URI_REGEXP:
       /^(?:(?:(?:f|ht)tps?|mailto|tel|callto|cid|xmpp):|[^a-z]|[a-z+.\-]+(?:[^a-z+.\-:]|$))/i,
@@ -200,6 +208,18 @@ function jsonToHtml(json: JSONContent): string {
           break;
         case "horizontalRule":
           html += "<hr>";
+          break;
+        case "table":
+          html += `<table>${children}</table>`;
+          break;
+        case "tableRow":
+          html += `<tr>${children}</tr>`;
+          break;
+        case "tableCell":
+          html += `<td>${children}</td>`;
+          break;
+        case "tableHeader":
+          html += `<th>${children}</th>`;
           break;
         default:
           html += children;

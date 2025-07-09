@@ -9,21 +9,18 @@ interface ProjectCardProps {
 
 const ProjectCard = ({ project }: ProjectCardProps) => {
   return (
-    <Link
-      href={`/projects/${project._id}`}
-      className="w-full flex flex-col gap-4 border border-gray-200 rounded-lg p-4 shadow-md"
-    >
+    <Link href={`/projects/${project._id}`} className="w-full flex gap-4 ">
       <Image
         src={project.coverImg}
         alt={project.title}
         width={1000}
         height={1000}
-        className="w-full h-auto"
+        className="w-full h-auto max-w-110 max-h-90 object-cover rounded-lg"
       />
-      <div className="w-full border-b border-gray-200" />
       <div className="w-full flex flex-col gap-2">
         <h3 className="text-lg font-bold">{project.title}</h3>
         <div className="w-full flex flex-col gap-2">
+          <span>{project.description}</span>
           <div className="flex gap-2">
             <span>{project.isGroupProject ? "Group" : "Solo"}</span>
             <span>{project.myRole}</span>

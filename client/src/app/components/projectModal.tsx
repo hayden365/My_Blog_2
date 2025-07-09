@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect } from "react";
-import { ProjectData } from "../lib/types/project";
+import { ProjectData, ProjectFormData } from "../lib/types/project";
 import { SubmitHandler, useForm } from "react-hook-form";
 import ImageUploader from "./imageUploader";
 import {
@@ -18,13 +18,32 @@ interface ProjectModalProps {
 }
 
 const ProjectModal = ({ isOpen, onClose }: ProjectModalProps) => {
-  const { register, handleSubmit, setValue, watch } = useForm<ProjectData>();
+  const { register, handleSubmit, setValue, watch } =
+    useForm<ProjectFormData>();
 
   const { mutate: createProject } = useCreateProject();
 
-  const onSubmit: SubmitHandler<ProjectData> = (data) => {
+  const onSubmit: SubmitHandler<ProjectFormData> = (data) => {
     const processedData = {
       ...data,
+      frontend_tech: data.frontend_tech
+        .split(",")
+        .map((tech) =>
+          tech
+            .trim()
+            .toLowerCase()
+            .replace(/[/s/-_]+/g, "")
+        )
+        .filter((tech) => tech.length > 0),
+      backend_tech: data.backend_tech
+        .split(",")
+        .map((tech) =>
+          tech
+            .trim()
+            .toLowerCase()
+            .replace(/[/s/-_]+/g, "")
+        )
+        .filter((tech) => tech.length > 0),
       _id: "",
       links: data.links || {
         github: "",

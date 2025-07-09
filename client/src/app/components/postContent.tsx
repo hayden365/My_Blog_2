@@ -7,15 +7,24 @@ import { format, register } from "timeago.js";
 import Image from "next/image";
 import koLocale from "timeago.js/lib/lang/ko";
 import { useAuthStore } from "../lib/store/authStore";
+import StyledType from "./common/styledType";
 
 const PostContent = ({ data }: { data: Post }) => {
   register("ko", koLocale);
   const { isLoggedIn } = useAuthStore();
+  console.log(data.content_json);
 
   return (
     <div className="py-13 mx-5 flex flex-col gap-4">
       <header className="border-b border-gray-100 pb-4">
-        <h1 className="text-4xl text-wrap font-bold mb-8">{data.title}</h1>
+        <div className="flex items-center gap-2">
+          {data.types.map((type) => {
+            return <StyledType key={type} type={type} />;
+          })}
+        </div>
+        <h1 className="text-4xl text-wrap font-bold mt-4 mb-10">
+          {data.title}
+        </h1>
         <div className="flex items-center justify-between gap-2">
           <time className="text-gray-500">{format(data.createdAt, "ko")}</time>
           {isLoggedIn && <PostOptionsMenu post={data} />}

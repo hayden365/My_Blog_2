@@ -9,7 +9,7 @@ interface ProjectListProps {
 const ProjectList = ({ data }: ProjectListProps) => {
   console.log(data);
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    <div className="gap-8">
       {/* {data.map((project) => ( */}
       <ProjectCard key={data[0]._id} project={data[0]} />
       <ProjectCard key="dlkjsfoeifjs" project={data[0]} />

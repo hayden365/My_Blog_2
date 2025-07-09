@@ -15,6 +15,10 @@ import { Highlight } from "@tiptap/extension-highlight";
 import { Subscript } from "@tiptap/extension-subscript";
 import { Superscript } from "@tiptap/extension-superscript";
 import { Underline } from "@tiptap/extension-underline";
+import Table from "@tiptap/extension-table";
+import TableCell from "@tiptap/extension-table-cell";
+import TableHeader from "@tiptap/extension-table-header";
+import TableRow from "@tiptap/extension-table-row";
 
 // --- Custom Extensions ---
 import { Link } from "@/components/tiptap-extension/link-extension";
@@ -218,7 +222,12 @@ export function SimpleEditor({ setContent, content }: SimpleEditorProps) {
       Typography,
       Superscript,
       Subscript,
-
+      Table.configure({
+        resizable: true,
+      }),
+      TableCell,
+      TableHeader,
+      TableRow,
       Selection,
       ImageUploadNode.configure({
         accept: "image/*",
