@@ -5,7 +5,7 @@ import { FaJs } from "react-icons/fa6";
 import { TbBrandNextjs } from "react-icons/tb";
 import { BiLogoTailwindCss, BiLogoTypescript } from "react-icons/bi";
 import { BiLogoMongodb } from "react-icons/bi";
-import { SiExpress, SiStyledcomponents } from "react-icons/si";
+import { SiExpress, SiRedux, SiStyledcomponents } from "react-icons/si";
 import { twMerge } from "tailwind-merge";
 
 interface TechTagProps {
@@ -57,6 +57,15 @@ const TECH_TAGS = {
   styledcomponents: {
     name: "Styled Components",
     icon: <SiStyledcomponents />,
+  },
+
+  redux: {
+    name: "Redux",
+    icon: <SiRedux />,
+  },
+  reduxtoolkit: {
+    name: "Redux Toolkit",
+    icon: <SiRedux />,
   },
 };
 

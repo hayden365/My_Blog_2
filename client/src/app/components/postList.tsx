@@ -11,7 +11,7 @@ import StyledType from "./common/styledType";
 const PostList = ({ data }: { data: Post[] }) => {
   register("ko", koLocale);
   const { isLoggedIn } = useAuthStore();
-  console.log(data[1]);
+
   return (
     <ul className="w-full flex flex-col mx-5">
       {data.map((post) => (

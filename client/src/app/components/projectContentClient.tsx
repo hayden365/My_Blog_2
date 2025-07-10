@@ -71,16 +71,20 @@ const ProjectContentClient = ({ _id }: { _id: string }) => {
         </div>
         <div className="flex items-center py-2">
           <span className="text-gray-500 text-sm w-1/5">Frontend</span>
-          {project.frontend_tech.map((tech) => (
-            <TechTag key={tech} name={tech} />
-          ))}
+          <div className="flex gap-2">
+            {project.frontend_tech.map((tech) => (
+              <TechTag key={tech} name={tech} />
+            ))}
+          </div>
         </div>
         {project.backend_tech.length > 0 && (
           <div className="flex items-center py-2">
             <span className="text-gray-500 text-sm w-1/5">Backend</span>
-            {project.backend_tech.map((tech) => (
-              <TechTag key={tech} name={tech} />
-            ))}
+            <div className="flex gap-2">
+              {project.backend_tech.map((tech) => (
+                <TechTag key={tech} name={tech} />
+              ))}
+            </div>
           </div>
         )}
         <div className="flex items-center py-2">

@@ -1,6 +1,5 @@
 import Image from "next/image";
 import { ProjectData } from "../lib/types/project";
-import { LinkIcon } from "@heroicons/react/16/solid";
 import Link from "next/link";
 import TechTag from "./common/techTag";
 
@@ -59,22 +58,6 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
               </span>
             )}
           </div>
-          {project.links?.github !== "" && (
-            <div className="flex gap-2">
-              <LinkIcon className="w-4 h-4" />
-              <a href={project.links?.github} target="_blank">
-                Github
-              </a>
-              <LinkIcon className="w-4 h-4" />
-              <a href={project.links?.notion} target="_blank">
-                Notion
-              </a>
-              <LinkIcon className="w-4 h-4" />
-              <a href={project.links?.demo} target="_blank">
-                Demo
-              </a>
-            </div>
-          )}
         </div>
       </div>
     </Link>
