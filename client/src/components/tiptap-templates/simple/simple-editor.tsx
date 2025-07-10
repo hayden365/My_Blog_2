@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
-import { JSONContent } from "@tiptap/core";
+import { Editor, JSONContent } from "@tiptap/core";
 
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit";
@@ -80,6 +80,8 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 // --- Styles ---
 import "@/components/tiptap-templates/simple/simple-editor.scss";
 import { MarkdownPaste } from "@/hooks/use-markdown-paste";
+
+import { debounce } from "lodash";
 
 interface SimpleEditorProps {
   setContent: (content: JSONContent) => void;
@@ -192,6 +194,13 @@ const MobileToolbarContent = ({
 );
 
 export function SimpleEditor({ setContent, content }: SimpleEditorProps) {
+  const debouncedSetContent = React.useMemo(
+    () =>
+      debounce((editor: Editor) => {
+        setContent(editor.getJSON());
+      }, 500),
+    [setContent]
+  );
   const isMobile = useMobile();
   const windowSize = useWindowSize();
   const [mobileView, setMobileView] = React.useState<
@@ -209,7 +218,7 @@ export function SimpleEditor({ setContent, content }: SimpleEditorProps) {
       },
     },
     onUpdate: ({ editor }) => {
-      setContent(editor.getJSON());
+      debouncedSetContent(editor);
     },
     extensions: [
       StarterKit,

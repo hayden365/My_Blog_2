@@ -9,6 +9,7 @@ import { RiNotionFill } from "react-icons/ri";
 import { Post, POST_TYPES } from "../lib/types/post";
 import { useEffect, useState } from "react";
 import PostList from "./postList";
+import TiptapRenderer from "./tiptapRenderer";
 
 const ProjectContentClient = ({ _id }: { _id: string }) => {
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
@@ -147,7 +148,7 @@ const ProjectContentClient = ({ _id }: { _id: string }) => {
         <h3 className="text-xl font-bold pb-4 w-full mb-6 border-b border-gray-200">
           Description
         </h3>
-        <p className="text-gray-500 text-sm">{project.description}</p>
+        <TiptapRenderer content={project.description} className="prose" />
       </div>
       {/* 포스트 목록 */}
       <div className="w-full flex flex-col gap-2 py-10">

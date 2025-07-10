@@ -1,3 +1,5 @@
+import { JSONContent } from "@tiptap/react";
+
 export interface ProjectFormData {
   _id: string;
   title: string;
@@ -6,7 +8,7 @@ export interface ProjectFormData {
   backend_tech: string;
   isGroupProject: boolean;
   myRole: string;
-  description: string;
+  description: JSONContent;
   startDate: string;
   endDate: string;
   isOngoing: boolean;
@@ -28,7 +30,7 @@ export interface ProjectData {
   backend_tech: string[];
   isGroupProject: boolean;
   myRole: string;
-  description: string;
+  description: JSONContent;
   startDate: string;
   endDate: string;
   isOngoing: boolean;

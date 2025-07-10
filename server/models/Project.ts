@@ -26,7 +26,7 @@ const projectSchema = new mongoose.Schema({
     required: false, // 그룹 프로젝트인 경우에만 필수
   },
   description: {
-    type: String,
+    type: Object,
     required: true,
   },
   startDate: {

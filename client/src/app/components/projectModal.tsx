@@ -11,6 +11,7 @@ import {
   LinkIcon,
 } from "@heroicons/react/16/solid";
 import { useCreateProject } from "../lib/hooks/useProject";
+import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 
 interface ProjectModalProps {
   isOpen: boolean;
@@ -32,7 +33,7 @@ const ProjectModal = ({ isOpen, onClose }: ProjectModalProps) => {
           tech
             .trim()
             .toLowerCase()
-            .replace(/[/s/-_]+/g, "")
+            .replace(/[\/\-\_\.]+/g, "")
         )
         .filter((tech) => tech.length > 0),
       backend_tech: data.backend_tech
@@ -41,7 +42,7 @@ const ProjectModal = ({ isOpen, onClose }: ProjectModalProps) => {
           tech
             .trim()
             .toLowerCase()
-            .replace(/[/s/-_]+/g, "")
+            .replace(/[\/\-\_\.]+/g, "")
         )
         .filter((tech) => tech.length > 0),
       _id: "",
@@ -76,168 +77,215 @@ const ProjectModal = ({ isOpen, onClose }: ProjectModalProps) => {
 
   if (!isOpen) return null;
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* dim 처리된 배경 */}
       <div
         className="absolute inset-0 bg-black/50"
         onClick={() => onClose()}
       ></div>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="flex flex-col gap-2 overflow-y-auto relative z-10 bg-white p-6 h-11/12 w-8/12 max-w-[500px] transition-transform duration-300 ease-out starting:opacity-0 starting:scale-50 opacity-100 scale-100"
-      >
-        <div className="w-full h-1/3 mb-4 pb-4 border-b border-gray-200">
-          <ImageUploader
-            image={coverImg}
-            imageSetter={(url) => setValue("coverImg", url)}
-          />
-        </div>
-        {/* --- */}
-        <div className="flex flex-col gap-3">
-          <label className="flex items-center w-full relative mb-2">
-            <Bars3BottomLeftIcon className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-500 ml-2">title</span>
-            <input
-              {...register("title")}
-              className="text-sm right-0 absolute ml-8 border-b-2 border-gray-200 p-1 w-6/10 focus:shadow-lg focus:border-gray-500 focus:outline-none"
-              placeholder="비어 있음"
-            />
-          </label>
-          <label className="flex items-center w-full relative mb-2">
-            <Bars3BottomLeftIcon className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-500 ml-2">description</span>
-            <input
-              {...register("description")}
-              className="text-sm right-0 absolute ml-8 border-b-2 border-gray-200 p-1 w-6/10 focus:shadow-lg focus:border-gray-500 focus:outline-none"
-              placeholder="비어 있음"
-            />
-          </label>
-          <label className="flex items-center w-full relative mb-2">
-            <Bars3BottomLeftIcon className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-500 ml-2">myRole</span>
-            <input
-              {...register("myRole")}
-              className="text-sm right-0 absolute ml-8 border-b-2 border-gray-200 p-1 w-6/10 focus:shadow-lg focus:border-gray-500 focus:outline-none"
-              placeholder="비어 있음"
-            />
-          </label>
-          <label className="flex items-center w-full relative mb-2">
-            <CommandLineIcon className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-500 ml-2">lang</span>
-            <input
-              {...register("language")}
-              className="text-sm right-0 absolute ml-8 border-b-2 border-gray-200 p-1 w-6/10 focus:shadow-lg focus:border-gray-500 focus:outline-none"
-              placeholder="비어 있음"
-            />
-          </label>
-          <label className="flex items-center w-full relative mb-2">
-            <CommandLineIcon className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-500 ml-2">FE_tech</span>
-            <input
-              {...register("frontend_tech")}
-              className="text-sm right-0 absolute ml-8 border-b-2 border-gray-200 p-1 w-6/10 focus:shadow-lg focus:border-gray-500 focus:outline-none"
-              placeholder="비어 있음"
-            />
-          </label>
-          <label className="flex items-center w-full relative mb-2">
-            <CommandLineIcon className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-500 ml-2">BE_tech</span>
-            <input
-              {...register("backend_tech")}
-              className="text-sm right-0 absolute ml-8 border-b-2 border-gray-200 p-1 w-6/10 focus:shadow-lg focus:border-gray-500 focus:outline-none"
-              placeholder="비어 있음"
-            />
-          </label>
-
-          <label className="flex items-center w-full relative mb-2">
-            <CalendarIcon className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-500 ml-2">startDate</span>
-            <input
-              type="date"
-              {...register("startDate")}
-              className="text-sm right-0 absolute ml-8 border-b-2 border-gray-200 p-1 w-6/10 focus:shadow-lg focus:border-gray-500 focus:outline-none"
-              placeholder="비어 있음"
-              required
-            />
-          </label>
-          <label className="flex items-center w-full relative mb-2">
-            <CalendarIcon className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-500 ml-2">endDate</span>
-            <input
-              type="date"
-              {...register("endDate")}
-              className="text-sm right-0 absolute ml-8 border-b-2 border-gray-200 p-1 w-6/10 focus:shadow-lg focus:border-gray-500 focus:outline-none"
-              placeholder="비어 있음"
-            />
-          </label>
-          <label className="flex items-center w-full relative mb-2">
-            <CheckCircleIcon className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-500 ml-2">isGroup</span>
-            <div className="flex justify-start w-6/10 right-0 absolute ml-8">
-              <input
-                type="checkbox"
-                {...register("isGroupProject")}
-                className="text-sm border-b-2 border-gray-200 p-1"
-                placeholder="비어 있음"
+      <div className="relative z-10 bg-white rounded-lg shadow-xl max-h-[90vh] w-full max-w-[600px] flex flex-col">
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex flex-col overflow-hidden"
+        >
+          {/* 헤더 영역 - 고정 높이 */}
+          <div className="flex-shrink-0 p-6 border-b border-gray-200">
+            <div className="w-full h-40">
+              <ImageUploader
+                image={coverImg}
+                imageSetter={(url) => setValue("coverImg", url)}
               />
             </div>
-          </label>
-          <label className="flex items-center w-full relative mb-2">
-            <CheckCircleIcon className="w-4 h-4 text-gray-500" />
-            <span className="text-gray-500 ml-2">isOngoing</span>
-            <div className="flex justify-start w-6/10 right-0 absolute ml-8">
-              <input
-                type="checkbox"
-                {...register("isOngoing")}
-                className="text-sm border-b-2 border-gray-200 p-1"
-                placeholder="비어 있음"
-              />
-            </div>
-          </label>
-          <div className="flex flex-col gap-2">
-            <label className="flex items-center w-full relative mb-2">
-              <LinkIcon className="w-4 h-4 text-gray-500" />
-              <span className="text-gray-500 ml-2">GitHub</span>
-              <input
-                {...register("links.github")}
-                className="text-sm right-0 absolute ml-8 border-b-2 border-gray-200 p-1 w-6/10 focus:shadow-lg focus:border-gray-500 focus:outline-none"
-                placeholder="GitHub 링크"
-              />
-            </label>
-            <label className="flex items-center w-full relative mb-2">
-              <LinkIcon className="w-4 h-4 text-gray-500" />
-              <span className="text-gray-500 ml-2">Notion</span>
-              <input
-                {...register("links.notion")}
-                className="text-sm right-0 absolute ml-8 border-b-2 border-gray-200 p-1 w-6/10 focus:shadow-lg focus:border-gray-500 focus:outline-none"
-                placeholder="Notion 링크"
-              />
-            </label>
-            <label className="flex items-center w-full relative mb-2">
-              <LinkIcon className="w-4 h-4 text-gray-500" />
-              <span className="text-gray-500 ml-2">Demo</span>
-              <input
-                {...register("links.demo")}
-                className="text-sm right-0 absolute ml-8 border-b-2 border-gray-200 p-1 w-6/10 focus:shadow-lg focus:border-gray-500 focus:outline-none"
-                placeholder="Demo 링크"
-              />
-            </label>
-            <label className="flex items-center w-full relative mb-2">
-              <LinkIcon className="w-4 h-4 text-gray-500" />
-              <span className="text-gray-500 ml-2">Figma</span>
-              <input
-                {...register("links.figma")}
-                className="text-sm right-0 absolute ml-8 border-b-2 border-gray-200 p-1 w-6/10 focus:shadow-lg focus:border-gray-500 focus:outline-none"
-                placeholder="Figma 링크"
-              />
-            </label>
           </div>
-          <input
-            type="submit"
-            className="mt-4 border-black border-1 rounded-sm p-1 cursor-pointer shadow-md hover:shadow-lg transition-all duration-300"
-          />
-        </div>
-      </form>
+
+          {/* 스크롤 가능한 컨텐츠 영역 */}
+          <div className="flex-1 overflow-y-auto p-6">
+            <div className="flex flex-col gap-4">
+              <label className="flex items-center w-full relative">
+                <Bars3BottomLeftIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                <span className="text-gray-500 ml-2 flex-shrink-0">title</span>
+                <input
+                  {...register("title")}
+                  className="text-sm ml-8 border-b-2 border-gray-200 p-1 flex-1 focus:shadow-lg focus:border-gray-500 focus:outline-none"
+                  placeholder="비어 있음"
+                />
+              </label>
+
+              <label className="flex items-center w-full relative">
+                <Bars3BottomLeftIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                <span className="text-gray-500 ml-2 flex-shrink-0">myRole</span>
+                <input
+                  {...register("myRole")}
+                  className="text-sm ml-8 border-b-2 border-gray-200 p-1 flex-1 focus:shadow-lg focus:border-gray-500 focus:outline-none"
+                  placeholder="비어 있음"
+                />
+              </label>
+
+              <label className="flex items-center w-full relative">
+                <CommandLineIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                <span className="text-gray-500 ml-2 flex-shrink-0">lang</span>
+                <input
+                  {...register("language")}
+                  className="text-sm ml-8 border-b-2 border-gray-200 p-1 flex-1 focus:shadow-lg focus:border-gray-500 focus:outline-none"
+                  placeholder="비어 있음"
+                />
+              </label>
+
+              <label className="flex items-center w-full relative">
+                <CommandLineIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                <span className="text-gray-500 ml-2 flex-shrink-0">
+                  FE_tech
+                </span>
+                <input
+                  {...register("frontend_tech")}
+                  className="text-sm ml-8 border-b-2 border-gray-200 p-1 flex-1 focus:shadow-lg focus:border-gray-500 focus:outline-none"
+                  placeholder="비어 있음"
+                />
+              </label>
+
+              <label className="flex items-center w-full relative">
+                <CommandLineIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                <span className="text-gray-500 ml-2 flex-shrink-0">
+                  BE_tech
+                </span>
+                <input
+                  {...register("backend_tech")}
+                  className="text-sm ml-8 border-b-2 border-gray-200 p-1 flex-1 focus:shadow-lg focus:border-gray-500 focus:outline-none"
+                  placeholder="비어 있음"
+                />
+              </label>
+
+              <label className="flex items-center w-full relative">
+                <CalendarIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                <span className="text-gray-500 ml-2 flex-shrink-0">
+                  startDate
+                </span>
+                <input
+                  type="date"
+                  {...register("startDate")}
+                  className="text-sm ml-8 border-b-2 border-gray-200 p-1 flex-1 focus:shadow-lg focus:border-gray-500 focus:outline-none"
+                  placeholder="비어 있음"
+                  required
+                />
+              </label>
+
+              <label className="flex items-center w-full relative">
+                <CalendarIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                <span className="text-gray-500 ml-2 flex-shrink-0">
+                  endDate
+                </span>
+                <input
+                  type="date"
+                  {...register("endDate")}
+                  className="text-sm ml-8 border-b-2 border-gray-200 p-1 flex-1 focus:shadow-lg focus:border-gray-500 focus:outline-none"
+                  placeholder="비어 있음"
+                />
+              </label>
+
+              <label className="flex items-center w-full relative">
+                <CheckCircleIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                <span className="text-gray-500 ml-2 flex-shrink-0">
+                  isGroup
+                </span>
+                <div className="flex justify-start ml-8">
+                  <input
+                    type="checkbox"
+                    {...register("isGroupProject")}
+                    className="text-sm border-b-2 border-gray-200 p-1"
+                    placeholder="비어 있음"
+                  />
+                </div>
+              </label>
+
+              <label className="flex items-center w-full relative">
+                <CheckCircleIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                <span className="text-gray-500 ml-2 flex-shrink-0">
+                  isOngoing
+                </span>
+                <div className="flex justify-start ml-8">
+                  <input
+                    type="checkbox"
+                    {...register("isOngoing")}
+                    className="text-sm border-b-2 border-gray-200 p-1"
+                    placeholder="비어 있음"
+                  />
+                </div>
+              </label>
+
+              <div className="flex flex-col gap-3">
+                <label className="flex items-center w-full relative">
+                  <LinkIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                  <span className="text-gray-500 ml-2 flex-shrink-0">
+                    GitHub
+                  </span>
+                  <input
+                    {...register("links.github")}
+                    className="text-sm ml-8 border-b-2 border-gray-200 p-1 flex-1 focus:shadow-lg focus:border-gray-500 focus:outline-none"
+                    placeholder="GitHub 링크"
+                  />
+                </label>
+
+                <label className="flex items-center w-full relative">
+                  <LinkIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                  <span className="text-gray-500 ml-2 flex-shrink-0">
+                    Notion
+                  </span>
+                  <input
+                    {...register("links.notion")}
+                    className="text-sm ml-8 border-b-2 border-gray-200 p-1 flex-1 focus:shadow-lg focus:border-gray-500 focus:outline-none"
+                    placeholder="Notion 링크"
+                  />
+                </label>
+
+                <label className="flex items-center w-full relative">
+                  <LinkIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                  <span className="text-gray-500 ml-2 flex-shrink-0">Demo</span>
+                  <input
+                    {...register("links.demo")}
+                    className="text-sm ml-8 border-b-2 border-gray-200 p-1 flex-1 focus:shadow-lg focus:border-gray-500 focus:outline-none"
+                    placeholder="Demo 링크"
+                  />
+                </label>
+
+                <label className="flex items-center w-full relative">
+                  <LinkIcon className="w-4 h-4 text-gray-500 flex-shrink-0" />
+                  <span className="text-gray-500 ml-2 flex-shrink-0">
+                    Figma
+                  </span>
+                  <input
+                    {...register("links.figma")}
+                    className="text-sm ml-8 border-b-2 border-gray-200 p-1 flex-1 focus:shadow-lg focus:border-gray-500 focus:outline-none"
+                    placeholder="Figma 링크"
+                  />
+                </label>
+              </div>
+
+              <div className="flex flex-col w-full relative">
+                <div className="flex items-center mb-2">
+                  <Bars3BottomLeftIcon className="w-4 h-4 text-gray-500" />
+                  <span className="text-gray-500 ml-2">description</span>
+                </div>
+                <div className="w-full">
+                  <div className="min-h-[200px] border border-gray-200 rounded-lg">
+                    <SimpleEditor
+                      setContent={(content) => setValue("description", content)}
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* 푸터 영역 - 고정 */}
+          <div className="flex-shrink-0 p-6 border-t border-gray-200">
+            <input
+              type="submit"
+              value="프로젝트 생성"
+              className="w-full bg-white text-black border border-gray-400 py-2 px-4 rounded-lg cursor-pointer shadow-md hover:shadow-lg transition-all duration-300 hover:bg-blue-700"
+            />
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

@@ -5,8 +5,14 @@ import { FaJs } from "react-icons/fa6";
 import { TbBrandNextjs } from "react-icons/tb";
 import { BiLogoTailwindCss, BiLogoTypescript } from "react-icons/bi";
 import { BiLogoMongodb } from "react-icons/bi";
-import { SiExpress, SiRedux, SiStyledcomponents } from "react-icons/si";
+import {
+  SiExpress,
+  SiReactquery,
+  SiRedux,
+  SiStyledcomponents,
+} from "react-icons/si";
 import { twMerge } from "tailwind-merge";
+import { GiPolarBear } from "react-icons/gi";
 
 interface TechTagProps {
   name: string;
@@ -58,7 +64,14 @@ const TECH_TAGS = {
     name: "Styled Components",
     icon: <SiStyledcomponents />,
   },
-
+  zustand: {
+    name: "Zustand",
+    icon: <GiPolarBear />,
+  },
+  tanstackquery: {
+    name: "TanStack Query",
+    icon: <SiReactquery />,
+  },
   redux: {
     name: "Redux",
     icon: <SiRedux />,

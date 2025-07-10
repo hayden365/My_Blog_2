@@ -20,10 +20,9 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
         height={1000}
         className="w-full h-auto max-w-110 max-h-90 object-cover rounded-lg"
       />
-      <div className="w-full flex flex-col gap-2 py-2">
+      <div className="w-full flex flex-col gap-2 py-2 md:w-2/5">
         <h3 className="text-xl font-bold">{project.title}</h3>
         <div className="w-full flex flex-col gap-4 text-gray-600">
-          <span>{project.description}</span>
           <div className="flex gap-2 items-center">
             <span className="text-sm">
               {project.isGroupProject ? "팀 프로젝트" : "개인 프로젝트"}
@@ -41,12 +40,14 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
                 <TechTag key={tech} name={tech} />
               ))}
             </div>
-            <div className="flex gap-2">
-              <span className="text-sm">Backend:</span>
-              {project.backend_tech.map((tech) => (
-                <TechTag key={tech} name={tech} />
-              ))}
-            </div>
+            {project.backend_tech.length > 0 && (
+              <div className="flex gap-2">
+                <span className="text-sm">Backend:</span>
+                {project.backend_tech.map((tech) => (
+                  <TechTag key={tech} name={tech} />
+                ))}
+              </div>
+            )}
           </div>
           <div className="text-sm flex items-center gap-2">
             <span className="text-sm">{project.startDate.split("T")[0]}</span>~
