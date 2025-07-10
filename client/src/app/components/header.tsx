@@ -19,13 +19,21 @@ const Header = () => {
         <HomeLogo />
         <Link
           href="/posts"
-          className="font-bold text-gray-500 hover:text-gray-900 transition-colors"
+          className={`font-bold text-gray-500 hover:text-gray-900 transition-colors relative ${
+            pathname === "/posts"
+              ? "text-gray-900 after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-[2px] after:bg-gray-900"
+              : ""
+          }`}
         >
           Posts
         </Link>
         <Link
           href="/projects"
-          className="font-bold text-gray-500 hover:text-gray-900 transition-colors"
+          className={`font-bold text-gray-500 hover:text-gray-900 transition-colors relative ${
+            pathname === "/projects"
+              ? "text-gray-900 after:absolute after:bottom-[-17px] after:left-0 after:right-0 after:h-[2px] after:bg-gray-900"
+              : ""
+          }`}
         >
           Projects
         </Link>

@@ -12,6 +12,7 @@ import PostList from "./postList";
 
 const ProjectContentClient = ({ _id }: { _id: string }) => {
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+  const [selectedType, setSelectedType] = useState<string>("All");
 
   const { data: project, isLoading } = useQuery<ProjectData>({
     queryKey: ["project", _id],
@@ -41,6 +42,7 @@ const ProjectContentClient = ({ _id }: { _id: string }) => {
       post.types?.includes(typeKey)
     );
     setFilteredPosts(filteredPosts || []);
+    setSelectedType(typeKey);
   };
 
   return (
@@ -60,29 +62,29 @@ const ProjectContentClient = ({ _id }: { _id: string }) => {
       </div>
       {/* 요약 */}
       <div className="flex flex-col">
-        <h3 className="text-xl font-bold border-b border-gray-200 pb-6 w-full">
+        <h3 className="text-xl font-bold mb-6 pb-4 w-full border-b border-gray-200">
           Summary
         </h3>
-        <div className="flex items-center border-b border-gray-200 py-4">
-          <span className="text-gray-500 text-sm w-1/4">Language</span>
+        <div className="flex items-center py-2">
+          <span className="text-gray-500 text-sm w-1/5">Language</span>
           <TechTag name={project.language} />
         </div>
-        <div className="flex items-center border-b border-gray-200 py-4">
-          <span className="text-gray-500 text-sm w-1/4">Frontend</span>
+        <div className="flex items-center py-2">
+          <span className="text-gray-500 text-sm w-1/5">Frontend</span>
           {project.frontend_tech.map((tech) => (
             <TechTag key={tech} name={tech} />
           ))}
         </div>
         {project.backend_tech.length > 0 && (
-          <div className="flex items-center border-b border-gray-200 py-4">
-            <span className="text-gray-500 text-sm w-1/4">Backend</span>
+          <div className="flex items-center py-2">
+            <span className="text-gray-500 text-sm w-1/5">Backend</span>
             {project.backend_tech.map((tech) => (
               <TechTag key={tech} name={tech} />
             ))}
           </div>
         )}
-        <div className="flex items-center border-b border-gray-200 py-4">
-          <span className="text-gray-500 text-sm w-1/4">Period</span>
+        <div className="flex items-center py-2">
+          <span className="text-gray-500 text-sm w-1/5">Period</span>
           <span className="text-sm text-gray-500 mr-4">
             {project.startDate.split("T")[0]}
           </span>
@@ -97,8 +99,8 @@ const ProjectContentClient = ({ _id }: { _id: string }) => {
             </span>
           )}
         </div>
-        <div className="flex items-center border-b border-gray-200 py-4">
-          <span className="text-gray-500 text-sm w-1/4">Link</span>
+        <div className="flex items-center py-2">
+          <span className="text-gray-500 text-sm w-1/5">Link</span>
           <div className="flex gap-2">
             {project.links?.github && (
               <a
@@ -138,20 +140,29 @@ const ProjectContentClient = ({ _id }: { _id: string }) => {
       </div>
       {/* 설명 */}
       <div className="w-full flex flex-col gap-2 py-10">
-        <h3 className="text-xl font-bold pb-6 w-full">Description</h3>
+        <h3 className="text-xl font-bold pb-4 w-full mb-6 border-b border-gray-200">
+          Description
+        </h3>
         <p className="text-gray-500 text-sm">{project.description}</p>
       </div>
       {/* 포스트 목록 */}
       <div className="w-full flex flex-col gap-2 py-10">
-        <h3 className="text-xl font-bold pb-6 w-full">Related Posts</h3>
+        <h3 className="text-xl font-bold mb-6 pb-4 w-full border-b border-gray-200">
+          Related Posts
+        </h3>
         <div className="flex flex-col gap-2">
           {/* type folder */}
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-4 items-center mb-4">
             <button
-              className="text-gray-500 text-lg hover:text-gray-700"
-              onClick={() => setFilteredPosts(projectPosts?.posts || [])}
+              className={`text-gray-500 text-md bg-gray-100 rounded-full px-4 py-2 ${
+                selectedType === "All" ? "bg-gray-700 text-white" : ""
+              }`}
+              onClick={() => {
+                setFilteredPosts(projectPosts?.posts || []);
+                setSelectedType("All");
+              }}
             >
-              📁 All
+              # All
             </button>
             {projectPosts?.typeStats &&
               Object.entries(projectPosts.typeStats).map(([typeKey]) => {
@@ -162,10 +173,12 @@ const ProjectContentClient = ({ _id }: { _id: string }) => {
                 return (
                   <button
                     key={typeKey}
-                    className="text-gray-500 text-lg hover:text-gray-700"
+                    className={`text-gray-500 text-md bg-gray-100 rounded-full px-4 py-2 ${
+                      selectedType === typeKey ? "bg-gray-700 text-white" : ""
+                    }`}
                     onClick={() => handleTypeFilter(typeKey)}
                   >
-                    📁 {postType.label}
+                    # {postType.label}
                   </button>
                 );
               })}
