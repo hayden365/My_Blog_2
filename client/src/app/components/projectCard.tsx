@@ -29,16 +29,18 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
             </span>
             •<span className="text-sm">{project.myRole.toUpperCase()}</span>
           </div>
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             <div className="flex gap-2">
               <span className="text-sm">Language:</span>
               <TechTag name={project.language} />
             </div>
             <div className="flex gap-2">
               <span className="text-sm">Frontend:</span>
-              {project.frontend_tech.map((tech) => (
-                <TechTag key={tech} name={tech} />
-              ))}
+              <div className="flex gap-2 flex-wrap">
+                {project.frontend_tech.map((tech) => (
+                  <TechTag key={tech} name={tech} />
+                ))}
+              </div>
             </div>
             {project.backend_tech.length > 0 && (
               <div className="flex gap-2">

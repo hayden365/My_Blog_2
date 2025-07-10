@@ -86,7 +86,7 @@ const TechTag = ({ name, className }: TechTagProps) => {
   return (
     <div
       className={twMerge(
-        "w-fit bg-gray-100 text-gray-500 px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1",
+        "w-fit text-nowrap bg-gray-100 text-gray-500 px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1",
         className
       )}
     >
