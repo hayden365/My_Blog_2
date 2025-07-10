@@ -12,7 +12,6 @@ import StyledType from "./common/styledType";
 const PostContent = ({ data }: { data: Post }) => {
   register("ko", koLocale);
   const { isLoggedIn } = useAuthStore();
-  console.log(data.content_json);
 
   return (
     <div className="py-13 mx-5 flex flex-col gap-4">

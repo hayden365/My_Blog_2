@@ -1,20 +1,47 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getProject } from "../api/fetch";
+import { getProject, getProjectPosts } from "../api/fetch";
 import { ProjectData } from "../lib/types/project";
 import TechTag from "./common/techTag";
 import { FaGithub, FaLink } from "react-icons/fa";
 import { RiNotionFill } from "react-icons/ri";
+import { Post, POST_TYPES } from "../lib/types/post";
+import { useEffect, useState } from "react";
+import PostList from "./postList";
 
 const ProjectContentClient = ({ _id }: { _id: string }) => {
+  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+
   const { data: project, isLoading } = useQuery<ProjectData>({
     queryKey: ["project", _id],
     queryFn: () => getProject(_id),
   });
 
-  if (isLoading) return <div>Loading...</div>;
+  const { data: projectPosts, isLoading: isPostsLoading } = useQuery<{
+    posts: Post[];
+    typeStats: { [key: string]: number };
+  }>({
+    queryKey: ["projectPosts", _id],
+    queryFn: () => getProjectPosts(_id),
+  });
+  console.log(projectPosts, "projectPosts");
+
+  useEffect(() => {
+    if (projectPosts) {
+      setFilteredPosts(projectPosts.posts);
+    }
+  }, [projectPosts]);
+
+  if (isLoading || isPostsLoading) return <div>Loading...</div>;
   if (!project) return <div>Project not found</div>;
+
+  const handleTypeFilter = (typeKey: string) => {
+    const filteredPosts = projectPosts?.posts.filter((post) =>
+      post.types?.includes(typeKey)
+    );
+    setFilteredPosts(filteredPosts || []);
+  };
 
   return (
     <div className="w-full flex flex-col gap-10">
@@ -118,9 +145,36 @@ const ProjectContentClient = ({ _id }: { _id: string }) => {
       <div className="w-full flex flex-col gap-2 py-10">
         <h3 className="text-xl font-bold pb-6 w-full">Related Posts</h3>
         <div className="flex flex-col gap-2">
-          {/* {project.posts.map((post) => (
-            <PostCard key={post._id} post={post} />
-          ))} */}
+          {/* type folder */}
+          <div className="flex gap-4 items-center">
+            <button
+              className="text-gray-500 text-lg hover:text-gray-700"
+              onClick={() => setFilteredPosts(projectPosts?.posts || [])}
+            >
+              📁 All
+            </button>
+            {projectPosts?.typeStats &&
+              Object.entries(projectPosts.typeStats).map(([typeKey]) => {
+                const postType = POST_TYPES.find(
+                  (type) => type.key === typeKey
+                );
+                if (!postType) return null;
+                return (
+                  <button
+                    key={typeKey}
+                    className="text-gray-500 text-lg hover:text-gray-700"
+                    onClick={() => handleTypeFilter(typeKey)}
+                  >
+                    📁 {postType.label}
+                  </button>
+                );
+              })}
+          </div>
+          {filteredPosts.length > 0 ? (
+            <PostList data={filteredPosts} />
+          ) : (
+            <div className="text-gray-500 text-sm">No posts found</div>
+          )}
         </div>
       </div>
     </div>

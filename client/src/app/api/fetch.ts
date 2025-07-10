@@ -86,3 +86,9 @@ export const createProject = async (project: ProjectData) => {
   });
   return handleResponse(response);
 };
+
+// 프로젝트 포스트 조회
+export async function getProjectPosts(_id: string) {
+  const response = await fetch(`${API_URL}/posts/project/${_id}`);
+  return handleResponse(response);
+}

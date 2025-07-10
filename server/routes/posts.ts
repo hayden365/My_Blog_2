@@ -187,20 +187,6 @@ router.delete("/:_id", verifyToken, (async (req: Request, res: Response) => {
   }
 }) as RequestHandler);
 
-// Get posts by project ID
-router.get("/project/:projectId", (async (req: Request, res: Response) => {
-  try {
-    const posts = await Post.find({ projects: req.params.projectId })
-      .populate("tags", "name")
-      .populate("projects", "title")
-      .sort({ createdAt: -1 }); // createdAt 기준 최신순 정렬
-
-    res.json(posts);
-  } catch (err) {
-    res.status(500).json({ message: err });
-  }
-}) as RequestHandler);
-
 // Get post by slug (for client-side routing)
 router.get("/slug/:slug", (async (req: Request, res: Response) => {
   try {
@@ -212,6 +198,48 @@ router.get("/slug/:slug", (async (req: Request, res: Response) => {
       return;
     }
     res.json(post);
+  } catch (err) {
+    res.status(500).json({ message: err });
+  }
+}) as RequestHandler);
+
+// Get post by project id
+router.get("/project/:projectId", (async (req: Request, res: Response) => {
+  try {
+    const posts = await Post.find({ projects: req.params.projectId })
+      .populate("tags", "name")
+      .populate("projects", "title")
+      .sort({ createdAt: -1 });
+
+    const typeStats = {
+      "error-handling": 0,
+      feature: 0,
+      theory: 0,
+      retrospective: 0,
+      design: 0,
+      uncategorized: 0,
+    };
+
+    posts.forEach((post) => {
+      if (post.types && post.types.length > 0) {
+        post.types.forEach((type) => {
+          if (typeStats[type as keyof typeof typeStats] !== undefined) {
+            typeStats[type as keyof typeof typeStats]++;
+          }
+        });
+      } else {
+        typeStats["uncategorized"]++;
+      }
+    });
+
+    const result = {
+      posts,
+      typeStats: Object.fromEntries(
+        Object.entries(typeStats).filter(([_, count]) => count > 0)
+      ),
+    };
+
+    res.json(result);
   } catch (err) {
     res.status(500).json({ message: err });
   }
