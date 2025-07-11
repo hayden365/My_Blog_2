@@ -277,6 +277,7 @@ router.get("/me", (async (req: Request, res: Response) => {
 
   // 쿠키에서 토큰 확인
   let accessToken = req.cookies.accessToken;
+  let refreshToken = req.cookies.refreshToken;
 
   // 쿠키에 없으면 Authorization 헤더에서 확인
   if (!accessToken && req.headers.authorization?.startsWith("Bearer ")) {
@@ -284,8 +285,12 @@ router.get("/me", (async (req: Request, res: Response) => {
     console.log("✅ Authorization 헤더에서 토큰 발견");
   }
 
-  if (!accessToken) {
+  if (!accessToken && refreshToken) {
     console.log("❌ accessToken이 없음");
+    return res.status(401).json({ message: "There's only refresh token" });
+  }
+
+  if (!accessToken && !refreshToken) {
     return res.status(401).json({ message: "No access token provided" });
   }
 

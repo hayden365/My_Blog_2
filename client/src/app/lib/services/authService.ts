@@ -20,32 +20,23 @@ const fetchUserData = async (): Promise<UserProfile | null> => {
     // 401 에러가 발생한 경우
     if (response.status === 401) {
       const errorData = await response.json().catch(() => ({}));
+      console.log("📝 에러 메시지:", errorData.message);
 
       // "No access token provided" 메시지인 경우 - 로그인하지 않은 상태
       if (errorData.message === "No access token provided") {
-        console.log(" 로그인하지 않은 상태 - 검증 생략");
+        console.log("🚫 로그인하지 않은 상태 - 검증 생략");
         return null;
       }
 
       // 토큰이 만료된 경우에만 리프레시 시도
-      if (errorData.message === "Access token expired") {
-        console.log("액세스 토큰 만료, 리프레시 토큰으로 갱신 시도");
+      if (errorData.message === "There's only refresh token") {
+        console.log("🔄 액세스 토큰 만료, 리프레시 토큰으로 갱신 시도");
 
         // 리프레시 토큰으로 새로운 액세스 토큰 발급 시도
         const refreshSuccessful = await refreshToken();
 
         if (refreshSuccessful) {
-          console.log("✅ 토큰 갱신 성공, 사용자 정보 다시 가져오기");
-          // 토큰이 갱신되었으므로 다시 사용자 정보 요청
-          const retryResponse = await fetch(`${API_URL}/auth/me`, {
-            method: "GET",
-            credentials: "include",
-          });
-
-          if (retryResponse.ok) {
-            const userData = await retryResponse.json();
-            return userData;
-          }
+          return userData;
         }
 
         console.log("❌ 리프레시 토큰도 만료됨");
@@ -127,20 +118,28 @@ export const refreshToken = async (): Promise<boolean> => {
     });
 
     if (!response.ok) {
-      console.error("Token refresh failed:", response.status);
+      console.error("❌ Token refresh failed:", response.status);
       return false;
     }
 
-    // 토큰이 갱신되었으므로 사용자 정보도 새로 가져오기
-    const freshUserData = await fetchUserData();
-    if (freshUserData) {
+    console.log("✅ 리프레시 토큰 갱신 성공, 사용자 정보 새로 가져오기");
+    // 토큰이 갱신되었으므로 사용자 정보도 새로 가져오기 (무한 재귀 방지)
+    const userResponse = await fetch(`${API_URL}/auth/me`, {
+      method: "GET",
+      credentials: "include",
+    });
+
+    if (userResponse.ok) {
+      const freshUserData = await userResponse.json();
       userData = freshUserData;
+      console.log("✅ 사용자 정보 업데이트 완료");
       return true;
     }
 
+    console.log("❌ 사용자 정보 가져오기 실패");
     return false;
   } catch (error) {
-    console.error("Token refresh failed:", error);
+    console.error("❌ Token refresh failed:", error);
     return false;
   }
 };
