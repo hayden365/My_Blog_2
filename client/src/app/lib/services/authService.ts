@@ -17,27 +17,43 @@ const fetchUserData = async (): Promise<UserProfile | null> => {
       return userData;
     }
 
+    // 401 에러가 발생한 경우
     if (response.status === 401) {
-      console.log("액세스 토큰 만료, 리프레시 토큰으로 갱신 시도");
+      const errorData = await response.json().catch(() => ({}));
 
-      // 리프레시 토큰으로 새로운 액세스 토큰 발급 시도
-      const refreshSuccessful = await refreshToken();
-
-      if (refreshSuccessful) {
-        console.log("✅ 토큰 갱신 성공, 사용자 정보 다시 가져오기");
-        // 토큰이 갱신되었으므로 다시 사용자 정보 요청
-        const retryResponse = await fetch(`${API_URL}/auth/me`, {
-          method: "GET",
-          credentials: "include",
-        });
-
-        if (retryResponse.ok) {
-          const userData = await retryResponse.json();
-          return userData;
-        }
+      // "No access token provided" 메시지인 경우 - 로그인하지 않은 상태
+      if (errorData.message === "No access token provided") {
+        console.log(" 로그인하지 않은 상태 - 검증 생략");
+        return null;
       }
 
-      console.log("❌ 리프레시 토큰도 만료됨");
+      // 토큰이 만료된 경우에만 리프레시 시도
+      if (errorData.message === "Access token expired") {
+        console.log("액세스 토큰 만료, 리프레시 토큰으로 갱신 시도");
+
+        // 리프레시 토큰으로 새로운 액세스 토큰 발급 시도
+        const refreshSuccessful = await refreshToken();
+
+        if (refreshSuccessful) {
+          console.log("✅ 토큰 갱신 성공, 사용자 정보 다시 가져오기");
+          // 토큰이 갱신되었으므로 다시 사용자 정보 요청
+          const retryResponse = await fetch(`${API_URL}/auth/me`, {
+            method: "GET",
+            credentials: "include",
+          });
+
+          if (retryResponse.ok) {
+            const userData = await retryResponse.json();
+            return userData;
+          }
+        }
+
+        console.log("❌ 리프레시 토큰도 만료됨");
+        return null;
+      }
+
+      // 기타 401 에러의 경우
+      console.log("❌ 인증 실패:", errorData.message);
       return null;
     }
 
