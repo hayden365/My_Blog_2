@@ -23,7 +23,16 @@ const DeleteModal = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* dim 처리된 배경 */}
-      <div className="absolute inset-0 bg-white/95"> </div>
+      <div
+        className="cursor-default absolute inset-0 bg-white/95"
+        onClick={(e) => {
+          e.stopPropagation();
+          e.preventDefault();
+          onClose();
+        }}
+      >
+        {" "}
+      </div>
 
       {/* 모달 컨텐츠 */}
       <div className="relative z-10 bg-white p-11 w-3/5 h-5/12 shadow-md flex flex-col items-center justify-center">

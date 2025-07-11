@@ -27,7 +27,6 @@ const ProjectContentClient = ({ _id }: { _id: string }) => {
     queryKey: ["projectPosts", _id],
     queryFn: () => getProjectPosts(_id),
   });
-  console.log(projectPosts, "projectPosts");
 
   useEffect(() => {
     if (projectPosts) {

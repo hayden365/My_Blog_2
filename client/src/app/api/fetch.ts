@@ -92,3 +92,20 @@ export async function getProjectPosts(_id: string) {
   const response = await fetch(`${API_URL}/posts/project/${_id}`);
   return handleResponse(response);
 }
+
+// 프로젝트 수정
+export const updateProject = async (project: ProjectData) => {
+  const response = await fetchWithAuth(`${API_URL}/projects/${project._id}`, {
+    method: "PUT",
+    body: JSON.stringify(project),
+  });
+  return handleResponse(response);
+};
+
+// 프로젝트 삭제
+export async function deleteProject(_id: string) {
+  const response = await fetchWithAuth(`${API_URL}/projects/${_id}`, {
+    method: "DELETE",
+  });
+  return handleResponse(response);
+}

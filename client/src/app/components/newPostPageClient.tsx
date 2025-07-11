@@ -47,8 +47,7 @@ const NewPostPageClient = () => {
         types,
       },
       {
-        onSuccess: (data) => {
-          console.log("Success", data);
+        onSuccess: () => {
           resetPost();
           router.push("/");
         },

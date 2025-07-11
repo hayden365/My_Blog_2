@@ -7,7 +7,6 @@ interface ProjectListProps {
 }
 
 const ProjectList = ({ data }: ProjectListProps) => {
-  console.log(data);
   return (
     <div className="flex flex-col gap-10">
       {data.map((project) => (

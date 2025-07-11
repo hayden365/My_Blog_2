@@ -2,12 +2,15 @@ import Image from "next/image";
 import { ProjectData } from "../lib/types/project";
 import Link from "next/link";
 import TechTag from "./common/techTag";
+import ProjectOptionsMenu from "./projectOptionsMenu";
+import { useAuthStore } from "../lib/store/authStore";
 
 interface ProjectCardProps {
   project: ProjectData;
 }
 
 const ProjectCard = ({ project }: ProjectCardProps) => {
+  const { isLoggedIn } = useAuthStore();
   return (
     <Link
       href={`/projects/${project._id}`}
@@ -60,6 +63,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
                 진행 중
               </span>
             )}
+            <div>{isLoggedIn && <ProjectOptionsMenu project={project} />}</div>
           </div>
         </div>
       </div>

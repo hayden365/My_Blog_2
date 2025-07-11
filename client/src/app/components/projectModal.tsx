@@ -10,19 +10,47 @@ import {
   CommandLineIcon,
   LinkIcon,
 } from "@heroicons/react/16/solid";
-import { useCreateProject } from "../lib/hooks/useProject";
+import { useCreateProject, useUpdateProject } from "../lib/hooks/useProject";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
+import { createPortal } from "react-dom";
 
 interface ProjectModalProps {
   isOpen: boolean;
   onClose: () => void;
+  project?: ProjectData; // 수정할 프로젝트 데이터
 }
 
-const ProjectModal = ({ isOpen, onClose }: ProjectModalProps) => {
-  const { register, handleSubmit, setValue, watch } =
+const ProjectModal = ({ isOpen, onClose, project }: ProjectModalProps) => {
+  const { register, handleSubmit, setValue, watch, reset } =
     useForm<ProjectFormData>();
 
   const { mutate: createProject } = useCreateProject();
+  const { mutate: updateProject } = useUpdateProject();
+
+  // 기존 프로젝트 데이터가 있으면 폼에 미리 채우기
+  useEffect(() => {
+    if (project) {
+      reset({
+        title: project.title,
+        myRole: project.myRole,
+        language: project.language,
+        frontend_tech: project.frontend_tech?.join(", ") || "",
+        backend_tech: project.backend_tech?.join(", ") || "",
+        startDate: new Date(project.startDate).toISOString().split("T")[0],
+        endDate: new Date(project.endDate).toISOString().split("T")[0],
+        isGroupProject: project.isGroupProject,
+        isOngoing: project.isOngoing,
+        description: project.description,
+        coverImg: project.coverImg,
+        links: {
+          github: project.links?.github || "",
+          notion: project.links?.notion || "",
+          demo: project.links?.demo || "",
+          figma: project.links?.figma || "",
+        },
+      });
+    }
+  }, [project, reset]);
 
   const onSubmit: SubmitHandler<ProjectFormData> = (data) => {
     const processedData = {
@@ -45,7 +73,7 @@ const ProjectModal = ({ isOpen, onClose }: ProjectModalProps) => {
             .replace(/[\/\-\_\.]+/g, "")
         )
         .filter((tech) => tech.length > 0),
-      _id: "",
+      _id: project?._id || "",
       links: data.links || {
         github: "",
         notion: "",
@@ -54,15 +82,27 @@ const ProjectModal = ({ isOpen, onClose }: ProjectModalProps) => {
       },
     };
 
-    createProject(processedData, {
-      onSuccess: (data: ProjectData) => {
-        console.log("Success", data);
-        onClose();
-      },
-      onError: (error) => {
-        console.log("Error", error);
-      },
-    });
+    const onSuccess = (data: ProjectData) => {
+      console.log("Success", data);
+      onClose();
+    };
+
+    // 프로젝트가 있으면 수정, 없으면 생성
+    if (project) {
+      updateProject(processedData, {
+        onSuccess,
+        onError: () => {
+          console.log("Error");
+        },
+      });
+    } else {
+      createProject(processedData, {
+        onSuccess,
+        onError: () => {
+          console.log("Error");
+        },
+      });
+    }
   };
 
   const coverImg = watch("coverImg");
@@ -76,14 +116,25 @@ const ProjectModal = ({ isOpen, onClose }: ProjectModalProps) => {
   }, [onClose]);
 
   if (!isOpen) return null;
-  return (
+
+  return createPortal(
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      {/* dim 처리된 배경 */}
+      {/* dim 처리된 배경 - 여기서만 클릭 차단 */}
       <div
-        className="absolute inset-0 bg-black/50"
-        onClick={() => onClose()}
+        className="cursor-default absolute inset-0 bg-black/50"
+        onClick={(e) => {
+          e.stopPropagation();
+          onClose();
+        }}
       ></div>
-      <div className="relative z-10 bg-white rounded-lg shadow-xl max-h-[90vh] w-full max-w-[600px] flex flex-col">
+
+      {/* 모달 컨텐츠 - 클릭 이벤트 전파만 차단 */}
+      <div
+        className="relative z-10 bg-white rounded-lg shadow-xl max-h-[90vh] w-full max-w-[600px] flex flex-col"
+        onClick={(e) => {
+          e.stopPropagation(); // 클릭 이벤트 전파만 차단
+        }}
+      >
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex flex-col overflow-hidden"
@@ -269,6 +320,7 @@ const ProjectModal = ({ isOpen, onClose }: ProjectModalProps) => {
                   <div className="min-h-[200px] border border-gray-200 rounded-lg">
                     <SimpleEditor
                       setContent={(content) => setValue("description", content)}
+                      content={project?.description}
                     />
                   </div>
                 </div>
@@ -280,13 +332,14 @@ const ProjectModal = ({ isOpen, onClose }: ProjectModalProps) => {
           <div className="flex-shrink-0 p-6 border-t border-gray-200">
             <input
               type="submit"
-              value="프로젝트 생성"
-              className="w-full bg-white text-black border border-gray-400 py-2 px-4 rounded-lg cursor-pointer shadow-md hover:shadow-lg transition-all duration-300 hover:bg-blue-700"
+              value={project ? "프로젝트 수정" : "프로젝트 생성"}
+              className="w-full bg-white text-black border border-gray-400 py-2 px-4 rounded-lg cursor-pointer shadow-md hover:shadow-lg transition-all duration-300 hover:bg-gray-100"
             />
           </div>
         </form>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 
