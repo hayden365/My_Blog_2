@@ -1,9 +1,5 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
-import { getPostList, getPost } from "../../api/fetch";
+import { QueryClient } from "@tanstack/react-query";
+import { getPostList } from "../../api/fetch";
 import { Post } from "../../lib/types/post";
 import PostContentClient from "../../components/postContentClient";
 
@@ -35,25 +31,8 @@ type PageProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export default async function PostPage({ params, searchParams }: PageProps) {
-  const [resolvedParams] = await Promise.all([params, searchParams]);
-  const _id = resolvedParams.slugAndId?.split("-").pop() || "";
-  const queryClient = new QueryClient();
+export default async function PostPage({ params }: PageProps) {
+  const [resolvedParams] = await Promise.all([params]);
 
-  try {
-    await queryClient.prefetchQuery({
-      queryKey: ["post", _id],
-      queryFn: () => getPost(_id),
-    });
-  } catch (error) {
-    console.error("Failed to fetch post:", error);
-  }
-
-  const dehydratedState = dehydrate(queryClient);
-
-  return (
-    <HydrationBoundary state={dehydratedState}>
-      <PostContentClient slugAndId={resolvedParams.slugAndId} />
-    </HydrationBoundary>
-  );
+  return <PostContentClient slugAndId={resolvedParams.slugAndId} />;
 }

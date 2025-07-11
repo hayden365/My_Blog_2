@@ -26,7 +26,10 @@ export default async function PostsPage({ searchParams }: PageProps) {
       }),
     ]);
   } catch (error) {
-    console.error("Failed to fetch data:", error);
+    console.error("Failed to prefetch data:", error);
+    // 에러가 발생해도 빈 상태로 초기화하여 클라이언트에서 다시 시도할 수 있도록 함
+    queryClient.setQueryData(["posts", tag], []);
+    queryClient.setQueryData(["tags"], []);
   }
 
   const dehydratedState = dehydrate(queryClient);
