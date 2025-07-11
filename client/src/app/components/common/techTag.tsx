@@ -13,6 +13,7 @@ import {
 } from "react-icons/si";
 import { twMerge } from "tailwind-merge";
 import { GiPolarBear } from "react-icons/gi";
+import { FaQuestion } from "react-icons/fa6";
 
 interface TechTagProps {
   name: string;
@@ -90,8 +91,10 @@ const TechTag = ({ name, className }: TechTagProps) => {
         className
       )}
     >
-      {TECH_TAGS[name as keyof typeof TECH_TAGS].icon}
-      <span>{TECH_TAGS[name as keyof typeof TECH_TAGS].name}</span>
+      {TECH_TAGS[name as keyof typeof TECH_TAGS]?.icon || <FaQuestion />}
+      <span>
+        {TECH_TAGS[name as keyof typeof TECH_TAGS]?.name || "Default"}
+      </span>
     </div>
   );
 };

@@ -3,6 +3,7 @@ import StyledDropdown from "./common/styledDropdown";
 import { EllipsisHorizontalIcon } from "@heroicons/react/16/solid";
 import { ProjectData } from "../lib/types/project";
 import ProjectModal from "./projectModal";
+import { useDeleteProject } from "../lib/hooks/useProject";
 
 interface ProjectOptionsMenuProps {
   project: ProjectData;
@@ -12,6 +13,7 @@ const ProjectOptionsMenu = ({ project }: ProjectOptionsMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { mutate: deleteProject } = useDeleteProject();
 
   return (
     <>
@@ -57,6 +59,7 @@ const ProjectOptionsMenu = ({ project }: ProjectOptionsMenuProps) => {
                   e.stopPropagation();
                   e.preventDefault();
                   setIsOpen(false);
+                  deleteProject(project._id);
                 }}
               >
                 삭제
