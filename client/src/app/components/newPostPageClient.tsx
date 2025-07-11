@@ -74,13 +74,12 @@ const NewPostPageClient = () => {
         </div>
       </div>
       <div role="main" className="flex flex-col py-6 gap-6 min-h-0 flex-1">
-        <input
-          type="text"
+        <textarea
           value={title}
           onChange={(e) => setTitle(e.target.value)}
           placeholder="Title"
-          className="relative min-h-20 text-4xl text-pretty font-semibold outline-none placeholder-gray-400"
-        ></input>
+          className="relative text-4xl text-pretty w-full h-full min-h-20 overflow-y-hidden font-semibold outline-none placeholder-gray-400 resize-none focus:outline-none"
+        ></textarea>
         <SimpleEditor setContent={setContent} />
       </div>
       <PublishModal
