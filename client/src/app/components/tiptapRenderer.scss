@@ -56,9 +56,17 @@
     margin-bottom: 0.5em;
   }
 
+  ul {
+    list-style: disc;
+  }
+
+  ol {
+    list-style: decimal;
+  }
+
   // 작업 목록 스타일
   .task-list {
-    list-style: none;
+    list-style: disc;
     padding-left: 0;
   }
 

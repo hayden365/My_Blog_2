@@ -72,6 +72,15 @@ function sanitizeHtml(html: string): string {
   });
 }
 
+function escapeHtml(text: string): string {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 // TipTap JSON을 HTML로 변환하는 함수
 function jsonToHtml(json: JSONContent): string {
   if (!json) return "";
@@ -115,7 +124,7 @@ function jsonToHtml(json: JSONContent): string {
                 textContent = `<u>${textContent}</u>`;
                 break;
               case "code":
-                textContent = `<code>${textContent}</code>`;
+                textContent = `<code>${escapeHtml(textContent)}</code>`;
                 break;
               case "superscript":
                 textContent = `<sup>${textContent}</sup>`;
@@ -187,7 +196,16 @@ function jsonToHtml(json: JSONContent): string {
           break;
         case "codeBlock":
           const language = attrs?.language || "";
-          html += `<pre><code class="language-${language}">${children}</code></pre>`;
+          const codeText = (content || [])
+            .map((child) => escapeHtml(child.text || ""))
+            .join("");
+          html += `<pre><code class="language-${language}">${codeText}</code></pre>`;
+          break;
+        case "code":
+          const inlineCode = (content || [])
+            .map((child) => escapeHtml(child.text || ""))
+            .join("");
+          html += `<code>${inlineCode}</code>`;
           break;
         case "image":
           const src = (attrs?.src as string) || "";
@@ -234,6 +252,7 @@ export default function TiptapRenderer({
   content,
   className = "",
 }: TiptapRendererProps) {
+  console.log(content);
   // JSON을 HTML로 변환
   const rawHtml = jsonToHtml(content);
 
