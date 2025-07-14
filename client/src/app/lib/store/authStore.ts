@@ -1,9 +1,7 @@
 import { create } from "zustand";
 import { UserProfile } from "../types/user";
 import {
-  getUserData,
   initAuth,
-  isAuthenticated,
   login as serviceLogin,
   logout as serviceLogout,
 } from "../services/authService";
@@ -26,7 +24,6 @@ export const useAuthStore = create<AuthStore>((set) => ({
     try {
       // 서버에서 사용자 정보 가져오기
       const userData = await initAuth();
-
       if (userData) {
         set({
           userProfile: userData,
@@ -34,23 +31,11 @@ export const useAuthStore = create<AuthStore>((set) => ({
           isLoading: false,
         });
       } else {
-        // 사용자 정보가 없으면 인증 상태 한 번 더 확인
-        const authenticated = await isAuthenticated();
-
-        if (authenticated) {
-          const currentUserData = getUserData();
-          set({
-            userProfile: currentUserData,
-            isLoggedIn: true,
-            isLoading: false,
-          });
-        } else {
-          set({
-            userProfile: null,
-            isLoggedIn: false,
-            isLoading: false,
-          });
-        }
+        set({
+          userProfile: null,
+          isLoggedIn: false,
+          isLoading: false,
+        });
       }
     } catch (error) {
       console.error("Auth check failed:", error);

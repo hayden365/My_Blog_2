@@ -62,7 +62,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         await checkAuth(); // 최초 로드 시 인증 상태 체크
       } catch (error) {
         console.error("Auth initialization failed:", error);
-        authInitialized.current = false; // 실패 시 다시 시도할 수 있도록
+        // 실패 시에도 다시 시도하지 않음 - 로그아웃 상태로 유지
+        authInitialized.current = true;
       }
     };
 

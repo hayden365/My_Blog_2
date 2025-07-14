@@ -80,22 +80,6 @@ export const initAuth = async (): Promise<UserProfile | null> => {
 // 사용자 데이터 가져오기
 export const getUserData = () => userData;
 
-// 인증 상태 확인
-export const isAuthenticated = async (): Promise<boolean> => {
-  if (userData) {
-    return true;
-  }
-
-  // 서버에서 최신 정보 확인
-  const freshUserData = await fetchUserData();
-  if (freshUserData) {
-    userData = freshUserData;
-    return true;
-  }
-
-  return false;
-};
-
 // 로그인 함수
 export const login = () => {
   try {
