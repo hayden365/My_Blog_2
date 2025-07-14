@@ -18,7 +18,7 @@ const PostList = ({ data }: { data: Post[] }) => {
         <li key={post._id} className="border-b border-gray-100 py-8 mx-6">
           <Link
             href={`posts/${post.slug}-${post._id}`}
-            className="flex flex-col pr-4 group"
+            className="flex flex-col gap-6 pr-4 group"
           >
             <div className="flex gap-10 justify-between w-full">
               <div className="flex flex-col justify-between w-full h-full items-start gap-8">
@@ -28,7 +28,8 @@ const PostList = ({ data }: { data: Post[] }) => {
                   </h2>
                   <p className="text-sm text-gray-500 pt-2">{post.subtitle}</p>
                 </div>
-                <div className="flex items-center justify-between w-full gap-2">
+                {/* 옵션 메뉴 */}
+                <div className="hidden sm:flex items-center justify-between w-full gap-2">
                   <div className="flex items-center gap-2">
                     {post.types.map((type) => {
                       return <StyledType key={type} type={type} />;
@@ -46,9 +47,21 @@ const PostList = ({ data }: { data: Post[] }) => {
                   alt={post.title}
                   width={100}
                   height={100}
-                  className="w-full h-full max-w-32 max-h-20 object-cover"
+                  className="w-full h-full max-w-20 max-h-16 sm:max-w-32 sm:max-h-20 object-cover"
                 />
               )}
+            </div>
+            {/* 모바일 버전 */}
+            <div className="flex sm:hidden justify-between h-full w-full gap-2">
+              <div className="flex items-center gap-2">
+                {post.types.map((type) => {
+                  return <StyledType key={type} type={type} />;
+                })}
+              </div>
+              <div className="flex items-center gap-2">
+                <small>{format(post.createdAt, "ko")}</small>
+                {isLoggedIn && <PostOptionsMenu post={post} />}
+              </div>
             </div>
           </Link>
         </li>

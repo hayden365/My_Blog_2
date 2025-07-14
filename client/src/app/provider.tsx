@@ -7,7 +7,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useAuthStore } from "./lib/store/authStore";
 
 function makeQueryClient() {
@@ -17,6 +17,16 @@ function makeQueryClient() {
         // With SSR, we usually want to set some default staleTime
         // above 0 to avoid refetching immediately on the client
         staleTime: 60 * 1000,
+        retry: (failureCount) => {
+          // 네트워크 에러나 5xx 에러만 재시도
+          if (failureCount < 3) {
+            return true;
+          }
+          return false;
+        },
+      },
+      mutations: {
+        retry: false, // mutation은 재시도하지 않음
       },
     },
   });
@@ -41,10 +51,19 @@ function getQueryClient() {
 export default function Providers({ children }: { children: React.ReactNode }) {
   const queryClient = getQueryClient();
   const { checkAuth } = useAuthStore();
+  const authInitialized = useRef(false);
 
   useEffect(() => {
     const initializeAuth = async () => {
-      await checkAuth(); // 최초 로드 시 인증 상태 체크
+      if (authInitialized.current) return;
+
+      try {
+        authInitialized.current = true;
+        await checkAuth(); // 최초 로드 시 인증 상태 체크
+      } catch (error) {
+        console.error("Auth initialization failed:", error);
+        authInitialized.current = false; // 실패 시 다시 시도할 수 있도록
+      }
     };
 
     initializeAuth();

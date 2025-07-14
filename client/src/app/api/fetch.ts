@@ -2,7 +2,7 @@ import { fetchWithAuth } from "../lib/services/authService";
 import { PostData } from "../lib/types/post";
 import { ProjectData } from "../lib/types/project";
 
-const API_URL = process.env.NEXT_PUBLIC_URL || "http://localhost:3001";
+const API_URL = process.env.NEXT_PUBLIC_URL;
 
 const handleResponse = async (response: Response) => {
   if (!response.ok) {

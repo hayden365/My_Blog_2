@@ -1,6 +1,8 @@
 import { UserProfile } from "../types/user";
 
 let userData: UserProfile | null = null;
+let isRefreshing = false; // 토큰 갱신 중복 방지
+let refreshPromise: Promise<boolean> | null = null; // 토큰 갱신 Promise 캐싱
 
 const API_URL = process.env.NEXT_PUBLIC_URL;
 
@@ -36,7 +38,16 @@ const fetchUserData = async (): Promise<UserProfile | null> => {
         const refreshSuccessful = await refreshToken();
 
         if (refreshSuccessful) {
-          return userData;
+          // 토큰 갱신 성공 시 사용자 정보 다시 가져오기
+          const retryResponse = await fetch(`${API_URL}/auth/me`, {
+            method: "GET",
+            credentials: "include",
+          });
+
+          if (retryResponse.ok) {
+            const retryUserData = await retryResponse.json();
+            return retryUserData;
+          }
         }
 
         console.log("refreshToken failed");
@@ -111,37 +122,36 @@ export const logout = async () => {
 
 // 토큰 갱신 함수 (서버에서 자동 처리되므로 간단하게)
 export const refreshToken = async (): Promise<boolean> => {
-  try {
-    const response = await fetch(`${API_URL}/auth/refresh`, {
-      method: "POST",
-      credentials: "include",
-    });
-
-    if (!response.ok) {
-      console.error("refreshToken failed:", response.status);
-      return false;
-    }
-
-    console.log("refreshToken success");
-    // 토큰이 갱신되었으므로 사용자 정보도 새로 가져오기 (무한 재귀 방지)
-    const userResponse = await fetch(`${API_URL}/auth/me`, {
-      method: "GET",
-      credentials: "include",
-    });
-
-    if (userResponse.ok) {
-      const freshUserData = await userResponse.json();
-      userData = freshUserData;
-      console.log("userData updated");
-      return true;
-    }
-
-    console.log("userData fetch failed");
-    return false;
-  } catch (error) {
-    console.error("refreshToken failed:", error);
-    return false;
+  // 이미 갱신 중이면 기존 Promise 반환
+  if (isRefreshing && refreshPromise) {
+    return refreshPromise;
   }
+
+  isRefreshing = true;
+  refreshPromise = (async () => {
+    try {
+      const response = await fetch(`${API_URL}/auth/refresh`, {
+        method: "POST",
+        credentials: "include",
+      });
+
+      if (!response.ok) {
+        console.error("refreshToken failed:", response.status);
+        return false;
+      }
+
+      console.log("refreshToken success");
+      return true;
+    } catch (error) {
+      console.error("refreshToken failed:", error);
+      return false;
+    } finally {
+      isRefreshing = false;
+      refreshPromise = null;
+    }
+  })();
+
+  return refreshPromise;
 };
 
 // 인증이 포함된 fetch 함수
