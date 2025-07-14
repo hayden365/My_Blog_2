@@ -252,7 +252,6 @@ export default function TiptapRenderer({
   content,
   className = "",
 }: TiptapRendererProps) {
-  console.log(content);
   // JSON을 HTML로 변환
   const rawHtml = jsonToHtml(content);
 

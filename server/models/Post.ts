@@ -48,4 +48,10 @@ const postSchema = new mongoose.Schema({
   },
 });
 
+postSchema.index({ createdAt: -1 });
+postSchema.index({ tags: 1 });
+postSchema.index({ projects: 1 });
+postSchema.index({ types: 1 });
+postSchema.index({ slug: 1 });
+
 export default mongoose.model("Post", postSchema);
