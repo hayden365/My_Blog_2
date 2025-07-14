@@ -1,6 +1,6 @@
-import { fetchWithAuth } from "../lib/services/authService";
-import { PostData } from "../lib/types/post";
-import { ProjectData } from "../lib/types/project";
+import { fetchWithAuth } from "./services/authService";
+import { PostData } from "./types/post";
+import { ProjectData } from "./types/project";
 
 const API_URL = process.env.NEXT_PUBLIC_URL;
 

@@ -3,7 +3,7 @@ import {
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query";
-import { getProjects } from "../api/fetch";
+import { getProjects } from "../lib/fetch";
 import ProjectsPageClient from "../components/projectsPageClient";
 import { Project } from "../lib/types/post";
 

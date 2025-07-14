@@ -1,5 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
-import { getPostList, getTags } from "../../api/fetch";
+import { getPostList, getTags } from "../fetch";
 import { Post, Tag } from "../types/post";
 
 // SSG를 위한 정적 경로 생성

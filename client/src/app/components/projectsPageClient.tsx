@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { getProjects } from "../api/fetch";
+import { getProjects } from "../lib/fetch";
 import ProjectList from "./projectList";
 import { useQuery } from "@tanstack/react-query";
 import ProjectModal from "./projectModal";

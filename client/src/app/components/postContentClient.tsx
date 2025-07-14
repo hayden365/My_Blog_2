@@ -1,7 +1,7 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
-import { getPost } from "../api/fetch";
+import { getPost } from "../lib/fetch";
 import PostContent from "./postContent";
 
 const PostContentClient = ({ slugAndId }: { slugAndId: string }) => {

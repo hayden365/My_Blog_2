@@ -1,5 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
-import { getPostList } from "../../api/fetch";
+import { getPostList } from "../../lib/fetch";
 import { Post } from "../../lib/types/post";
 import PostContentClient from "../../components/postContentClient";
 

@@ -1,4 +1,4 @@
-import { createProject, deleteProject, updateProject } from "@/app/api/fetch";
+import { createProject, deleteProject, updateProject } from "@/app/lib/fetch";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useCreateProject = () => {

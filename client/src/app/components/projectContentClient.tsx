@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { getProject, getProjectPosts } from "../api/fetch";
+import { getProject, getProjectPosts } from "../lib/fetch";
 import { ProjectData } from "../lib/types/project";
 import TechTag from "./common/techTag";
 import TableOfContents from "@/app/components/common/tableOfContents";

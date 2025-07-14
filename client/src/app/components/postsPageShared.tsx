@@ -1,6 +1,6 @@
 "use client";
 import { useQuery } from "@tanstack/react-query";
-import { getPostList, getTags } from "../api/fetch";
+import { getPostList, getTags } from "../lib/fetch";
 import HorizontalTabs from "./horizontalTabs";
 import PostList from "./postList";
 import { Post, Tag } from "../lib/types/post";

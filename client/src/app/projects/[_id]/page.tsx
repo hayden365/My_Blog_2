@@ -1,4 +1,4 @@
-import { getProject } from "@/app/api/fetch";
+import { getProject } from "@/app/lib/fetch";
 import ProjectContentClient from "@/app/components/projectContentClient";
 import {
   dehydrate,

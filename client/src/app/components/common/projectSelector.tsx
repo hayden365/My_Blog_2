@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import StyledDropdown from "./styledDropdown";
 import { useQuery } from "@tanstack/react-query";
-import { getProjects } from "../../api/fetch";
+import { getProjects } from "../../lib/fetch";
 import { ProjectData } from "@/app/lib/types/project";
 import { usePostStore } from "@/app/lib/store/postStore";
 

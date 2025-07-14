@@ -7,7 +7,7 @@ import { usePostStore } from "@/app/lib/store/postStore";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
-import { getPost } from "@/app/api/fetch";
+import { getPost } from "@/app/lib/fetch";
 import { useUpdatePost } from "@/app/lib/hooks/usePost";
 import { SimpleEditor } from "@/components/tiptap-templates/simple/simple-editor";
 import { useAuthStore } from "@/app/lib/store/authStore";
