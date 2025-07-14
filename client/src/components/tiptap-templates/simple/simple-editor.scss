@@ -131,6 +131,27 @@ body,
 
 .simple-editor-content .tiptap.ProseMirror {
   padding: 2rem 2rem;
+
+  // 이미지 노드 스타일 추가
+  img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.375rem;
+    margin: 1rem 0;
+    display: block;
+
+    // GIF 애니메이션 지원
+    &[src*=".gif"],
+    &[src*=".GIF"] {
+      image-rendering: auto;
+    }
+  }
+
+  // 이미지 업로드 노드가 선택되었을 때의 스타일
+  .ProseMirror-selectednode .tiptap-image-upload {
+    outline: 2px solid var(--tt-brand-color-500);
+    border-radius: 0.5rem;
+  }
 }
 
 @media screen and (max-width: 480px) {

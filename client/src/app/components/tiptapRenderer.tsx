@@ -222,7 +222,9 @@ function jsonToHtml(json: JSONContent): string {
               : "";
           console.log("safeSrc", safeSrc);
           if (safeSrc) {
-            html += `<img src="${safeSrc}" alt="${alt}" title="${title}" />`;
+            const isGif = safeSrc.toLowerCase().includes(".gif");
+            const imgClass = isGif ? "gif-image" : "";
+            html += `<img src="${safeSrc}" alt="${alt}" title="${title}" class="${imgClass}" />`;
           }
           break;
         case "horizontalRule":

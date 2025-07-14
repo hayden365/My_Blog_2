@@ -34,12 +34,14 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
           </div>
           <div className="flex flex-col gap-3">
             <div className="flex gap-2">
-              <span className="text-sm">Language:</span>
-              <TechTag name={project.language} />
+              <span className="text-sm w-1/5">Language:</span>
+              <div className="flex gap-2 w-4/5">
+                <TechTag name={project.language} />
+              </div>
             </div>
             <div className="flex gap-2">
-              <span className="text-sm">Frontend:</span>
-              <div className="flex gap-2 flex-wrap">
+              <span className="text-sm w-1/5">Frontend:</span>
+              <div className="flex gap-2 flex-wrap w-4/5">
                 {project.frontend_tech.map((tech) => (
                   <TechTag key={tech} name={tech} />
                 ))}
@@ -47,10 +49,12 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
             </div>
             {project.backend_tech.length > 0 && (
               <div className="flex gap-2">
-                <span className="text-sm">Backend:</span>
-                {project.backend_tech.map((tech) => (
-                  <TechTag key={tech} name={tech} />
-                ))}
+                <span className="text-sm w-1/5">Backend:</span>
+                <div className="flex gap-2 flex-wrap w-4/5">
+                  {project.backend_tech.map((tech) => (
+                    <TechTag key={tech} name={tech} />
+                  ))}
+                </div>
               </div>
             )}
           </div>

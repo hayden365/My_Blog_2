@@ -119,6 +119,22 @@
     height: auto;
     border-radius: 0.375rem;
     margin: 3rem auto;
+    display: block;
+
+    // GIF 애니메이션 지원
+    &[src*=".gif"],
+    &[src*=".GIF"] {
+      // GIF 파일의 경우 추가 스타일링
+      image-rendering: auto; // 브라우저 최적화된 렌더링
+    }
+  }
+
+  // GIF 이미지 전용 스타일
+  .gif-image {
+    // GIF 애니메이션이 부드럽게 재생되도록 설정
+    image-rendering: auto;
+    // GIF 파일의 경우 추가적인 최적화
+    will-change: auto;
   }
 
   // 링크 스타일

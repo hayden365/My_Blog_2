@@ -9,6 +9,7 @@ import {
   SiExpress,
   SiReactquery,
   SiRedux,
+  SiSanity,
   SiStyledcomponents,
 } from "react-icons/si";
 import { twMerge } from "tailwind-merge";
@@ -80,6 +81,10 @@ const TECH_TAGS = {
   reduxtoolkit: {
     name: "Redux Toolkit",
     icon: <SiRedux />,
+  },
+  sanity: {
+    name: "Sanity",
+    icon: <SiSanity />,
   },
 };
 

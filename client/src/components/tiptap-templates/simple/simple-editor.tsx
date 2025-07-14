@@ -239,7 +239,7 @@ export function SimpleEditor({ setContent, content }: SimpleEditorProps) {
       TableRow,
       Selection,
       ImageUploadNode.configure({
-        accept: "image/*",
+        accept: "image/*,.gif,.GIF",
         maxSize: MAX_FILE_SIZE,
         limit: 3,
         upload: handleImageUpload,
