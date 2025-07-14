@@ -3,20 +3,29 @@ import { useQuery } from "@tanstack/react-query";
 import { getPostList, getTags } from "../api/fetch";
 import HorizontalTabs from "./horizontalTabs";
 import PostList from "./postList";
+import { Post, Tag } from "../lib/types/post";
 
-interface PostsPageClientProps {
+interface PostsPageSharedProps {
   tag?: string;
+  initialPosts?: Post[];
+  initialTags?: Tag[];
 }
 
-export default function PostsPageClient({ tag }: PostsPageClientProps) {
-  const { data: posts = [] } = useQuery({
+export default function PostsPageShared({
+  tag,
+  initialPosts = [],
+  initialTags = [],
+}: PostsPageSharedProps) {
+  const { data: posts = initialPosts } = useQuery({
     queryKey: ["posts", tag],
     queryFn: () => getPostList(tag),
+    initialData: initialPosts.length > 0 ? initialPosts : undefined,
   });
 
-  const { data: tags = [] } = useQuery({
+  const { data: tags = initialTags } = useQuery({
     queryKey: ["tags"],
     queryFn: () => getTags(),
+    initialData: initialTags.length > 0 ? initialTags : undefined,
   });
 
   return (

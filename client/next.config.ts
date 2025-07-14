@@ -7,6 +7,12 @@ const nextConfig: NextConfig = {
   experimental: {
     serverComponentsExternalPackages: [],
   },
+  // SSG 최적화 설정
+  output: "standalone",
+  // 정적 페이지 생성 최적화
+  generateBuildId: async () => {
+    return "build-" + Date.now();
+  },
 };
 
 export default nextConfig;

@@ -19,7 +19,11 @@ export async function getPostList(tag?: string) {
     }
 
     const response = await fetch(url.toString(), {
-      cache: "no-store",
+      // SSG를 위한 캐싱 설정
+      next: {
+        revalidate: 3600, // 1시간마다 재검증
+        tags: ["posts", tag || "all"], // 캐시 태그로 무효화 가능
+      },
     });
 
     return handleResponse(response);
@@ -31,7 +35,13 @@ export async function getPostList(tag?: string) {
 
 export async function getPost(_id: string) {
   try {
-    const response = await fetch(`${API_URL}/posts/${_id}`);
+    const response = await fetch(`${API_URL}/posts/${_id}`, {
+      // 개별 포스트도 캐싱
+      next: {
+        revalidate: 3600,
+        tags: ["post", _id],
+      },
+    });
     return handleResponse(response);
   } catch (error) {
     console.error("Failed to fetch post:", error);
@@ -67,7 +77,13 @@ export async function deletePost(_id: string) {
 // 태그 조회
 export async function getTags() {
   try {
-    const response = await fetch(`${API_URL}/tag`);
+    const response = await fetch(`${API_URL}/tag`, {
+      // 태그는 자주 변경되지 않으므로 더 긴 캐시
+      next: {
+        revalidate: 7200, // 2시간마다 재검증
+        tags: ["tags"],
+      },
+    });
     return handleResponse(response);
   } catch (error) {
     console.error("Failed to fetch tags:", error);
@@ -78,7 +94,13 @@ export async function getTags() {
 // 태그 검색
 export async function searchTags(query: string) {
   try {
-    const response = await fetch(`${API_URL}/tag/search?query=${query}`);
+    const response = await fetch(`${API_URL}/tag/search?query=${query}`, {
+      // 검색 결과는 짧은 캐시
+      next: {
+        revalidate: 1800, // 30분마다 재검증
+        tags: ["tag-search"],
+      },
+    });
     return handleResponse(response);
   } catch (error) {
     console.error("Failed to search tags:", error);
@@ -90,7 +112,13 @@ export async function searchTags(query: string) {
 // 프로젝트 조회
 export async function getProjects() {
   try {
-    const response = await fetch(`${API_URL}/projects`);
+    const response = await fetch(`${API_URL}/projects`, {
+      // 프로젝트도 캐싱
+      next: {
+        revalidate: 3600,
+        tags: ["projects"],
+      },
+    });
     return handleResponse(response);
   } catch (error) {
     console.error("Failed to fetch projects:", error);
@@ -100,7 +128,13 @@ export async function getProjects() {
 
 export async function getProject(_id: string) {
   try {
-    const response = await fetch(`${API_URL}/projects/${_id}`);
+    const response = await fetch(`${API_URL}/projects/${_id}`, {
+      // 개별 프로젝트도 캐싱
+      next: {
+        revalidate: 3600,
+        tags: ["project", _id],
+      },
+    });
     return handleResponse(response);
   } catch (error) {
     console.error("Failed to fetch project:", error);
@@ -120,7 +154,13 @@ export const createProject = async (project: ProjectData) => {
 // 프로젝트 포스트 조회
 export async function getProjectPosts(_id: string) {
   try {
-    const response = await fetch(`${API_URL}/posts/project/${_id}`);
+    const response = await fetch(`${API_URL}/posts/project/${_id}`, {
+      // 프로젝트 포스트도 캐싱
+      next: {
+        revalidate: 3600,
+        tags: ["project-posts", _id],
+      },
+    });
     return handleResponse(response);
   } catch (error) {
     console.error("Failed to fetch project posts:", error);

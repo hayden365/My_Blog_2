@@ -1,10 +1,11 @@
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query";
-import { getPostList, getTags } from "./api/fetch";
-import PostsPageClient from "./components/postsPageClient";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import PostsPageShared from "./components/postsPageShared";
+import { generateTagParams, prefetchPostData } from "./lib/utils/ssgUtils";
+
+// SSG를 위한 정적 경로 생성
+export async function generateStaticParams() {
+  return generateTagParams();
+}
 
 interface PageProps {
   searchParams: Promise<{ tag?: string }>;
@@ -12,31 +13,17 @@ interface PageProps {
 
 export default async function PostsPage({ searchParams }: PageProps) {
   const { tag } = await searchParams;
-  const queryClient = new QueryClient();
-
-  try {
-    await Promise.all([
-      queryClient.prefetchQuery({
-        queryKey: ["posts", tag], // tag를 포함한 쿼리키
-        queryFn: () => getPostList(tag),
-      }),
-      queryClient.prefetchQuery({
-        queryKey: ["tags"],
-        queryFn: () => getTags(),
-      }),
-    ]);
-  } catch (error) {
-    console.error("Failed to prefetch data:", error);
-    // 에러가 발생해도 빈 상태로 초기화하여 클라이언트에서 다시 시도할 수 있도록 함
-    queryClient.setQueryData(["posts", tag], []);
-    queryClient.setQueryData(["tags"], []);
-  }
-
+  const { queryClient, initialPosts, initialTags } =
+    await prefetchPostData(tag);
   const dehydratedState = dehydrate(queryClient);
 
   return (
     <HydrationBoundary state={dehydratedState}>
-      <PostsPageClient tag={tag} />
+      <PostsPageShared
+        tag={tag}
+        initialPosts={initialPosts}
+        initialTags={initialTags}
+      />
     </HydrationBoundary>
   );
 }
