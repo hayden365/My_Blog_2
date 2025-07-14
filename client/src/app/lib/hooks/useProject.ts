@@ -17,8 +17,14 @@ export const useUpdateProject = () => {
 
   return useMutation({
     mutationFn: updateProject,
-    onSuccess: () => {
+    onSuccess: (updatedProject) => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
+      queryClient.invalidateQueries({
+        queryKey: ["project", updatedProject._id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["projectPosts", updatedProject._id],
+      });
     },
   });
 };

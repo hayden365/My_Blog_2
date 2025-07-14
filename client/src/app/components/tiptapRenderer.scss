@@ -115,10 +115,10 @@
 
   // 이미지 스타일
   img {
-    max-width: 100%;
+    max-width: 45rem;
     height: auto;
     border-radius: 0.375rem;
-    margin: 1em 0;
+    margin: 3rem auto;
   }
 
   // 링크 스타일
@@ -210,6 +210,13 @@ table {
     background-color: #f0f0f0;
     font-weight: bold;
     text-align: left;
+  }
+
+  img {
+    max-width: 10rem;
+    height: auto;
+    border-radius: 0.375rem;
+    margin: 1em 0;
   }
 
   .selectedCell:after {

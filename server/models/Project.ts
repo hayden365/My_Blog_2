@@ -61,6 +61,4 @@ const projectSchema = new mongoose.Schema({
   },
 });
 
-projectSchema.index({ createdAt: -1 });
-
 export default mongoose.model("Project", projectSchema);

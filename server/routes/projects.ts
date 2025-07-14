@@ -89,7 +89,7 @@ router.put("/:id", verifyToken, (async (req: Request, res: Response) => {
 // get all projects
 router.get("/", (async (req: Request, res: Response) => {
   try {
-    const projects = await Project.find();
+    const projects = await Project.find().sort({ startDate: -1 });
     res.json(projects);
   } catch (err) {
     console.error("Project retrieval error:", err);

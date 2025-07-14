@@ -158,10 +158,10 @@ function jsonToHtml(json: JSONContent): string {
     }
 
     // 블록 노드
-    if (type && content) {
+    if (type) {
       const children = content
-        .map((child: JSONContent) => jsonToHtml(child))
-        .join("");
+        ? content.map((child: JSONContent) => jsonToHtml(child)).join("")
+        : "";
 
       switch (type) {
         case "doc":
@@ -220,6 +220,7 @@ function jsonToHtml(json: JSONContent): string {
               src.startsWith("data:image/"))
               ? src
               : "";
+          console.log("safeSrc", safeSrc);
           if (safeSrc) {
             html += `<img src="${safeSrc}" alt="${alt}" title="${title}" />`;
           }
@@ -252,8 +253,10 @@ export default function TiptapRenderer({
   content,
   className = "",
 }: TiptapRendererProps) {
+  console.log(content);
   // JSON을 HTML로 변환
   const rawHtml = jsonToHtml(content);
+  console.log("rawHtml", rawHtml);
 
   // 서버 사이드에서 안전한 HTML 생성
   const sanitizedHtml = sanitizeHtml(rawHtml);

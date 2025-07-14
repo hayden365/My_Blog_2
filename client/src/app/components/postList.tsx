@@ -13,11 +13,11 @@ const PostList = ({ data }: { data: Post[] }) => {
   const { isLoggedIn } = useAuthStore();
 
   return (
-    <ul className="w-full flex flex-col mx-5">
+    <ul className="w-full flex flex-col">
       {data.map((post) => (
         <li key={post._id} className="border-b border-gray-100 py-8 mx-6">
           <Link
-            href={`posts/${post.slug}-${post._id}`}
+            href={`/posts/${post.slug}-${post._id}`}
             className="flex flex-col gap-6 pr-4 group"
           >
             <div className="flex gap-10 justify-between w-full">

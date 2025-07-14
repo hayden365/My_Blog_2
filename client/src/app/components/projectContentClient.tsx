@@ -10,6 +10,7 @@ import { Post, POST_TYPES } from "../lib/types/post";
 import { useEffect, useState } from "react";
 import PostList from "./postList";
 import TiptapRenderer from "./tiptapRenderer";
+import "./tiptapRenderer.scss";
 
 const ProjectContentClient = ({ _id }: { _id: string }) => {
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
@@ -142,13 +143,6 @@ const ProjectContentClient = ({ _id }: { _id: string }) => {
           </div>
         </div>
       </div>
-      {/* 설명 */}
-      <div className="w-full flex flex-col gap-2 py-10">
-        <h3 className="text-xl font-bold pb-4 w-full mb-6 border-b border-gray-200">
-          Description
-        </h3>
-        <TiptapRenderer content={project.description} className="prose" />
-      </div>
       {/* 포스트 목록 */}
       <div className="w-full flex flex-col gap-2 py-10">
         <h3 className="text-xl font-bold mb-6 pb-4 w-full border-b border-gray-200">
@@ -156,9 +150,9 @@ const ProjectContentClient = ({ _id }: { _id: string }) => {
         </h3>
         <div className="flex flex-col gap-2">
           {/* type folder */}
-          <div className="flex gap-4 items-center mb-4">
+          <div className="flex flex-wrap gap-4 items-center mb-4">
             <button
-              className={`text-gray-500 text-md bg-gray-100 rounded-full px-4 py-2 ${
+              className={`text-gray-500 text-xs sm:text-sm bg-gray-100 rounded-full px-4 py-2 ${
                 selectedType === "All" ? "bg-gray-700 text-white" : ""
               }`}
               onClick={() => {
@@ -177,7 +171,7 @@ const ProjectContentClient = ({ _id }: { _id: string }) => {
                 return (
                   <button
                     key={typeKey}
-                    className={`text-gray-500 text-md bg-gray-100 rounded-full px-4 py-2 ${
+                    className={`text-gray-500 text-xs sm:text-sm bg-gray-100 rounded-full px-4 py-2 ${
                       selectedType === typeKey ? "bg-gray-700 text-white" : ""
                     }`}
                     onClick={() => handleTypeFilter(typeKey)}
@@ -192,6 +186,13 @@ const ProjectContentClient = ({ _id }: { _id: string }) => {
           ) : (
             <div className="text-gray-500 text-sm">No posts found</div>
           )}
+        </div>
+        {/* 설명 */}
+        <div className="w-full flex flex-col gap-2 py-10">
+          <h3 className="text-xl font-bold pb-4 w-full mb-6 border-b border-gray-200">
+            Description
+          </h3>
+          <TiptapRenderer content={project.description} className="prose" />
         </div>
       </div>
     </div>

@@ -1,49 +1,20 @@
 "use client"; // This component must be a client component
 
 import Image from "next/image";
-import {
-  ImageKitAbortError,
-  ImageKitInvalidRequestError,
-  ImageKitServerError,
-  ImageKitUploadNetworkError,
-  upload,
-} from "@imagekit/next";
-import { useRef, useState } from "react";
+import { useRef } from "react";
+import { useImageUpload } from "../lib/hooks/useImageUpload";
 
-const ImageUploader = ({
+export default function ImageUploader({
   image,
   imageSetter,
 }: {
   image: string;
   imageSetter: (image: string) => void;
-}) => {
-  const [progress, setProgress] = useState(0);
-  const [isUploading, setIsUploading] = useState(false);
-
+}) {
+  const { handleUpload, progress, isUploading } = useImageUpload();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const abortController = new AbortController();
-
-  const authenticator = async () => {
-    try {
-      const response = await fetch("/api/upload-auth");
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(
-          `Request failed with status ${response.status}: ${errorText}`
-        );
-      }
-
-      const data = await response.json();
-      const { signature, expire, token, publicKey } = data;
-      return { signature, expire, token, publicKey };
-    } catch (error) {
-      console.error("Authentication error:", error);
-      throw new Error("Authentication request failed");
-    }
-  };
-
-  const handleUpload = async () => {
+  const handleFileUpload = async () => {
     const fileInput = fileInputRef.current;
     if (!fileInput || !fileInput.files || fileInput.files.length === 0) {
       alert("Please select a file to upload");
@@ -51,59 +22,19 @@ const ImageUploader = ({
     }
 
     const file = fileInput.files[0];
-    setIsUploading(true);
-    setProgress(0);
-
-    let authParams;
-    try {
-      authParams = await authenticator();
-    } catch (authError) {
-      console.error("Failed to authenticate for upload:", authError);
-      setIsUploading(false);
-      return;
-    }
-    const { signature, expire, token, publicKey } = authParams;
 
     try {
-      const uploadResponse = await upload({
-        expire,
-        token,
-        signature,
-        publicKey,
-        file,
-        fileName: file.name,
-        onProgress: (event) => {
-          setProgress((event.loaded / event.total) * 100);
-        },
-        abortSignal: abortController.signal,
-      });
-      console.log("Upload response:", uploadResponse);
-      if (uploadResponse.url) {
-        imageSetter(uploadResponse.url);
-      }
+      const imageUrl = await handleUpload(file);
+      imageSetter(imageUrl);
     } catch (error) {
-      if (error instanceof ImageKitAbortError) {
-        console.error("Upload aborted:", error.reason);
-      } else if (error instanceof ImageKitInvalidRequestError) {
-        console.error("Invalid request:", error.message);
-      } else if (error instanceof ImageKitUploadNetworkError) {
-        console.error("Network error:", error.message);
-      } else if (error instanceof ImageKitServerError) {
-        console.error("Server error:", error.message);
-      } else {
-        console.error("Upload error:", error);
-      }
-    } finally {
-      setIsUploading(false);
+      console.error("Upload failed:", error);
+      alert(error instanceof Error ? error.message : "업로드에 실패했습니다");
     }
   };
 
   const handleImageClick = () => {
     fileInputRef.current?.click();
-  };
-
-  const handleFileChange = () => {
-    handleUpload();
+    handleFileUpload();
   };
 
   return (
@@ -111,7 +42,7 @@ const ImageUploader = ({
       <input
         type="file"
         ref={fileInputRef}
-        onChange={handleFileChange}
+        onChange={handleFileUpload}
         accept="image/*"
         className="hidden"
       />
@@ -182,6 +113,4 @@ const ImageUploader = ({
       )}
     </div>
   );
-};
-
-export default ImageUploader;
+}

@@ -55,6 +55,7 @@ const ProjectModal = ({ isOpen, onClose, project }: ProjectModalProps) => {
   const onSubmit: SubmitHandler<ProjectFormData> = (data) => {
     const processedData = {
       ...data,
+      endDate: data.isOngoing ? "" : data.endDate,
       frontend_tech: data.frontend_tech
         .split(",")
         .map((tech) =>
@@ -227,6 +228,7 @@ const ProjectModal = ({ isOpen, onClose, project }: ProjectModalProps) => {
                 </span>
                 <input
                   type="date"
+                  value={project?.isOngoing ? "" : project?.endDate}
                   {...register("endDate")}
                   className="text-sm ml-8 border-b-2 border-gray-200 p-1 flex-1 focus:shadow-lg focus:border-gray-500 focus:outline-none"
                   placeholder="비어 있음"
