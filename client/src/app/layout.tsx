@@ -3,7 +3,7 @@ import { Inter, Nanum_Gothic } from "next/font/google";
 import "./globals.css";
 import Header from "./components/header";
 import { Suspense } from "react";
-import BlogListSkeleton from "./components/common/blogListSkeleton";
+import PostListSkeleton from "./components/common/postListSkeleton";
 import Providers from "./provider";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 const inter = Inter({
@@ -35,7 +35,7 @@ export default function RootLayout({
         <Providers>
           <Header />
           <main className="flex-1 flex flex-col items-center w-full max-w-[1034px] mx-auto">
-            <Suspense fallback={<BlogListSkeleton />}>{children}</Suspense>
+            <Suspense fallback={<PostListSkeleton />}>{children}</Suspense>
           </main>
           <footer className="h-10" />
           <ReactQueryDevtools initialIsOpen={false} />

@@ -1,5 +1,5 @@
 import { QueryClient } from "@tanstack/react-query";
-import { getPostList, getTags } from "../fetch";
+import { getPost, getPostList, getTags } from "../fetch";
 import { Post, Tag } from "../types/post";
 
 // SSG를 위한 정적 경로 생성
@@ -61,5 +61,27 @@ export async function prefetchPostData(tag?: string) {
     dehydratedState,
     initialPosts: dehydratedState,
     initialTags,
+  };
+}
+
+export async function prefetchPostDataBySlugAndId(id: string) {
+  const queryClient = new QueryClient();
+
+  try {
+    await queryClient.prefetchQuery({
+      queryKey: ["post", id],
+      queryFn: () => getPost(id),
+    });
+  } catch (error) {
+    console.error("Failed to prefetch data:", error);
+    queryClient.setQueryData(["post", id], null);
+  }
+
+  const dehydratedState = queryClient.getQueryData<Post>(["post", id]) || null;
+
+  return {
+    queryClient,
+    dehydratedState,
+    initialPost: dehydratedState,
   };
 }

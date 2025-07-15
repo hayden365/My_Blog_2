@@ -1,4 +1,4 @@
-export default function BlogListSkeleton() {
+export default function PostListSkeleton() {
   return (
     <div className="flex flex-col gap-6 w-full max-w-[680px] mx-6">
       {[...Array(5)].map((_, index) => (
