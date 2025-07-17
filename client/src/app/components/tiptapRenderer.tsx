@@ -1,6 +1,10 @@
 import React from "react";
 import { JSONContent } from "@tiptap/react";
 import DOMPurify from "isomorphic-dompurify";
+import {
+  generateHeadingId,
+  extractHeadingText,
+} from "../lib/utils/headingUtils";
 
 interface TiptapRendererProps {
   content: JSONContent;
@@ -43,6 +47,7 @@ function sanitizeHtml(html: string): string {
       "td",
     ],
     ALLOWED_ATTR: [
+      "id",
       "href",
       "target",
       "rel",
@@ -82,14 +87,14 @@ function escapeHtml(text: string): string {
 }
 
 // TipTap JSON을 HTML로 변환하는 함수
-function jsonToHtml(json: JSONContent): string {
+function jsonToHtml(json: JSONContent, headingIndex = { value: 0 }): string {
   if (!json) return "";
 
   let html = "";
 
   // 배열인 경우 각 요소를 처리
   if (Array.isArray(json)) {
-    return json.map((item) => jsonToHtml(item)).join("");
+    return json.map((item) => jsonToHtml(item, headingIndex)).join("");
   }
 
   // 객체인 경우 타입에 따라 처리
@@ -160,7 +165,9 @@ function jsonToHtml(json: JSONContent): string {
     // 블록 노드
     if (type) {
       const children = content
-        ? content.map((child: JSONContent) => jsonToHtml(child)).join("")
+        ? content
+            .map((child: JSONContent) => jsonToHtml(child, headingIndex))
+            .join("")
         : "";
 
       switch (type) {
@@ -173,7 +180,18 @@ function jsonToHtml(json: JSONContent): string {
           break;
         case "heading":
           const level = attrs?.level || 1;
-          html += `<h${level}>${children}</h${level}>`;
+          // h1, h2만 TOC에 포함
+          if (level === 1 || level === 2) {
+            const headingText = extractHeadingText(content || []);
+            const headingId = generateHeadingId(
+              headingText,
+              headingIndex.value
+            );
+            headingIndex.value++;
+            html += `<h${level} id="${headingId}">${children}</h${level}>`;
+          } else {
+            html += `<h${level}>${children}</h${level}>`;
+          }
           break;
         case "bulletList":
           html += `<ul>${children}</ul>`;
@@ -220,7 +238,6 @@ function jsonToHtml(json: JSONContent): string {
               src.startsWith("data:image/"))
               ? src
               : "";
-          console.log("safeSrc", safeSrc);
           if (safeSrc) {
             const isGif = safeSrc.toLowerCase().includes(".gif");
             const imgClass = isGif ? "gif-image" : "";
@@ -255,11 +272,12 @@ export default function TiptapRenderer({
   content,
   className = "",
 }: TiptapRendererProps) {
-  // JSON을 HTML로 변환
-  const rawHtml = jsonToHtml(content);
+  // JSON을 HTML로 변환 (headingIndex 객체 전달)
+  const rawHtml = jsonToHtml(content, { value: 0 });
 
   // 서버 사이드에서 안전한 HTML 생성
   const sanitizedHtml = sanitizeHtml(rawHtml);
+  console.log("sanitizedHtml", sanitizedHtml);
 
   return (
     <div

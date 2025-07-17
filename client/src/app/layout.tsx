@@ -31,12 +31,13 @@ export default function RootLayout({
     <html lang="ko">
       <body
         className={`${inter.variable} ${nanum.variable} antialiased min-h-screen flex flex-col`}
+        suppressHydrationWarning={true}
       >
         <Providers>
           <Header />
-          <main className="flex-1 flex flex-col items-center w-full max-w-[1034px] mx-auto">
+          <div className="flex-1 flex flex-col items-center w-full max-w-[1034px] mx-auto">
             <Suspense fallback={<PostListSkeleton />}>{children}</Suspense>
-          </main>
+          </div>
           <footer className="h-10" />
           <ReactQueryDevtools initialIsOpen={false} />
         </Providers>

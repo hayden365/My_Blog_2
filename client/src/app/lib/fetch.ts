@@ -21,7 +21,7 @@ export async function getPostList(tag?: string) {
     const response = await fetch(url.toString(), {
       // SSG를 위한 캐싱 설정
       next: {
-        revalidate: 3600, // 1시간마다 재검증
+        revalidate: 30, // 1시간마다 재검증
         tags: ["posts", tag || "all"], // 캐시 태그로 무효화 가능
       },
     });
@@ -38,7 +38,7 @@ export async function getPost(_id: string) {
     const response = await fetch(`${API_URL}/posts/${_id}`, {
       // 개별 포스트도 캐싱
       next: {
-        revalidate: 3600,
+        revalidate: 30,
         tags: ["post", _id],
       },
     });

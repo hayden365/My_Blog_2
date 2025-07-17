@@ -61,9 +61,9 @@ const ProjectContentClient = ({
   };
 
   const sections = [
-    { id: "summary", title: "Summary" },
-    { id: "related-posts", title: "Related Posts" },
-    { id: "description", title: "Description" },
+    { id: "summary", text: "Summary" },
+    { id: "related-posts", text: "Related Posts" },
+    { id: "description", text: "Description" },
   ];
 
   return (
