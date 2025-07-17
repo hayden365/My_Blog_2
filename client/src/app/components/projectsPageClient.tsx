@@ -9,18 +9,14 @@ import StyledButton from "./common/styledButton";
 import { useAuthStore } from "../lib/store/authStore";
 import { Project } from "../lib/types/post";
 
-const ProjectsPageClient = ({
-  initialProjects,
-}: {
-  initialProjects: Project[];
-}) => {
+const ProjectsPageClient = ({ initialData }: { initialData: Project[] }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isLoggedIn } = useAuthStore();
 
   const { data: projects = [] } = useQuery({
     queryKey: ["projects"],
     queryFn: () => getProjects(),
-    initialData: initialProjects,
+    initialData: initialData,
   });
 
   if (isLoggedIn && projects.length === 0)

@@ -13,13 +13,25 @@ import PostList from "./postList";
 import TiptapRenderer from "./tiptapRenderer";
 import "./tiptapRenderer.scss";
 
-const ProjectContentClient = ({ _id }: { _id: string }) => {
+const ProjectContentClient = ({
+  _id,
+  initialData,
+  initialProjectPosts,
+}: {
+  _id: string;
+  initialData: ProjectData;
+  initialProjectPosts: {
+    posts: Post[];
+    typeStats: { [key: string]: number };
+  };
+}) => {
   const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
   const [selectedType, setSelectedType] = useState<string>("All");
 
   const { data: project, isLoading } = useQuery<ProjectData>({
     queryKey: ["project", _id],
     queryFn: () => getProject(_id),
+    initialData: initialData,
   });
 
   const { data: projectPosts, isLoading: isPostsLoading } = useQuery<{
@@ -28,6 +40,7 @@ const ProjectContentClient = ({ _id }: { _id: string }) => {
   }>({
     queryKey: ["projectPosts", _id],
     queryFn: () => getProjectPosts(_id),
+    initialData: initialProjectPosts,
   });
 
   useEffect(() => {
@@ -36,7 +49,7 @@ const ProjectContentClient = ({ _id }: { _id: string }) => {
     }
   }, [projectPosts]);
 
-  if (isLoading || isPostsLoading) return <div>Loading...</div>;
+  if (isLoading) return <div>Loading...</div>;
   if (!project) return <div>Project not found</div>;
 
   const handleTypeFilter = (typeKey: string) => {
@@ -173,6 +186,7 @@ const ProjectContentClient = ({ _id }: { _id: string }) => {
               >
                 # All
               </button>
+              {isPostsLoading && <div>Loading...</div>}
               {projectPosts?.typeStats &&
                 Object.entries(projectPosts.typeStats).map(([typeKey]) => {
                   const postType = POST_TYPES.find(

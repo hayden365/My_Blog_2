@@ -42,7 +42,7 @@ export default async function ProjectsPage() {
 
   return (
     <HydrationBoundary state={dehydratedState}>
-      <ProjectsPageClient initialProjects={initialProjects} />
+      <ProjectsPageClient initialData={initialProjects} />
     </HydrationBoundary>
   );
 }
