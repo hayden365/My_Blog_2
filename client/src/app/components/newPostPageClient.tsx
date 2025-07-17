@@ -51,9 +51,6 @@ const NewPostPageClient = () => {
           resetPost();
           router.push("/");
         },
-        onError: (error) => {
-          console.log("Error", error);
-        },
       }
     );
     setIsModalOpen(false);

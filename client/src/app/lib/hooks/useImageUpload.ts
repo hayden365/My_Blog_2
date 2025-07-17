@@ -62,7 +62,6 @@ export function useImageUpload() {
         },
       });
 
-      console.log("Upload response:", uploadResponse);
       if (uploadResponse.url) {
         return uploadResponse.url;
       } else {

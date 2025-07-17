@@ -277,7 +277,6 @@ export default function TiptapRenderer({
 
   // 서버 사이드에서 안전한 HTML 생성
   const sanitizedHtml = sanitizeHtml(rawHtml);
-  console.log("sanitizedHtml", sanitizedHtml);
 
   return (
     <div
