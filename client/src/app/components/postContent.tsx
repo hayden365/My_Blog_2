@@ -30,7 +30,7 @@ const PostContent = memo(function PostContent({ data }: { data: Post }) {
         result.push({
           id: generateHeadingId(text, headingIndex),
           level: item.attrs?.level,
-          text: text,
+          text: text.replace(/[^\w\s가-힣]/g, ""),
         });
         headingIndex++;
       }
@@ -40,7 +40,10 @@ const PostContent = memo(function PostContent({ data }: { data: Post }) {
 
   return (
     <div className="w-full flex gap-12">
-      <div role="main" className="py-13 mx-5 flex flex-col gap-4 flex-1 w-full">
+      <div
+        role="main"
+        className="py-13 mx-5 flex flex-col gap-4 flex-1 lg:min-w-[800px] w-full"
+      >
         <header className="border-b border-gray-100 pb-4">
           <div className="flex items-center gap-2">
             {data.types.map((type) => {
