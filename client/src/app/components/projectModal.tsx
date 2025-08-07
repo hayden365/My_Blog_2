@@ -83,22 +83,21 @@ const ProjectModal = ({ isOpen, onClose, project }: ProjectModalProps) => {
       },
     };
 
-    const onSuccess = (data: ProjectData) => {
-      console.log("Success", data);
-      onClose();
-    };
-
     // 프로젝트가 있으면 수정, 없으면 생성
     if (project) {
       updateProject(processedData, {
-        onSuccess,
+        onSuccess: () => {
+          onClose();
+        },
         onError: () => {
           console.log("Error");
         },
       });
     } else {
       createProject(processedData, {
-        onSuccess,
+        onSuccess: () => {
+          onClose();
+        },
         onError: () => {
           console.log("Error");
         },

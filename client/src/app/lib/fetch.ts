@@ -1,6 +1,13 @@
 import { fetchWithAuth } from "./services/authService";
 import { PostData } from "./types/post";
 import { ProjectData } from "./types/project";
+import {
+  revalidatePost,
+  revalidatePosts,
+  revalidatePostsByTag,
+  revalidateProject,
+  revalidateProjects,
+} from "./utils/revalidate";
 
 const API_URL = process.env.NEXT_PUBLIC_URL;
 
@@ -22,7 +29,7 @@ export async function getPostList(tag?: string) {
       // SSG를 위한 캐싱 설정
       next: {
         revalidate: 3600, // 1시간마다 재검증
-        tags: ["posts", tag || "all"], // 캐시 태그로 무효화 가능
+        tags: ["posts", tag ? `posts-${tag}` : "posts-all"], // 캐시 태그로 무효화 가능
       },
     });
 
@@ -39,7 +46,7 @@ export async function getPost(_id: string) {
       // 개별 포스트도 캐싱
       next: {
         revalidate: 3600,
-        tags: ["post", _id],
+        tags: ["post", `post-${_id}`],
       },
     });
     return handleResponse(response);
@@ -54,7 +61,21 @@ export const createPost = async (post: PostData) => {
     method: "POST",
     body: JSON.stringify(post),
   });
-  return handleResponse(response);
+  const result = await handleResponse(response);
+
+  // 포스트 생성 후 캐시 무효화
+  try {
+    await revalidatePosts();
+    if (post.tags && post.tags.length > 0) {
+      for (const tag of post.tags) {
+        await revalidatePostsByTag(tag);
+      }
+    }
+  } catch (error) {
+    console.error("Failed to revalidate after post creation:", error);
+  }
+
+  return result;
 };
 
 export const updatePost = async (post: PostData) => {
@@ -64,14 +85,41 @@ export const updatePost = async (post: PostData) => {
       post,
     }),
   });
-  return handleResponse(response);
+  const result = await handleResponse(response);
+
+  // 포스트 수정 후 캐시 무효화
+  try {
+    await revalidatePosts();
+    if (post._id) {
+      await revalidatePost(post._id);
+    }
+    if (post.tags && post.tags.length > 0) {
+      for (const tag of post.tags) {
+        await revalidatePostsByTag(tag);
+      }
+    }
+  } catch (error) {
+    console.error("Failed to revalidate after post update:", error);
+  }
+
+  return result;
 };
 
 export async function deletePost(_id: string) {
   const response = await fetchWithAuth(`${API_URL}/posts/${_id}`, {
     method: "DELETE",
   });
-  return handleResponse(response);
+  const result = await handleResponse(response);
+
+  // 포스트 삭제 후 캐시 무효화
+  try {
+    await revalidatePosts();
+    await revalidatePost(_id);
+  } catch (error) {
+    console.error("Failed to revalidate after post deletion:", error);
+  }
+
+  return result;
 }
 
 // 태그 조회
@@ -132,7 +180,7 @@ export async function getProject(_id: string) {
       // 개별 프로젝트도 캐싱
       next: {
         revalidate: 3600,
-        tags: ["project", _id],
+        tags: ["project", `project-${_id}`],
       },
     });
     return handleResponse(response);
@@ -148,7 +196,16 @@ export const createProject = async (project: ProjectData) => {
     method: "POST",
     body: JSON.stringify(project),
   });
-  return handleResponse(response);
+  const result = await handleResponse(response);
+
+  // 프로젝트 생성 후 캐시 무효화
+  try {
+    await revalidateProjects();
+  } catch (error) {
+    console.error("Failed to revalidate after project creation:", error);
+  }
+
+  return result;
 };
 
 // 프로젝트 포스트 조회
@@ -174,7 +231,19 @@ export const updateProject = async (project: ProjectData) => {
     method: "PUT",
     body: JSON.stringify(project),
   });
-  return handleResponse(response);
+  const result = await handleResponse(response);
+
+  // 프로젝트 수정 후 캐시 무효화
+  try {
+    await revalidateProjects();
+    if (project._id) {
+      await revalidateProject(project._id);
+    }
+  } catch (error) {
+    console.error("Failed to revalidate after project update:", error);
+  }
+
+  return result;
 };
 
 // 프로젝트 삭제
@@ -182,5 +251,15 @@ export async function deleteProject(_id: string) {
   const response = await fetchWithAuth(`${API_URL}/projects/${_id}`, {
     method: "DELETE",
   });
-  return handleResponse(response);
+  const result = await handleResponse(response);
+
+  // 프로젝트 삭제 후 캐시 무효화
+  try {
+    await revalidateProjects();
+    await revalidateProject(_id);
+  } catch (error) {
+    console.error("Failed to revalidate after project deletion:", error);
+  }
+
+  return result;
 }
