@@ -2,18 +2,19 @@
 
 import React, { useState } from "react";
 import { getProjects } from "../lib/fetch";
-import ProjectList from "./projectList";
 import { useQuery } from "@tanstack/react-query";
 import ProjectModal from "./projectModal";
 import StyledButton from "./common/styledButton";
 import { useAuthStore } from "../lib/store/authStore";
 import { Project } from "../lib/types/post";
+import ProjectCard from "./projectCard";
+import { ProjectData } from "../lib/types/project";
 
 const ProjectsPageClient = ({ initialData }: { initialData: Project[] }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { isLoggedIn } = useAuthStore();
 
-  const { data: projects = [] } = useQuery({
+  const { data: projects = [] } = useQuery<Project[]>({
     queryKey: ["projects"],
     queryFn: () => getProjects(),
     initialData: initialData,
@@ -58,7 +59,11 @@ const ProjectsPageClient = ({ initialData }: { initialData: Project[] }) => {
           </StyledButton>
         )}
       </div>
-      <ProjectList data={projects} />
+      <div className="flex flex-col gap-10">
+        {projects.map((project) => (
+          <ProjectCard key={project._id} project={project as ProjectData} />
+        ))}
+      </div>
       <ProjectModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

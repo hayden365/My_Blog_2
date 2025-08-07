@@ -21,7 +21,7 @@ const ProjectCard = ({ project }: ProjectCardProps) => {
         alt={project.title}
         width={1000}
         height={1000}
-        className="w-full h-full max-w-110 max-h-90 object-cover rounded-lg"
+        className="w-full h-full max-w-110 max-h-70 object-cover object-top rounded-lg"
       />
       <div className="w-full flex flex-col gap-2 py-2 md:w-2/5">
         <h3 className="text-xl font-bold">{project.title}</h3>

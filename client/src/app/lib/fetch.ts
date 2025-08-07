@@ -115,7 +115,7 @@ export async function getProjects() {
     const response = await fetch(`${API_URL}/projects`, {
       // 프로젝트도 캐싱
       next: {
-        revalidate: 3600,
+        revalidate: 10,
         tags: ["projects"],
       },
     });
@@ -131,7 +131,7 @@ export async function getProject(_id: string) {
     const response = await fetch(`${API_URL}/projects/${_id}`, {
       // 개별 프로젝트도 캐싱
       next: {
-        revalidate: 3600,
+        revalidate: 10,
         tags: ["project", _id],
       },
     });

@@ -26,6 +26,10 @@ const TECH_TAGS = {
     name: "React",
     icon: <FaReact />,
   },
+  reactnative: {
+    name: "React Native",
+    icon: <FaReact />,
+  },
   nextjs: {
     name: "Next.js",
     icon: <TbBrandNextjs />,
