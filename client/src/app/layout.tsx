@@ -5,7 +5,8 @@ import Header from "./components/header";
 import { Suspense } from "react";
 import PostListSkeleton from "./components/common/postListSkeleton";
 import Providers from "./provider";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { GoogleAnalytics } from "@next/third-parties/google";
+
 const inter = Inter({
   variable: "--font-inter",
   subsets: ["latin"],
@@ -27,6 +28,8 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
   return (
     <html lang="ko">
       <body
@@ -39,7 +42,7 @@ export default function RootLayout({
             <Suspense fallback={<PostListSkeleton />}>{children}</Suspense>
           </div>
           <footer className="h-10" />
-          <ReactQueryDevtools initialIsOpen={false} />
+          {gaId && <GoogleAnalytics gaId={gaId} />}
         </Providers>
       </body>
     </html>
