@@ -9,10 +9,17 @@ const API_URL = process.env.NEXT_PUBLIC_URL;
 // 사용자 정보를 서버에서 가져오는 함수 (리프레시 토큰 포함)
 const fetchUserData = async (): Promise<UserProfile | null> => {
   try {
+    // 타임아웃 설정 (15초)
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000);
+
     const response = await fetch(`${API_URL}/auth/me`, {
       method: "GET",
       credentials: "include", // 쿠키 포함
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
 
     if (response.ok) {
       const userData = await response.json();
@@ -39,10 +46,19 @@ const fetchUserData = async (): Promise<UserProfile | null> => {
 
         if (refreshSuccessful) {
           // 토큰 갱신 성공 시 사용자 정보 다시 가져오기
+          const retryController = new AbortController();
+          const retryTimeoutId = setTimeout(
+            () => retryController.abort(),
+            10000
+          );
+
           const retryResponse = await fetch(`${API_URL}/auth/me`, {
             method: "GET",
             credentials: "include",
+            signal: retryController.signal,
           });
+
+          clearTimeout(retryTimeoutId);
 
           if (retryResponse.ok) {
             const retryUserData = await retryResponse.json();
@@ -61,7 +77,11 @@ const fetchUserData = async (): Promise<UserProfile | null> => {
 
     throw new Error(`HTTP error! status: ${response.status}`);
   } catch (error) {
-    console.error("Failed to fetch user data:", error);
+    if (error instanceof Error && error.name === "AbortError") {
+      console.error("Auth request timed out");
+    } else {
+      console.error("Failed to fetch user data:", error);
+    }
     return null;
   }
 };
@@ -114,10 +134,17 @@ export const refreshToken = async (): Promise<boolean> => {
   isRefreshing = true;
   refreshPromise = (async () => {
     try {
+      // 타임아웃 설정 (10초)
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000);
+
       const response = await fetch(`${API_URL}/auth/refresh`, {
         method: "POST",
         credentials: "include",
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         console.error("refreshToken failed:", response.status);
@@ -127,7 +154,11 @@ export const refreshToken = async (): Promise<boolean> => {
       console.log("refreshToken success");
       return true;
     } catch (error) {
-      console.error("refreshToken failed:", error);
+      if (error instanceof Error && error.name === "AbortError") {
+        console.error("Refresh token request timed out");
+      } else {
+        console.error("refreshToken failed:", error);
+      }
       return false;
     } finally {
       isRefreshing = false;
@@ -149,22 +180,48 @@ export const fetchWithAuth = async (url: string, options: RequestInit = {}) => {
     },
   };
 
-  let response = await fetch(url, fetchOptions);
+  // 타임아웃 설정 (30초)
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
 
-  if (response.status === 401) {
-    console.log("Access token expired, attempting refresh");
-    const refreshSuccessful = await refreshToken();
+  try {
+    let response = await fetch(url, {
+      ...fetchOptions,
+      signal: controller.signal,
+    });
 
-    if (!refreshSuccessful) {
-      console.log("Token refresh failed, redirecting to login");
-      // 로그인 페이지로 리다이렉트
-      window.location.href = "/";
-      throw new Error("Authentication failed");
+    clearTimeout(timeoutId);
+
+    if (response.status === 401) {
+      console.log("Access token expired, attempting refresh");
+      const refreshSuccessful = await refreshToken();
+
+      if (!refreshSuccessful) {
+        console.log("Token refresh failed, redirecting to login");
+        // 로그인 페이지로 리다이렉트
+        window.location.href = "/";
+        throw new Error("Authentication failed");
+      }
+
+      // 토큰이 갱신되었으므로 원래 요청 재시도
+      const retryController = new AbortController();
+      const retryTimeoutId = setTimeout(() => retryController.abort(), 30000);
+
+      response = await fetch(url, {
+        ...fetchOptions,
+        signal: retryController.signal,
+      });
+
+      clearTimeout(retryTimeoutId);
     }
 
-    // 토큰이 갱신되었으므로 원래 요청 재시도
-    response = await fetch(url, fetchOptions);
+    return response;
+  } catch (error) {
+    clearTimeout(timeoutId);
+    if (error instanceof Error && error.name === "AbortError") {
+      console.error("Request timed out");
+      throw new Error("Request timeout");
+    }
+    throw error;
   }
-
-  return response;
 };

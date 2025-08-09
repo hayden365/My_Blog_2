@@ -10,15 +10,22 @@ type AuthStore = {
   userProfile: UserProfile | null;
   isLoading: boolean;
   isLoggedIn: boolean;
+  isHydrated: boolean;
   checkAuth: () => Promise<void>;
   login: () => void;
   logout: () => Promise<void>;
+  setHydrated: () => void;
 };
 
 export const useAuthStore = create<AuthStore>((set) => ({
   userProfile: null,
   isLoading: true,
   isLoggedIn: false,
+  isHydrated: false,
+
+  setHydrated: () => {
+    set({ isHydrated: true });
+  },
 
   checkAuth: async () => {
     try {

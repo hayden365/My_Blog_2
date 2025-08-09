@@ -5,9 +5,20 @@ import { useAuthStore } from "../lib/store/authStore";
 import Link from "next/link";
 
 const ProfileButton = () => {
-  const { userProfile, isLoading, isLoggedIn, logout } = useAuthStore();
+  const {
+    userProfile,
+    isLoading,
+    isLoggedIn,
+    logout,
+    isHydrated,
+    setHydrated,
+  } = useAuthStore();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setHydrated();
+  }, [setHydrated]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -23,8 +34,28 @@ const ProfileButton = () => {
     return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
-  if (typeof window === "undefined" || isLoading) {
-    return null;
+  // hydration이 완료되지 않았으면 기본 로그인 버튼 표시
+  if (!isHydrated) {
+    return (
+      <Link
+        href="/login"
+        className="px-5 py-2 text-sm font-medium border-black border-1 rounded-sm p-1 cursor-pointer shadow-md hover:shadow-lg transition-all duration-300"
+      >
+        Login
+      </Link>
+    );
+  }
+
+  // 로딩 중이어도 로그인 버튼은 표시 (인증 상태는 별도로 처리)
+  if (isLoading) {
+    return (
+      <Link
+        href="/login"
+        className="px-5 py-2 text-sm font-medium border-black border-1 rounded-sm p-1 cursor-pointer shadow-md hover:shadow-lg transition-all duration-300"
+      >
+        Login
+      </Link>
+    );
   }
 
   if (isLoggedIn && userProfile?.profileImage) {

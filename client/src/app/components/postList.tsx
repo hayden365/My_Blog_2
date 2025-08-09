@@ -10,7 +10,7 @@ import StyledType from "./common/styledType";
 
 const PostList = ({ data }: { data: Post[] }) => {
   register("ko", koLocale);
-  const { isLoggedIn } = useAuthStore();
+  const { isLoggedIn, isHydrated } = useAuthStore();
 
   return (
     <ul className="w-full flex flex-col">
@@ -37,7 +37,9 @@ const PostList = ({ data }: { data: Post[] }) => {
                   </div>
                   <div className="flex items-center gap-2">
                     <small>{format(post.createdAt, "ko")}</small>
-                    {isLoggedIn && <PostOptionsMenu post={post} />}
+                    {isHydrated && isLoggedIn && (
+                      <PostOptionsMenu post={post} />
+                    )}
                   </div>
                 </div>
               </div>

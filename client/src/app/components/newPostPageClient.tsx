@@ -12,9 +12,9 @@ import { useAuthStore } from "../lib/store/authStore";
 import { redirect } from "next/navigation";
 
 const NewPostPageClient = () => {
-  const { isLoggedIn, isLoading } = useAuthStore();
+  const { isLoggedIn, isLoading, isHydrated } = useAuthStore();
 
-  if (!isLoggedIn && !isLoading) {
+  if (isHydrated && !isLoggedIn && !isLoading) {
     redirect("/login");
   }
   const router = useRouter();

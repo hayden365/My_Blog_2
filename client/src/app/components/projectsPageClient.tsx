@@ -12,7 +12,7 @@ import { ProjectData } from "../lib/types/project";
 
 const ProjectsPageClient = ({ initialData }: { initialData: Project[] }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { isLoggedIn } = useAuthStore();
+  const { isLoggedIn, isHydrated } = useAuthStore();
 
   const { data: projects = [] } = useQuery<Project[]>({
     queryKey: ["projects"],
@@ -20,7 +20,7 @@ const ProjectsPageClient = ({ initialData }: { initialData: Project[] }) => {
     initialData: initialData,
   });
 
-  if (isLoggedIn && projects.length === 0)
+  if (isHydrated && isLoggedIn && projects.length === 0)
     return (
       <>
         <div className="mt-10 flex flex-col items-center justify-center gap-4">

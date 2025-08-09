@@ -14,9 +14,9 @@ import { useAuthStore } from "@/app/lib/store/authStore";
 import { redirect } from "next/navigation";
 
 const EditPostClient = ({ _id }: { _id: string }) => {
-  const { isLoggedIn, isLoading: isAuthLoading } = useAuthStore();
+  const { isLoggedIn, isLoading: isAuthLoading, isHydrated } = useAuthStore();
 
-  if (!isLoggedIn && !isAuthLoading) {
+  if (isHydrated && !isLoggedIn && !isAuthLoading) {
     redirect("/login");
   }
   const router = useRouter();

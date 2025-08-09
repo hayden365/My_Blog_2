@@ -59,7 +59,12 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
       try {
         authInitialized.current = true;
-        await checkAuth(); // 최초 로드 시 인증 상태 체크
+        // 타임아웃과 함께 인증 체크 실행
+        const timeoutPromise = new Promise((_, reject) => {
+          setTimeout(() => reject(new Error("Auth timeout")), 15000); // 15초 타임아웃
+        });
+
+        await Promise.race([checkAuth(), timeoutPromise]);
       } catch (error) {
         console.error("Auth initialization failed:", error);
         // 실패 시에도 다시 시도하지 않음 - 로그아웃 상태로 유지

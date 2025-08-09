@@ -7,7 +7,7 @@ import { usePathname } from "next/navigation";
 import { HomeLogo } from "./common/homeLogo";
 
 const Header = () => {
-  const { isLoggedIn } = useAuthStore();
+  const { isLoggedIn, isHydrated } = useAuthStore();
   const pathname = usePathname();
 
   if (pathname === "/posts/new" || pathname.endsWith("/edit")) {
@@ -39,7 +39,7 @@ const Header = () => {
         </Link>
       </div>
       <div className="flex items-center gap-10">
-        {isLoggedIn && (
+        {isHydrated && isLoggedIn && (
           <Link
             href="/posts/new"
             className="text-gray-600 hover:text-gray-900 transition-colors flex items-end gap-2"

@@ -17,7 +17,7 @@ import {
 
 const PostContent = memo(function PostContent({ data }: { data: Post }) {
   register("ko", koLocale);
-  const { isLoggedIn } = useAuthStore();
+  const { isLoggedIn, isHydrated } = useAuthStore();
 
   // sections 계산을 useMemo로 최적화하고 일관된 ID 생성
   const sections = useMemo(() => {
@@ -57,7 +57,7 @@ const PostContent = memo(function PostContent({ data }: { data: Post }) {
             <time className="text-gray-500">
               {format(data.createdAt, "ko")}
             </time>
-            {isLoggedIn && <PostOptionsMenu post={data} />}
+            {isHydrated && isLoggedIn && <PostOptionsMenu post={data} />}
           </div>
         </header>
         <article className="my-10 prose prose-lg max-w-none">
