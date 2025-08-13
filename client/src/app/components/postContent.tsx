@@ -87,7 +87,7 @@ const PostContent = memo(function PostContent({ data }: { data: Post }) {
         </ul>
       </div>
       {/* Table of Contents */}
-      <aside className="hidden lg:block">
+      <aside className="hidden xl:block">
         <TableOfContents sections={sections} />
       </aside>
     </div>

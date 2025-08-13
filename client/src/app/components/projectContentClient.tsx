@@ -224,7 +224,7 @@ const ProjectContentClient = ({
       </div>
 
       {/* 사이드바 - Table of Contents */}
-      <div className="hidden lg:block">
+      <div className="hidden xl:block">
         <TableOfContents sections={sections} />
       </div>
     </div>

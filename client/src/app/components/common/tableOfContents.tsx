@@ -55,7 +55,7 @@ const TableOfContents = ({ sections }: TableOfContentsProps) => {
   };
 
   return (
-    <div className="sticky top-24 w-64 bg-white  rounded-sm p-4 shadow-sm">
+    <div className="sticky top-36 w-64 bg-white rounded-sm p-4 shadow-2xs">
       <h4 className="text-lg font-semibold mb-4 text-gray-800">목차</h4>
       <nav className="space-y-2">
         {sections.map((section) => (
